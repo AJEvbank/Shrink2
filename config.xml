@@ -86,4 +86,6 @@
     <plugin name="cordova-plugin-file" spec="^6.0.1" />
     <plugin name="cordova-sqlite-storage" spec="^2.2.1" />
     <plugin name="phonegap-plugin-push" spec="^2.2.2" />
+    <engine name="android" spec="7.0.0" />
+    <plugin name="cordova-plugin-calendar" spec="^5.0.0" />
 </widget>
