@@ -1,19 +1,23 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { NavController, NavParams } from 'ionic-angular';
 
-/**
- * Generated class for the MainPage page.
- *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
- */
+import { ItemRecordPage } from '../item-record/item-record';
+import { DailyNotificationsPage } from '../daily-notifications/daily-notifications';
+import { HighRiskListPage } from '../high-risk-list/high-risk-list';
+import { ShelfHelperPage } from '../shelf-helper/shelf-helper';
+import { ReportsPage } from '../reports/reports';
 
-@IonicPage()
 @Component({
   selector: 'page-main',
   templateUrl: 'main.html',
 })
 export class MainPage {
+
+  itemRecordPage = ItemRecordPage;
+  dailyNotificationsPage = DailyNotificationsPage;
+  highRiskList = HighRiskListPage;
+  shelfHelperPage = ShelfHelperPage;
+  reportsPage = ReportsPage;
 
   constructor(public navCtrl: NavController, public navParams: NavParams) {
   }
