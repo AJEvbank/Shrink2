@@ -8,6 +8,7 @@ import { Camera } from '@ionic-native/camera';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner';
 import { File } from '@ionic-native/file';
 import { SQLite } from '@ionic-native/sqlite';
+import { Push } from '@ionic-native/push';
 
 import { MyApp } from './app.component';
 
@@ -74,7 +75,8 @@ import { ShrinkListPage } from '../pages/reports/shrink-list/shrink-list';
     Camera,
     BarcodeScanner,
     File,
-    SQLite
+    SQLite,
+    Push
   ]
 })
 export class AppModule {}
