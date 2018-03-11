@@ -9,6 +9,7 @@ import { BarcodeScanner } from '@ionic-native/barcode-scanner';
 import { File } from '@ionic-native/file';
 import { SQLite } from '@ionic-native/sqlite';
 import { Push } from '@ionic-native/push';
+import { Calendar } from '@ionic-native/calendar';
 
 import { MyApp } from './app.component';
 
@@ -76,7 +77,8 @@ import { ShrinkListPage } from '../pages/reports/shrink-list/shrink-list';
     BarcodeScanner,
     File,
     SQLite,
-    Push
+    Push,
+    Calendar
   ]
 })
 export class AppModule {}
