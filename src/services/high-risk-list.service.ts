@@ -8,8 +8,6 @@ import { HighRiskItem } from '../assets/models/high-risk-item.model';
 export class HighRiskListService {
 
   highRiskList: HighRiskItem [];
-  highRiskItem: HighRiskItem;
-  index: number;
 
   constructor(private storage: Storage,
               private file: File) {}

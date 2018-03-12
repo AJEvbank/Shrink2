@@ -5,8 +5,6 @@ import { Notification } from '../assets/models/notification.model';
 export class DailyNotificationsService {
 
   dailyNotificationsList: Notification [];
-  dailyNotificationsItem: Notification;
-  index: number;
 
   constructor(private storage: Storage){}
 

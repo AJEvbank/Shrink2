@@ -8,8 +8,6 @@ import { Injectable, OnInit } from '@angular/core';
 export class ShelfHelperService {
 
   shelfHelperList: ToGetItem [];
-  toGetItem: ToGetItem;
-  index: number;
 
   constructor(private file: File,
               private storage: Storage) {
