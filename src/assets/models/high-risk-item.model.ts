@@ -6,10 +6,12 @@ export class HighRiskItem {
   public totalLostQuantity: number;
   public totalLostRevenue: number;
 
-  constructor(throwaways: Throwaway [], totalLostQuantity=0, totalLostRevenue=0) {
+  constructor(throwaways: Throwaway []) {
     this.throwawayList = throwaways;
-    this.totalLostQuantity = totalLostQuantity;
-    this.totalLostRevenue = totalLostRevenue;
+    for (let throwaway of this.throwawayList) {
+      this.totalLostQuantity += throwaway.item.quantity;
+      this.totalLostRevenue += throwaway.item.unitPrice * throwaway.item.quantity;
+    }
   }
 
 }
