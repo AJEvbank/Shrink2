@@ -4,12 +4,10 @@ import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { StatusBar } from '@ionic-native/status-bar';
 
-import { Camera } from '@ionic-native/camera';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner';
 import { File } from '@ionic-native/file';
 import { SQLite } from '@ionic-native/sqlite';
-import { Push } from '@ionic-native/push';
-import { Calendar } from '@ionic-native/calendar';
+import { CameraPreview } from '@ionic-native/camera-preview';
 
 import { MyApp } from './app.component';
 
@@ -30,6 +28,7 @@ import { LossOverTimeReportPage } from '../pages/reports/loss-over-time-report/l
 import { ReportSpecificationsPage } from '../pages/reports/report-specifications/report-specifications';
 import { ShrinkListPage } from '../pages/reports/shrink-list/shrink-list';
 
+//import { CameraFeed } from '../pages/special-components/camera-component/camera-feed.component';
 
 @NgModule({
   declarations: [
@@ -75,12 +74,10 @@ import { ShrinkListPage } from '../pages/reports/shrink-list/shrink-list';
     StatusBar,
     SplashScreen,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
-    Camera,
     BarcodeScanner,
     File,
     SQLite,
-    Push,
-    Calendar
+    CameraPreview
   ]
 })
 export class AppModule {}
