@@ -28,7 +28,9 @@ import { LossOverTimeReportPage } from '../pages/reports/loss-over-time-report/l
 import { ReportSpecificationsPage } from '../pages/reports/report-specifications/report-specifications';
 import { ShrinkListPage } from '../pages/reports/shrink-list/shrink-list';
 
-//import { CameraFeed } from '../pages/special-components/camera-component/camera-feed.component';
+import { CameraFeed } from '../assets/special-components/camera-feed/camera-feed.component';
+
+
 
 @NgModule({
   declarations: [
@@ -46,7 +48,8 @@ import { ShrinkListPage } from '../pages/reports/shrink-list/shrink-list';
     CalendarPage,
     LossOverTimeReportPage,
     ReportSpecificationsPage,
-    ShrinkListPage
+    ShrinkListPage,
+    CameraFeed
   ],
   imports: [
     BrowserModule,
