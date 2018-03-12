@@ -40,4 +40,19 @@ export class ShelfHelperService {
       }
     )
   };
+
+  fetchList() {
+    return this.storage.get('shelfHelperList')
+    .then(
+      (list: ToGetItem []) => {
+        this.shelfHelperList = list != null ? list: [];
+        return this.shelfHelperList;
+      }
+    )
+    .catch(
+      (err) => {
+        console.log(err);
+      }
+    )
+  }
 }
