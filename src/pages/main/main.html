@@ -9,7 +9,7 @@
 
 <ion-content padding>
 
-  <ion-row padding>
+  <ion-row>
     <ion-col>
       <!-- <p>
         Camera feed goes here.
@@ -18,31 +18,34 @@
     </ion-col>
   </ion-row>
 
-  <ion-row padding>
-    <ion-col>
-      <button ion-button block color="danger" [navPush]="itemRecordPage">Scan</button>
-    </ion-col>
-  </ion-row>
+  <div class="displaybottom">
+    <ion-row>
+      <ion-col>
+        <button ion-button block color="danger" [navPush]="itemRecordPage">Scan</button>
+      </ion-col>
+    </ion-row>
 
-  <ion-row padding>
-    <ion-col>
-      <button ion-button block color="yellow" [navPush]="dailyNotificationsPage">Notifications</button>
-    </ion-col>
-  </ion-row>
+    <ion-row>
+      <ion-col>
+        <button ion-button block color="yellow" [navPush]="dailyNotificationsPage">Notifications</button>
+      </ion-col>
+    </ion-row>
 
-  <ion-row padding>
-    <ion-col>
-      <button ion-button block color="orange" [navPush]="highRiskList">High-Risk List</button>
-    </ion-col>
-    <ion-col>
-      <button ion-button block [navPush]="shelfHelperPage">Shelf Helper</button>
-    </ion-col>
-  </ion-row>
+    <ion-row>
+      <ion-col>
+        <button ion-button block color="orange" [navPush]="highRiskList">High-Risk List</button>
+      </ion-col>
+      <ion-col>
+        <button ion-button block [navPush]="shelfHelperPage">Shelf Helper</button>
+      </ion-col>
+    </ion-row>
 
-  <ion-row padding>
-    <ion-col>
-      <button ion-button block color="green" [navPush]="reportsPage">Reports</button>
-    </ion-col>
-  </ion-row>
+    <ion-row>
+      <ion-col>
+        <button ion-button block color="green" [navPush]="reportsPage">Reports</button>
+      </ion-col>
+    </ion-row>
+  </div>
+
 
 </ion-content>
