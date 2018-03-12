@@ -1,15 +1,13 @@
 import { Storage } from '@ionic/storage';
-import { File } from '@ionic-native/file';
+import { Injectable } from '@angular/core';
 
 import { HighRiskItem } from '../assets/models/high-risk-item.model';
 
 
-
+@Injectable()
 export class HighRiskListService {
 
   highRiskList: HighRiskItem [];
-  highRiskItem: HighRiskItem;
-  index: number;
 
   constructor(private storage: Storage,
               private file: File) {}

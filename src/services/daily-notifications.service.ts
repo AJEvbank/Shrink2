@@ -1,12 +1,12 @@
 import { Storage } from '@ionic/storage';
 
 import { Notification } from '../assets/models/notification.model';
+import { Injectable } from '@angular/core';
 
+@Injectable()
 export class DailyNotificationsService {
 
   dailyNotificationsList: Notification [];
-  dailyNotificationsItem: Notification;
-  index: number;
 
   constructor(private storage: Storage){}
 

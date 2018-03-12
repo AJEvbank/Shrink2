@@ -10,4 +10,8 @@ import { ItemRecordPage } from './item-record';
     IonicPageModule.forChild(ItemRecordPage),
   ],
 })
-export class ItemRecordPageModule {}
+export class ItemRecordPageModule {
+
+  
+
+}
