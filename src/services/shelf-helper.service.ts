@@ -2,6 +2,8 @@ import { Storage } from '@ionic/storage';
 import { Injectable } from '@angular/core';
 
 import { ToGetItem } from '../assets/models/to-get-item.model';
+import { ItemRecord } from '../assets/models/item-record.model';
+
 
 @Injectable()
 export class ShelfHelperService {

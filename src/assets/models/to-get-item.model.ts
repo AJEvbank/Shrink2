@@ -2,8 +2,8 @@ import { ItemRecord } from './item-record.model';
 
 export class ToGetItem {
 
-  item: ItemRecord;
-  quantity: number;
+  public item: ItemRecord;
+  public quantity: number;
 
   constructor(item: ItemRecord, quantity: number) {
     this.item = item;

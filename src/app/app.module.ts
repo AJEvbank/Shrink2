@@ -28,6 +28,7 @@ import { LossOverTimeReportPage } from '../pages/reports/loss-over-time-report/l
 import { ReportSpecificationsPage } from '../pages/reports/report-specifications/report-specifications';
 import { ShrinkListPage } from '../pages/reports/shrink-list/shrink-list';
 
+import { ScannerService } from '../services/scanner.service';
 
 @NgModule({
   declarations: [
@@ -76,7 +77,8 @@ import { ShrinkListPage } from '../pages/reports/shrink-list/shrink-list';
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     BarcodeScanner,
     File,
-    SQLite
+    SQLite,
+    ScannerService
   ]
 })
 export class AppModule {}

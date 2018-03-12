@@ -1,25 +1,23 @@
-import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { Component, OnInit } from '@angular/core';
+import { NavController, NavParams } from 'ionic-angular';
 
-/**
- * Generated class for the ItemRecordPage page.
- *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
- */
+import { ItemRecord } from '../../assets/models/item-record.model';
 
-@IonicPage()
 @Component({
   selector: 'page-item-record',
   templateUrl: 'item-record.html',
 })
-export class ItemRecordPage {
+export class ItemRecordPage implements OnInit {
 
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
+  item: ItemRecord;
+
+  constructor(private navCtrl: NavController,
+              private navParams: NavParams) {
   }
 
-  ionViewDidLoad() {
-    console.log('ionViewDidLoad ItemRecordPage');
+  ngOnInit() {
+    this.item = this.navParams.get('item');
+    console.log(this.item);
   }
 
 }

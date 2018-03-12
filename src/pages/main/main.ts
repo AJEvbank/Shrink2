@@ -1,5 +1,8 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams } from 'ionic-angular';
+import { NavController, NavParams, LoadingController } from 'ionic-angular';
+
+import { ScannerService } from '../../services/scanner.service';
+import { ItemRecord } from '../../assets/models/item-record.model';
 
 import { ItemRecordPage } from '../item-record/item-record';
 import { DailyNotificationsPage } from '../daily-notifications/daily-notifications';
@@ -19,11 +22,30 @@ export class MainPage {
   shelfHelperPage = ShelfHelperPage;
   reportsPage = ReportsPage;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
+  constructor(private navCtrl: NavController,
+              private navParams: NavParams,
+              private scanner: ScannerService,
+              private loadingCtrl: LoadingController) {
   }
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad MainPage');
+  }
+
+  scanItem() {
+    let loader = this.loadingCtrl.create({
+    });
+    loader.present();
+    this.scanner.scan()
+    .then(
+      (item) => {
+        loader.dismiss();
+        this.navCtrl.push(ItemRecordPage,{item: item});
+      }
+
+    )
+    .catch();
+
   }
 
 }

@@ -1,25 +1,35 @@
-import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { Component, OnInit } from '@angular/core';
+import { NavController, NavParams } from 'ionic-angular';
 
-/**
- * Generated class for the ShelfHelperPage page.
- *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
- */
+import { ShelfHelperService } from '../../services/shelf-helper.service';
+import { ToGetItem } from '../../assets/models/to-get-item.model';
 
-@IonicPage()
 @Component({
   selector: 'page-shelf-helper',
   templateUrl: 'shelf-helper.html',
 })
-export class ShelfHelperPage {
+export class ShelfHelperPage implements OnInit {
 
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
+  shelfHelperList: ToGetItem [];
+
+  constructor(private navCtrl: NavController,
+              private navParams: NavParams,
+              private shelfHelperService: ShelfHelperService) {
   }
 
-  ionViewDidLoad() {
-    console.log('ionViewDidLoad ShelfHelperPage');
+  ngOnInit() {
+    this.shelfHelperService.fetchList()
+    .then(
+      (list: ToGetItem []) => {
+        this.shelfHelperList = list;
+      }
+    )
+    .catch(
+      (err) => {
+        console.log(err);
+        this.shelfHelperList = [];
+      }
+    )
   }
 
 }
