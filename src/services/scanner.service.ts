@@ -13,16 +13,16 @@ export class ScannerService {
 
   }
 
-  public typeScan() {
-    if (this.platform.is('android')) {
-      return this.androidScan();
-    }
-    else {
-      return this.browserScan();
-    }
-  }
+  // public typeScan() {
+  //   if (this.platform.is('android')) {
+  //     return this.androidScan();
+  //   }
+  //   else {
+  //     return this.browserScan();
+  //   }
+  // }
 
-  private androidScan() {
+  public androidScan() {
     return this.scanner.scan()
     .then(
       (scan) => {
@@ -38,11 +38,11 @@ export class ScannerService {
     )
   }
 
-  public browserScan() {
-    //let quickItem = new ItemRecord("000000000000","box",0,false);
-    return new Promise(function (fulfill, reject){
-      return new ItemRecord("000000000000","box",0,false);
-    });
-  }
+  // public browserScan() {
+  //   //let quickItem = new ItemRecord("000000000000","box",0,false);
+  //   return new Promise(function (fulfill, reject){
+  //     return new ItemRecord("000000000000","box",0,false);
+  //   });
+  // }
 
 }

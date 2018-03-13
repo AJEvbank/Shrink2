@@ -21,7 +21,7 @@ export class EditItemRecordPage implements OnInit {
   }
 
   ngOnInit() {
-    this.item = this.navParams.get('data');
+    this.item = this.navParams.get('item');
     this.initializeForm();
   }
 

@@ -33,17 +33,23 @@ export class MainPage {
   }
 
   scanItem() {
-    let loader = this.loadingCtrl.create({
-    });
-    loader.present();
-    this.scanner.typeScan()
-    .then(
-      (item) => {
-        loader.dismiss();
-        this.navCtrl.push(ItemRecordPage,{item: item});
-      }
-    )
-    .catch();
+    if (window.location.hostname == "localhost") {
+      let item = new ItemRecord("000000000000","",0,false);
+      this.navCtrl.push(ItemRecordPage,{item: item});
+    }
+    else {
+      let loader = this.loadingCtrl.create({
+      });
+      loader.present();
+      this.scanner.androidScan()
+      .then(
+        (item) => {
+          loader.dismiss();
+          this.navCtrl.push(ItemRecordPage,{item: item});
+        }
+      )
+      .catch();
+    }
   }
 
 }
