@@ -8,6 +8,7 @@ import { BarcodeScanner } from '@ionic-native/barcode-scanner';
 import { File } from '@ionic-native/file';
 import { SQLite } from '@ionic-native/sqlite';
 import { IonicStorageModule } from '@ionic/storage';
+import { DatePicker } from '@ionic-native/date-picker';
 
 import { MyApp } from './app.component';
 
@@ -78,7 +79,8 @@ import { ScannerService } from '../services/scanner.service';
     BarcodeScanner,
     File,
     SQLite,
-    ScannerService
+    ScannerService,
+    DatePicker
   ]
 })
 export class AppModule {}

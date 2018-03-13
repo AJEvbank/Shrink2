@@ -9,10 +9,16 @@
 
 <ion-content padding>
 
+  <ion-item>
+    <!-- <ion-label floating>UPC:</ion-label> -->
+      UPC: {{ upc }}
+  </ion-item>
+  <ion-item>
+    <!-- <ion-label floating>Name:</ion-label> -->
+      NAME: {{ name }}
+  </ion-item>
+
   <form [formGroup]="notificationForm" (ngSubmit)="onSubmit()">
-    <ion-item>
-      <ion-label floating>UPC: {{ item.upc }} Name: {{ item.name }}</ion-label>
-    </ion-item>
     <ion-item>
       <ion-label floating>Quantity</ion-label>
       <ion-input type="number" formControlName="quantity"></ion-input>
@@ -22,7 +28,9 @@
       <ion-input type="number" formControlName="unitPrice"></ion-input>
     </ion-item>
     <ion-item>
-      <ion-label floating>Sell-By Date</ion-label>
+      <ion-label floating>Sell-By Date:</ion-label>
+    </ion-item>
+    <ion-item>
       <button ion-button icon-only color="green" (click)="getDate()">
         <ion-icon  name="calendar"></ion-icon>
       </button>
