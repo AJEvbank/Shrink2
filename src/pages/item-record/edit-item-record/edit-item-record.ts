@@ -1,25 +1,45 @@
-import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { Component, OnInit } from '@angular/core';
+import { NavController, NavParams, ViewController } from 'ionic-angular';
+import { FormGroup, FormControl, Validators, FormArray } from '@angular/forms';
 
-/**
- * Generated class for the EditItemRecordPage page.
- *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
- */
 
-@IonicPage()
+import { ItemRecord } from '../../../assets/models/item-record.model';
+
 @Component({
   selector: 'page-edit-item-record',
   templateUrl: 'edit-item-record.html',
 })
-export class EditItemRecordPage {
+export class EditItemRecordPage implements OnInit {
 
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
+  item: ItemRecord;
+  itemForm: FormGroup;
+
+  constructor(private navCtrl: NavController,
+              private navParams: NavParams,
+              private viewCtrl: ViewController) {
+
   }
 
-  ionViewDidLoad() {
-    console.log('ionViewDidLoad EditItemRecordPage');
+  ngOnInit() {
+    this.item = this.navParams.get('data');
+    this.initializeForm();
+  }
+
+  private initializeForm() {
+    this.itemForm = new FormGroup({
+      'upc': new FormControl(this.item.upc, Validators.required),
+      'name': new FormControl(this.item.name, Validators.required),
+      'weight': new FormControl(this.item.weight, Validators.required),
+      'isHighRisk': new FormControl(this.item.isHighRisk, Validators.required),
+      'references': new FormControl(this.item.references, Validators.required)
+    });
+  }
+
+  onSubmit() {
+    let value = this.itemForm.value;
+    this.item.name = value.name;
+    this.item.weight = value.weight;
+    this.viewCtrl.dismiss(this.item);
   }
 
 }

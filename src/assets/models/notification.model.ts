@@ -6,6 +6,7 @@ export class Notification {
   public sellByDate: Date;
   public daysPrior: number;
   public deliveryOption: Notification.Option;
+  // MEMO: add memo property (string) for user's notes.
 
   constructor(item: ItemCollection, sellByDate: Date, daysPrior=3, deliveryOption=Notification.Option.NONE) {
     this.item = item;

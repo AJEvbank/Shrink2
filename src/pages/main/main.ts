@@ -36,16 +36,14 @@ export class MainPage {
     let loader = this.loadingCtrl.create({
     });
     loader.present();
-    this.scanner.scan()
+    this.scanner.typeScan()
     .then(
       (item) => {
         loader.dismiss();
         this.navCtrl.push(ItemRecordPage,{item: item});
       }
-
     )
     .catch();
-
   }
 
 }

@@ -1,27 +1,38 @@
 <ion-header>
 
   <ion-navbar>
-    <ion-title>item_record</ion-title>
+    <ion-title>Item Record</ion-title>
   </ion-navbar>
 
 </ion-header>
 
 
 <ion-content padding>
-  <p>
-    {{ item.upc }}
-  </p>
-  <p>
-    {{ item.name }}
-  </p>
-  <p>
-    {{ item.weight }}
-  </p>
-  <p>
-    {{ item.isHighRisk }}
-  </p>
-  <p>
-    {{ item.references }}    
-  </p>
+  <ion-card (click)="editItem()">
+
+  <ion-card-header>
+    <ion-label>
+      {{ item.name }}
+    </ion-label>
+  </ion-card-header>
+
+  <ion-card-content>
+    <!-- Add card content here! -->
+    <p>
+      {{ item.upc }}
+    </p>
+    <p>
+      {{ item.weight }}
+    </p>
+    <p *ngIf="item.isHighRisk">
+      High Risk Item
+    </p>
+    <p>
+      This item has been referenced {{ item.references }} times.
+    </p>
+  </ion-card-content>
+
+</ion-card>
+
 
 </ion-content>
