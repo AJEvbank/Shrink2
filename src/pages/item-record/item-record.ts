@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { NavController, NavParams, ModalController } from 'ionic-angular';
+import { NavController, NavParams, ModalController, ToastController } from 'ionic-angular';
 
 import { ItemRecord } from '../../assets/models/item-record.model';
 
@@ -19,7 +19,8 @@ export class ItemRecordPage implements OnInit {
 
   constructor(private navCtrl: NavController,
               private navParams: NavParams,
-              private modalCtrl: ModalController) {
+              private modalCtrl: ModalController,
+              private toastCtrl: ToastController) {
   }
 
   ngOnInit() {
@@ -36,12 +37,24 @@ export class ItemRecordPage implements OnInit {
     editModal.onDidDismiss(
       (data) => {
         this.item = data;
+        this.isCompleteItemRecord = true;
       }
     );
   }
 
   createNotification() {
     console.log("createNotification()");
+    if (this.isCompleteItemRecord) {
+
+    }
+    else {
+      let toast = this.toastCtrl.create({
+        message: 'This record is not complete. Please complete all fields.',
+        duration: 2000,
+        position: 'middle'
+      });
+      toast.present();
+    }
   }
 
   addToHighRiskList() {
@@ -54,6 +67,10 @@ export class ItemRecordPage implements OnInit {
 
   throwaway() {
     console.log("throwaway()");
+  }
+
+  home() {
+    this.navCtrl.push(MainPage);
   }
 
 }
