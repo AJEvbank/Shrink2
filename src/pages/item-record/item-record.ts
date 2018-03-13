@@ -4,6 +4,7 @@ import { NavController, NavParams, ModalController, ToastController } from 'ioni
 import { ItemRecord } from '../../assets/models/item-record.model';
 
 import { EditItemRecordPage } from './edit-item-record/edit-item-record';
+import { CreateNotificationPage } from './create-notification/create-notification';
 import { MainPage } from '../main/main';
 
 @Component({
@@ -16,6 +17,7 @@ export class ItemRecordPage implements OnInit {
   //editItemRecordPage: EditItemRecordPage;
   isCompleteItemRecord: boolean = true;
   mainPage: MainPage;
+  createNotificationPage: CreateNotificationPage;
 
   constructor(private navCtrl: NavController,
               private navParams: NavParams,
@@ -45,7 +47,8 @@ export class ItemRecordPage implements OnInit {
   createNotification() {
     console.log("createNotification()");
     if (this.isCompleteItemRecord) {
-
+      let createNotificationModal = this.modalCtrl.create(CreateNotificationPage, {item: this.item});
+      createNotificationModal.present();
     }
     else {
       let toast = this.toastCtrl.create({
@@ -59,14 +62,47 @@ export class ItemRecordPage implements OnInit {
 
   addToHighRiskList() {
     console.log("addToHighRiskList()");
+    if (this.isCompleteItemRecord) {
+
+    }
+    else {
+      let toast = this.toastCtrl.create({
+        message: 'This record is not complete. Please complete all fields.',
+        duration: 2000,
+        position: 'middle'
+      });
+      toast.present();
+    }
   }
 
   addToShelfHelperList() {
     console.log("addToShelfHelperList()");
+    if (this.isCompleteItemRecord) {
+
+    }
+    else {
+      let toast = this.toastCtrl.create({
+        message: 'This record is not complete. Please complete all fields.',
+        duration: 2000,
+        position: 'middle'
+      });
+      toast.present();
+    }
   }
 
   throwaway() {
     console.log("throwaway()");
+    if (this.isCompleteItemRecord) {
+
+    }
+    else {
+      let toast = this.toastCtrl.create({
+        message: 'This record is not complete. Please complete all fields.',
+        duration: 2000,
+        position: 'middle'
+      });
+      toast.present();
+    }
   }
 
   home() {

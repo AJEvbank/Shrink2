@@ -1,9 +1,3 @@
-<!--
-  Generated template for the CreateNotificationPage page.
-
-  See http://ionicframework.com/docs/components/#navigation for more info on
-  Ionic pages and navigation.
--->
 <ion-header>
 
   <ion-navbar>
@@ -14,5 +8,26 @@
 
 
 <ion-content padding>
+
+  <form [formGroup]="notificationForm" (ngSubmit)="onSubmit()">
+    <ion-item>
+      <ion-label floating>UPC: {{ item.upc }} Name: {{ item.name }}</ion-label>
+    </ion-item>
+    <ion-item>
+      <ion-label floating>Quantity</ion-label>
+      <ion-input type="number" formControlName="quantity"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label floating>Unit Price</ion-label>
+      <ion-input type="number" formControlName="unitPrice"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label floating>Sell-By Date</ion-label>
+      <button ion-button icon-only color="green" (click)="getDate()">
+        <ion-icon  name="calendar"></ion-icon>
+      </button>
+    </ion-item>
+
+  </form>
 
 </ion-content>
