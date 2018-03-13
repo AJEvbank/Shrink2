@@ -34,5 +34,35 @@
 
 </ion-card>
 
+<ion-row padding>
+  <ion-col>
+    <button ion-button block color="yellow" (click)="createNotification()">Create Notification</button>
+  </ion-col>
+</ion-row>
+
+<ion-row padding>
+  <ion-col>
+    <button ion-button block color="orange" (click)="addToHighRiskList()">Add To High-Risk List</button>
+  </ion-col>
+</ion-row>
+
+<ion-row padding>
+  <ion-col>
+    <button ion-button block color="green" (click)="addToShelfHelperList()">Add To Shelf Helper List</button>
+  </ion-col>
+</ion-row>
+
+<ion-row padding>
+  <ion-col>
+    <button ion-button block color="danger" (click)="throwaway()">Throwaway</button>
+  </ion-col>
+</ion-row>
+
+<ion-row padding>
+  <ion-col>
+    <button ion-button block [navPush]="mainPage">Home</button>
+  </ion-col>
+</ion-row>
+
 
 </ion-content>

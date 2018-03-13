@@ -4,6 +4,7 @@ import { NavController, NavParams, ModalController } from 'ionic-angular';
 import { ItemRecord } from '../../assets/models/item-record.model';
 
 import { EditItemRecordPage } from './edit-item-record/edit-item-record';
+import { MainPage } from '../main/main';
 
 @Component({
   selector: 'page-item-record',
@@ -14,6 +15,7 @@ export class ItemRecordPage implements OnInit {
   item: ItemRecord;
   //editItemRecordPage: EditItemRecordPage;
   isCompleteItemRecord: boolean = true;
+  mainPage: MainPage;
 
   constructor(private navCtrl: NavController,
               private navParams: NavParams,
@@ -36,6 +38,22 @@ export class ItemRecordPage implements OnInit {
         this.item = data;
       }
     );
+  }
+
+  createNotification() {
+    console.log("createNotification()");
+  }
+
+  addToHighRiskList() {
+    console.log("addToHighRiskList()");
+  }
+
+  addToShelfHelperList() {
+    console.log("addToShelfHelperList()");
+  }
+
+  throwaway() {
+    console.log("throwaway()");
   }
 
 }
