@@ -7,6 +7,8 @@ import { ItemRecord } from '../../../assets/models/item-record.model';
 import { ItemCollection } from '../../../assets/models/item-collection.model';
 import { Notification } from '../../../assets/models/notification.model';
 
+import { DailyNotificationsService } from '../../../services/daily-notifications.service';
+
 @Component({
   selector: 'page-create-notification',
   templateUrl: 'create-notification.html',
@@ -19,13 +21,14 @@ export class CreateNotificationPage implements OnInit {
   private itemCollection: ItemCollection;
   private notification: Notification;
 
-
+  private displayDate: string;
 
   notificationForm: FormGroup;
 
   constructor(private navCtrl: NavController,
               private navParams: NavParams,
-              private viewCtrl: ViewController) {
+              private viewCtrl: ViewController,
+              private dailyNotificationsService: DailyNotificationsService) {
   }
 
   ngOnInit() {
@@ -35,6 +38,7 @@ export class CreateNotificationPage implements OnInit {
     this.upc = this.item.upc;
     this.itemCollection = new ItemCollection(this.item, 0, 0);
     this.notification = new Notification(this.itemCollection, new Date(), 3, Notification.Option.NONE, "");
+    this.displayDate = this.notification.dateOfCreation.toISOString();
     this.initializeForm();
   }
 
@@ -43,14 +47,13 @@ export class CreateNotificationPage implements OnInit {
       'itemCollection': new FormControl(this.notification.item, Validators.required),
       'quantity': new FormControl(this.notification.item.quantity, Validators.required),
       'unitPrice': new FormControl(this.notification.item.unitPrice, Validators.required),
-      'sellByDate': new FormControl(this.notification.sellByDate, Validators.required),
+      'sellByDate': new FormControl(this.notification.sellByDate.toISOString(), Validators.required),
       'daysPrior': new FormControl(this.notification.daysPrior, Validators.required),
       'deliveryOption': new FormControl(this.notification.deliveryOption, Validators.required),
       'memo': new FormControl(this.notification.memo, Validators.required),
-      // The three values below will not be set by the user.
       'dateOfCreation': new FormControl(this.notification.dateOfCreation, Validators.required),
       'upc': new FormControl({value: this.notification.item.item.upc, disabled: true}, Validators.required),
-      'name': new FormControl({value: this.notification.item.item.name, disabled: true}, Validators.required)
+      'name': new FormControl({value: this.notification.item.item.name, disabled: true}, Validators.required),
     });
   }
 
@@ -65,6 +68,9 @@ export class CreateNotificationPage implements OnInit {
 
     console.log(this.notification);
     // Server logic here.
+    // For now.
+    this.dailyNotificationsService.addItem(this.notification);
+    this.viewCtrl.dismiss();
   }
 
   // getDate() {

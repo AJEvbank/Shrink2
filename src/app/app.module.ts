@@ -30,6 +30,7 @@ import { ReportSpecificationsPage } from '../pages/reports/report-specifications
 import { ShrinkListPage } from '../pages/reports/shrink-list/shrink-list';
 
 import { ScannerService } from '../services/scanner.service';
+import { DailyNotificationsService } from '../services/daily-notifications.service';
 
 @NgModule({
   declarations: [
@@ -80,7 +81,8 @@ import { ScannerService } from '../services/scanner.service';
     File,
     SQLite,
     ScannerService,
-    DatePicker
+    DatePicker,
+    DailyNotificationsService
   ]
 })
 export class AppModule {}
