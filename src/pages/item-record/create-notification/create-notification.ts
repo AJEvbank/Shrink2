@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { NavController, NavParams } from 'ionic-angular';
+import { NavController, NavParams, ViewController } from 'ionic-angular';
 import { FormGroup, FormControl, Validators, FormArray } from '@angular/forms';
 
-import { DatePicker } from '@ionic-native/date-picker';
 
 import { ItemRecord } from '../../../assets/models/item-record.model';
 import { ItemCollection } from '../../../assets/models/item-collection.model';
@@ -26,7 +25,7 @@ export class CreateNotificationPage implements OnInit {
 
   constructor(private navCtrl: NavController,
               private navParams: NavParams,
-              private datePicker: DatePicker) {
+              private viewCtrl: ViewController) {
   }
 
   ngOnInit() {
@@ -48,31 +47,46 @@ export class CreateNotificationPage implements OnInit {
       'daysPrior': new FormControl(this.notification.daysPrior, Validators.required),
       'deliveryOption': new FormControl(this.notification.deliveryOption, Validators.required),
       'memo': new FormControl(this.notification.memo, Validators.required),
+      // The three values below will not be set by the user.
       'dateOfCreation': new FormControl(this.notification.dateOfCreation, Validators.required),
+      'upc': new FormControl({value: this.notification.item.item.upc, disabled: true}, Validators.required),
+      'name': new FormControl({value: this.notification.item.item.name, disabled: true}, Validators.required)
     });
   }
 
   onSubmit() {
+    let value = this.notificationForm.value;
+    this.notification.item.quantity = value.quantity;
+    this.notification.item.unitPrice = value.unitPrice;
+    this.notification.sellByDate = value.sellByDate;
+    this.notification.daysPrior = value.daysPrior;
+    this.notification.deliveryOption = value.deliveryOption;
+    this.notification.memo = value.memo;
 
+    console.log(this.notification);
+    // Server logic here.
   }
 
-  getDate() {
-    this.datePicker.show({
-      date: new Date(),
-      mode: 'date'
-      //androidTheme: this.datePicker.ANDROID_THEMES.THEME_HOLO_DARK
-    }).then(
-      (date) => {
-        console.log('Got date: ', date);
-        this.notification.sellByDate = date;
-      }
-    )
-    .catch(
-      (err) => {
-        console.log('Error occurred while getting date: ', err)
-      }
-    );
-  }
+  // getDate() {
+  //   this.datePicker.show({
+  //     date: new Date(),
+  //     mode: 'date'
+  //     //androidTheme: this.datePicker.ANDROID_THEMES.THEME_HOLO_DARK
+  //   }).then(
+  //     (date) => {
+  //       console.log('Got date: ', date);
+  //       this.notification.sellByDate = date;
+  //     }
+  //   )
+  //   .catch(
+  //     (err) => {
+  //       console.log('Error occurred while getting date: ', err)
+  //     }
+  //   );
+  // }
 
+  leavePage() {
+    this.viewCtrl.dismiss();
+  }
 
 }

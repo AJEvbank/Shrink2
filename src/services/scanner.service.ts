@@ -28,7 +28,7 @@ export class ScannerService {
     return this.scanner.scan()
     .then(
       (scan) => {
-        return new ItemRecord(scan.text,"",0,false);
+        return new ItemRecord(scan.text,"thing",0,false);
       }
       // REMINDER: Server communication logic.
 

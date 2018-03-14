@@ -39,6 +39,7 @@ export class EditItemRecordPage implements OnInit {
     let value = this.itemForm.value;
     this.item.name = value.name;
     this.item.weight = value.weight;
+    // REMINDER: Server logic here.
     this.viewCtrl.dismiss(this.item);
   }
 
