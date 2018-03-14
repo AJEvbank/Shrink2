@@ -27,7 +27,7 @@ export class DailyNotificationsService {
   }
 
   removeItem(index: number){
-    const itemSave: Notification = this.dailyNotificationsList.splice(index, index+1)[0];
+    const itemSave: Notification = this.dailyNotificationsList.slice(index, index+1)[0];
     this.dailyNotificationsList.splice(index, 1);
     this.storage.set('dailyNotificationsList', this.dailyNotificationsList)
     .then(
@@ -70,5 +70,9 @@ export class DailyNotificationsService {
         console.log(err);
       }
     );
+  }
+
+  loadList() {
+    return this.dailyNotificationsList.slice();
   }
 }

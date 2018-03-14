@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { NavController, NavParams } from 'ionic-angular';
+import { NavController, NavParams, PopoverController, ViewController } from 'ionic-angular';
 
 import { DailyNotificationsService } from '../../services/daily-notifications.service';
 
@@ -15,7 +15,9 @@ export class DailyNotificationsPage implements OnInit {
 
   constructor(private navCtrl: NavController,
               private navParams: NavParams,
-              private dailyNotificationsService: DailyNotificationsService) {
+              private dailyNotificationsService: DailyNotificationsService,
+              private popoverController: PopoverController,
+              private viewCtrl: ViewController) {
   }
 
   ngOnInit() {
@@ -33,16 +35,12 @@ export class DailyNotificationsPage implements OnInit {
   deleteTask(index: number) {
     console.log("delete " + index);
     this.dailyNotificationsService.removeItem(index);
-    this.dailyNotificationsService.fetchListTemp()
-    .then(
-      (list: Notification[]) => {
-        this.notificationList = list;
-        console.log(this.notificationList);
-      }
-    )
-    .catch(
-      (err) => console.log(err)
-    );
+    this.notificationList = this.dailyNotificationsService.loadList();
+  }
+
+  viewNotes(clickEvent, index: Notification) {
+    let popover = this.popoverController.create();
+    popover.present({notification: this.notificationList[index]});
   }
 
 }
