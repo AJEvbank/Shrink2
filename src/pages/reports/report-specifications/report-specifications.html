@@ -4,13 +4,6 @@
   </ion-navbar>
 </ion-header>
 
-
-<ion-content padding *ngIf='reportType == "Shrink List"'>
-  <p>
-    This is the shrink list stuff...
-  </p>
-</ion-content>
-
 <ion-content padding *ngIf='reportType == "Loss Over Time"'>
   <p>
     This is the Loss Over Time stuff...
@@ -21,6 +14,10 @@
   <p>
     This is the calendar stuff...
   </p>
+  <ion-item>
+    <ion-label>Chosen Date: {{ dateTime }}</ion-label>
+    <ion-datetime displayFormat='MM/DD/YYYY' [(ngModel)]='dateTime'></ion-datetime>
+  </ion-item>
 </ion-content>
 
 <ion-content padding *ngIf='reportType == "Excel Spreadsheet"'>

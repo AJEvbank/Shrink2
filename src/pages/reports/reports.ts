@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 
 import { ReportSpecificationsPage } from './report-specifications/report-specifications';
+import { ShrinkListPage } from './shrink-list/shrink-list';
 
 @Component({
   selector: 'page-reports',
@@ -8,6 +9,7 @@ import { ReportSpecificationsPage } from './report-specifications/report-specifi
 })
 export class ReportsPage {
   reportSpecificationsPage = ReportSpecificationsPage;
+  shrinkListPage = ShrinkListPage;
   //Report Types for data passing...
   RT_shrinkList = 'Shrink List';
   RT_lossOverTime = 'Loss Over Time';
