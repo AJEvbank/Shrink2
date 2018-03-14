@@ -1,18 +1,30 @@
-<!--
-  Generated template for the ReportSpecificationsPage page.
-
-  See http://ionicframework.com/docs/components/#navigation for more info on
-  Ionic pages and navigation.
--->
 <ion-header>
-
   <ion-navbar>
-    <ion-title>report_specifications</ion-title>
+    <ion-title>{{ templateTitle }}</ion-title>
   </ion-navbar>
-
 </ion-header>
 
 
-<ion-content padding>
+<ion-content padding *ngIf='reportType == "Shrink List"'>
+  <p>
+    This is the shrink list stuff...
+  </p>
+</ion-content>
 
+<ion-content padding *ngIf='reportType == "Loss Over Time"'>
+  <p>
+    This is the Loss Over Time stuff...
+  </p>
+</ion-content>
+
+<ion-content padding *ngIf='reportType == "Calendar View"'>
+  <p>
+    This is the calendar stuff...
+  </p>
+</ion-content>
+
+<ion-content padding *ngIf='reportType == "Excel Spreadsheet"'>
+  <p>
+    This is the excel stuff...
+  </p>
 </ion-content>
