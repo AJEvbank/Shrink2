@@ -12,10 +12,10 @@
 
   <ion-list>
   <ion-item-sliding *ngFor="let notification of notificationList; let i = index" (click)="viewNotes($event, notification)">
-    <ion-item>
+    <ion-item text-center>
       {{ notification.item.item.name }}: ({{ notification.item.quantity }})
     </ion-item>
-    <ion-item-options side="right">
+    <ion-item-options side="left">
       <button ion-button color='danger' (click)="deleteTask(i)">
         <ion-icon name="md-trash"></ion-icon>
       </button>

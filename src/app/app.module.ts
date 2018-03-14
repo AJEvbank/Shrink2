@@ -14,9 +14,11 @@ import { MyApp } from './app.component';
 
 import { LoginPage } from '../pages/login/login';
 import { MainPage } from '../pages/main/main';
-import { DailyNotificationsPage } from '../pages/daily-notifications/daily-notifications';
 import { HighRiskListPage } from '../pages/high-risk-list/high-risk-list';
 import { ShelfHelperPage } from '../pages/shelf-helper/shelf-helper';
+
+import { DailyNotificationsPage } from '../pages/daily-notifications/daily-notifications';
+import { NotificationPopoverPage } from '../pages/daily-notifications/notification-popover';
 
 import { ItemRecordPage } from '../pages/item-record/item-record';
 import { EditItemRecordPage } from '../pages/item-record/edit-item-record/edit-item-record';
@@ -48,7 +50,8 @@ import { DailyNotificationsService } from '../services/daily-notifications.servi
     CalendarPage,
     LossOverTimeReportPage,
     ReportSpecificationsPage,
-    ShrinkListPage
+    ShrinkListPage,
+    NotificationPopoverPage
   ],
   imports: [
     BrowserModule,
@@ -71,7 +74,8 @@ import { DailyNotificationsService } from '../services/daily-notifications.servi
     CalendarPage,
     LossOverTimeReportPage,
     ReportSpecificationsPage,
-    ShrinkListPage
+    ShrinkListPage,
+    NotificationPopoverPage
   ],
   providers: [
     StatusBar,

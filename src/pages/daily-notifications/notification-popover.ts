@@ -1,18 +1,19 @@
 import { Component, OnInit } from '@angular/core';
-import { NavController, NavParams, PopoverController, ViewController } from 'ionic-angular';
+import { NavController, NavParams, ViewController } from 'ionic-angular';
 
 import { Notification } from '../../assets/models/notification.model';
 
 @Component({
   selector: 'notification-popover',
   template: `
+    <ion-content padding>
         <ion-list>
         <ion-list-header>{{ notification.item.item.name }}</ion-list-header>
-          <ion-item>{{ notification.item.item.name }}</ion-item>
           <ion-item>{{ notification.item.quantity }}</ion-item>
-          <ion-item>{{ notification.memo }}</ion-item>
+          <ion-item text-wrap>{{ notification.memo }}</ion-item>
         </ion-list>
         <button ion-button (click)="dismiss()">Ok</button>
+    </ion-content>
   `
 })
 export class NotificationPopoverPage implements OnInit {

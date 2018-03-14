@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { NavController, NavParams, PopoverController, ViewController } from 'ionic-angular';
 
+import { NotificationPopoverPage } from './notification-popover';
+
 import { DailyNotificationsService } from '../../services/daily-notifications.service';
 
 import { Notification } from '../../assets/models/notification.model';
@@ -38,9 +40,9 @@ export class DailyNotificationsPage implements OnInit {
     this.notificationList = this.dailyNotificationsService.loadList();
   }
 
-  viewNotes(clickEvent, index: Notification) {
-    let popover = this.popoverController.create();
-    popover.present({notification: this.notificationList[index]});
+  viewNotes(clickEvent, notification: Notification) {
+    let popover = this.popoverController.create(NotificationPopoverPage, {notification: notification});
+    popover.present();
   }
 
 }
