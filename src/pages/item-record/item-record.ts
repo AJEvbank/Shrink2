@@ -27,7 +27,7 @@ export class ItemRecordPage implements OnInit {
 
   ngOnInit() {
     this.item = this.navParams.get('item');
-    console.log(this.item);
+    console.log("UPC: " + this.item.upc + " Name: " + this.item.name + " Weight: " + this.item.weight);
     if (this.item.name == "") {
       this.isCompleteItemRecord = false;
     }
