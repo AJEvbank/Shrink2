@@ -1,18 +1,59 @@
-<!--
-  Generated template for the CreateNotificationPage page.
-
-  See http://ionicframework.com/docs/components/#navigation for more info on
-  Ionic pages and navigation.
--->
 <ion-header>
 
   <ion-navbar>
-    <ion-title>create_notification</ion-title>
+    <ion-title>Create A Notification For:</ion-title>
   </ion-navbar>
 
 </ion-header>
 
 
 <ion-content padding>
+
+
+
+  <form [formGroup]="notificationForm" (ngSubmit)="onSubmit()">
+
+    <ion-item>
+      <ion-label floating>UPC:</ion-label>
+      <ion-input formControlName="upc">{{ upc }}</ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label floating>Name:</ion-label>
+      <ion-input formControlName="name">{{ name }}</ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label floating>Quantity</ion-label>
+      <ion-input type="number" formControlName="quantity"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label floating>Unit Price</ion-label>
+      <ion-input type="number" formControlName="unitPrice"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label>Sell-By Date:</ion-label>
+      <ion-datetime displayFormat="MM/DD/YYYY" pickerFormat="DD MM YYYY" formControlName="sellByDate"
+                    placeholder="{{ displayDate }}"></ion-datetime>
+    </ion-item>
+    <ion-item>
+      <ion-label floating>Days Advance Warning</ion-label>
+      <ion-input type="number" formControlName="daysPrior"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label>Delivery Options</ion-label>
+      <ion-select formControlName="deliveryOption">
+        <ion-option value="Notification.Option.NONE">None</ion-option>
+        <ion-option value="Notification.Option.EMAIL">Email</ion-option>
+        <ion-option value="Notification.Option.PUSH">Push</ion-option>
+        <ion-option value="Notification.Option.TEXT">Text</ion-option>
+      </ion-select>
+    </ion-item>
+    <ion-item>
+      <ion-input placeholder="Enter a memo" formControlName="memo"></ion-input>
+    </ion-item>
+    <button type="submit" ion-button block [disabled]="!notificationForm.valid">Create Notification</button>
+
+  </form>
+  <button ion-button block color="danger" (click)="leavePage()">Cancel</button>
 
 </ion-content>

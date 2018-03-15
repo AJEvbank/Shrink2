@@ -1,25 +1,48 @@
-import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { Component, OnInit } from '@angular/core';
+import { NavController, NavParams, PopoverController, ViewController } from 'ionic-angular';
 
-/**
- * Generated class for the DailyNotificationsPage page.
- *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
- */
+import { NotificationPopoverPage } from './notification-popover';
 
-@IonicPage()
+import { DailyNotificationsService } from '../../services/daily-notifications.service';
+
+import { Notification } from '../../assets/models/notification.model';
+
 @Component({
   selector: 'page-daily-notifications',
   templateUrl: 'daily-notifications.html',
 })
-export class DailyNotificationsPage {
+export class DailyNotificationsPage implements OnInit {
 
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
+  notificationList: Notification [];
+
+  constructor(private navCtrl: NavController,
+              private navParams: NavParams,
+              private dailyNotificationsService: DailyNotificationsService,
+              private popoverController: PopoverController,
+              private viewCtrl: ViewController) {
   }
 
-  ionViewDidLoad() {
-    console.log('ionViewDidLoad DailyNotificationsPage');
+  ngOnInit() {
+    this.dailyNotificationsService.fetchListTemp()
+    .then(
+      (list: Notification[]) => {
+        this.notificationList = list;
+      }
+    )
+    .catch(
+      (err) => console.log(err)
+    );
+  }
+
+  deleteTask(index: number) {
+    console.log("delete " + index);
+    this.dailyNotificationsService.removeItem(index);
+    this.notificationList = this.dailyNotificationsService.loadList();
+  }
+
+  viewNotes(clickEvent, notification: Notification) {
+    let popover = this.popoverController.create(NotificationPopoverPage, {notification: notification});
+    popover.present();
   }
 
 }

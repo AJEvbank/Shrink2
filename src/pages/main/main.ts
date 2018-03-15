@@ -34,7 +34,7 @@ export class MainPage {
 
   scanItem() {
     if (window.location.hostname == "localhost") {
-      let item = new ItemRecord("000000000000","",0,false);
+      let item = new ItemRecord("000000000000","thing",0,false);
       this.navCtrl.push(ItemRecordPage,{item: item});
     }
     else {
