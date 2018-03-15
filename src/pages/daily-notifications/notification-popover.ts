@@ -7,9 +7,14 @@ import { Notification } from '../../assets/models/notification.model';
   selector: 'notification-popover',
   template: `
     <ion-content padding>
-        <ion-list>
+        <ion-list no-lines>
         <ion-list-header>{{ notification.item.item.name }}</ion-list-header>
-          <ion-item>{{ notification.item.quantity }}</ion-item>
+          <ion-item>
+            <ion-label>Weight: {{ notification.item.quantity }}</ion-label>
+          </ion-item>
+          <ion-item>
+            <ion-label>Memo:</ion-label>
+          </ion-item>
           <ion-item text-wrap>{{ notification.memo }}</ion-item>
         </ion-list>
         <button ion-button (click)="dismiss()">Ok</button>
