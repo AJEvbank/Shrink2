@@ -9,7 +9,7 @@ export class ReportSpecificationsPage {
   reportType: string;
   templateTitle = "Default Report Specifications";
 
-  //Calendar Specific Data
+  //Calendar View Specific Data
   dateTime: any;
 
   constructor(private navParams: NavParams) {
