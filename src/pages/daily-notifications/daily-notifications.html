@@ -13,7 +13,10 @@
   <ion-list>
   <ion-item-sliding *ngFor="let notification of notificationList; let i = index" (click)="viewNotes($event, notification)" nowrap>
     <ion-item>
-      <ion-label>{{ notification.item.item.name }}({{ notification.item.quantity }})</ion-label>
+      <h2>Name: {{ notification.item.item.name }}</h2>
+      <p>
+        Quantity: {{ notification.item.quantity }}
+      </p>
     </ion-item>
 
     <!-- <ion-row>

@@ -8,7 +8,7 @@ import { Notification } from '../../assets/models/notification.model';
   template: `
     <ion-content padding>
         <ion-list no-lines>
-        <ion-list-header>{{ notification.item.item.name }}</ion-list-header>
+        <h3>{{ notification.item.item.name }}</h3>
           <ion-item>
             <ion-label>Weight: {{ notification.item.quantity }}</ion-label>
           </ion-item>

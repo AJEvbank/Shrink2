@@ -33,6 +33,7 @@ import { ShrinkListPage } from '../pages/reports/shrink-list/shrink-list';
 
 import { ScannerService } from '../services/scanner.service';
 import { DailyNotificationsService } from '../services/daily-notifications.service';
+import { ShelfHelperService } from '../services/shelf-helper.service';
 
 @NgModule({
   declarations: [
@@ -86,7 +87,8 @@ import { DailyNotificationsService } from '../services/daily-notifications.servi
     SQLite,
     ScannerService,
     DatePicker,
-    DailyNotificationsService
+    DailyNotificationsService,
+    ShelfHelperService
   ]
 })
 export class AppModule {}
