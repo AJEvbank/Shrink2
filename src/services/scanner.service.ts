@@ -13,17 +13,7 @@ export class ScannerService {
 
   }
 
-  // public typeScan() {
-  //   console.log(window.location.hostname);
-  //   if (window.location.hostname == "localhost") {
-  //     console.log("browserScan");
-  //     return this.browserScan();
-  //   }
-  //   else {
-  //     return this.androidScan();
-  //   }
-  // }
-
+  
   public androidScan() {
     return this.scanner.scan()
     .then(
@@ -40,14 +30,5 @@ export class ScannerService {
     )
   }
 
-  // public browserScan() {
-  //   //let quickItem = new ItemRecord("000000000000","box",0,false);
-  //   return new Promise(function (fulfill, reject){
-  //     fulfill(() => {
-  //       return new ItemRecord("000000000000","box",0,false);
-  //     });
-  //     reject();
-  //   });
-  // }
-
+  
 }

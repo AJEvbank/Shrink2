@@ -1,25 +1,19 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
 
-/**
- * Generated class for the ReportsPage page.
- *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
- */
+import { ReportSpecificationsPage } from './report-specifications/report-specifications';
+import { ShrinkListPage } from './shrink-list/shrink-list';
 
-@IonicPage()
 @Component({
   selector: 'page-reports',
   templateUrl: 'reports.html',
 })
 export class ReportsPage {
-
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
-  }
-
-  ionViewDidLoad() {
-    console.log('ionViewDidLoad ReportsPage');
-  }
+  reportSpecificationsPage = ReportSpecificationsPage;
+  shrinkListPage = ShrinkListPage;
+  //Report Types for data passing...
+  RT_shrinkList = 'Shrink List';
+  RT_lossOverTime = 'Loss Over Time';
+  RT_calendarView = 'Calendar View';
+  RT_excelSpreadsheet = 'Excel Spreadsheet';
 
 }

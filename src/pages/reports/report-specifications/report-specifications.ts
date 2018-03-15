@@ -1,25 +1,19 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { NavParams } from 'ionic-angular';
 
-/**
- * Generated class for the ReportSpecificationsPage page.
- *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
- */
-
-@IonicPage()
 @Component({
   selector: 'page-report-specifications',
   templateUrl: 'report-specifications.html',
 })
 export class ReportSpecificationsPage {
+  reportType: string;
+  templateTitle = "Default Report Specifications";
 
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
+  //Calendar View Specific Data
+  dateTime: any;
+
+  constructor(private navParams: NavParams) {
+    this.reportType = this.navParams.data;
+    this.templateTitle = this.reportType + " Specifications";
   }
-
-  ionViewDidLoad() {
-    console.log('ionViewDidLoad ReportSpecificationsPage');
-  }
-
 }
