@@ -1,18 +1,38 @@
-<!--
-  Generated template for the ReportsPage page.
-
-  See http://ionicframework.com/docs/components/#navigation for more info on
-  Ionic pages and navigation.
--->
 <ion-header>
 
   <ion-navbar>
-    <ion-title>reports</ion-title>
+    <ion-title>Reports</ion-title>
   </ion-navbar>
 
 </ion-header>
 
 
 <ion-content padding>
-
+  <ion-row padding>
+    <ion-col>
+      <button ion-button block round color='yellow'
+      [navPush]='shrinkListPage'>Shrink List</button>
+    </ion-col>
+  </ion-row>
+  <ion-row padding>
+    <ion-col>
+      <button ion-button block round color='yellow'
+      [navPush]='reportSpecificationsPage'
+      [navParams]='RT_lossOverTime'>Loss Over Time</button>
+    </ion-col>
+  </ion-row>
+  <ion-row padding>
+    <ion-col>
+      <button ion-button block round color='yellow'
+      [navPush]='reportSpecificationsPage'
+      [navParams]='RT_calendarView'>Calendar View</button>
+    </ion-col>
+  </ion-row>
+  <ion-row padding>
+    <ion-col>
+      <button ion-button block round color='green'
+      [navPush]='reportSpecificationsPage'
+      [navParams]='RT_excelSpreadsheet'>Export Excel Spreadsheet</button>
+    </ion-col>
+  </ion-row>
 </ion-content>
