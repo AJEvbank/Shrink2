@@ -43,4 +43,8 @@ export class EditItemRecordPage implements OnInit {
     this.viewCtrl.dismiss(this.item);
   }
 
+  cancel() {
+    this.viewCtrl.dismiss(this.item);
+  }
+
 }
