@@ -36,7 +36,7 @@ export class AWSCommService {
   AWSgetupc(upc: string) : Promise<ItemRecord> {
     return this.get(this.access.upcFunction + upc)
     .then((response) => {
-      let resJSON = response.data.json();
+      let resJSON = response.data;
       console.log(resJSON);
       if(resJSON.Items.length > 0){
         console.log("Got valid record back!");
@@ -47,7 +47,7 @@ export class AWSCommService {
       }
     })
     .catch((err) => {
-      console.log(err);
+      console.log(JSON.stringify(err));
       return new ItemRecord(upc, " ");
     });
     // return this.get(this.access.upcFunction + upc).map((response) => {
