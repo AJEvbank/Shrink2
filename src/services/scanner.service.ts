@@ -5,11 +5,13 @@ import { Platform } from 'ionic-angular';
 
 import { ItemRecord } from '../assets/models/item-record.model';
 
+
 import { AWSCommService } from './AWSComm.service';
 
 
 @Injectable()
 export class ScannerService {
+
 
   constructor(private scanner: BarcodeScanner,
               private AWS: AWSCommService) {
