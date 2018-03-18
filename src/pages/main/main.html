@@ -12,7 +12,10 @@
 
   <ion-row padding>
     <ion-col>
+      <!--
       <button ion-button block large round color="danger" (click)="scanItem()">Scan</button>
+      -->
+      <app-scanner (didScan)='itemScanned()'></app-scanner>
     </ion-col>
   </ion-row>
 
