@@ -36,14 +36,15 @@ export class MainPage {
   }
 
   ionViewDidLoad() {
-    this.AWS.AWSgetupc2("077034009521")
-    .then((Item) => {
-      console.log("Got it!");
-    })
-    .catch((err) => {
-      console.log("FAILED!");
-      console.log(JSON.stringify(err));
-    });
+    this.AWS.AWSgetupc2("077034009521").subscribe(
+      (item) => {
+        console.log("Got an item record!");
+      },
+      (err) => {
+        console.log("Got an error! FAILED!");
+        console.log(JSON.stringify(err));
+      }
+    )
   }
 
   scanItem() {

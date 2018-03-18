@@ -48,8 +48,8 @@ export class AWSCommService {
     }).toPromise<ItemRecord>();
   }
 
-  AWSgetupc2(upc: string) : Promise<Response> {
-    return this.get(this.access.upcFunction + upc).toPromise<Response>();
+  AWSgetupc2(upc: string) : Observable<Response> {
+    return this.get(this.access.upcFunction + upc);
   }
 
   // put(args).subscribe(
