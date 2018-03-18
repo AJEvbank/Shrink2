@@ -36,7 +36,7 @@ export class AWSCommService {
   }
 
   AWSgetupc(upc: string) : Promise<ItemRecord> {
-    return this.get(this.access.upcFunction + upc).map((response) => {
+    let test = this.get(this.access.upcFunction + upc).map((response) => {
       console.log("Start of map! Response: " + JSON.stringify(response) + "\nURL: " + this.access.upcFunction + upc);
       let resJSON = response.json();
       console.log("Jsonified the response!" + JSON.stringify(resJSON));
@@ -47,7 +47,9 @@ export class AWSCommService {
         console.log("Got empty record back!");
         return new ItemRecord(upc, " ");
       }
-    }).toPromise<ItemRecord>();
+    })
+
+    return test.toPromise<ItemRecord>();
   }
 
   // put(args).subscribe(
