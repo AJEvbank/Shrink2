@@ -36,7 +36,7 @@ export class AWSCommService {
   AWSgetupc(upc: string) : Promise<ItemRecord> {
     return this.get(this.access.upcFunction + upc)
     .then((response) => {
-      let resJSON = response.data;
+      let resJSON = JSON.parse(response.data);
       console.log(resJSON);
       if(resJSON.Items.length > 0){
         console.log("Got valid record back!");
