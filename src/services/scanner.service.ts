@@ -1,4 +1,5 @@
 import { BarcodeScanner } from '@ionic-native/barcode-scanner';
+import { Observable } from 'rxjs/Observable';
 import { Injectable } from '@angular/core';
 import { Platform } from 'ionic-angular';
 
@@ -16,15 +17,13 @@ export class ScannerService {
   }
 
 
-  public androidScan() {
-    let returnedItem;
+  public androidScan() : Promise<any> {
     return this.scanner.scan()
     .then(
       (scan) => {
         return this.AWS.AWSgetupc(scan.text);
       }
-    )
-    .catch(
+    ).catch(
       (err) => {
         console.log(err);
       }
