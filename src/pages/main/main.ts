@@ -36,7 +36,7 @@ export class MainPage {
   }
 
   ionViewDidLoad() {
-    this.AWS.AWSgetupc("077034009521")
+    this.AWS.AWSgetupc2("077034009521")
     .then((Item) => {
       console.log("Got it!");
     })
