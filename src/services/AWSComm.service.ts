@@ -1,4 +1,4 @@
-import { Http } from '@ionic-native/http';
+import { HTTP, HTTPResponse } from '@ionic-native/http';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 import { Injectable } from '@angular/core';
@@ -13,7 +13,7 @@ export class AWSCommService {
 
   access = new Accessor();
 
-  constructor(private http: Http) {
+  constructor(private http: HTTP) {
 
   }
 
@@ -25,19 +25,19 @@ export class AWSCommService {
   //   return options;
   // }
 
-  put(url: string, body: any) : Observable<Response> {
-    return this.http.put(url, body).map(res=>res.json());
-  }
+  // put(url: string, body: any) : Observable<Response> {
+  //   return this.http.put(url, body).map(res=>res.json());
+  // }
 
-  get(parameter: string) : Observable<Response> {
-    return this.http.get(this.access.base + parameter);
+  get(parameter: string) : Promise<HTTPResponse> {
+    return this.http.get(this.access.base + parameter, {}, {});
   }
 
   AWSgetupc(upc: string) : Promise<ItemRecord> {
-    return this.get(this.access.upcFunction + upc).map((response) => {
-      console.log("Start of map! Response: " + JSON.stringify(response) + "\nURL: " + this.access.upcFunction + upc);
-      let resJSON = response.json();
-      console.log("Jsonified the response!" + JSON.stringify(resJSON));
+    return this.get(this.access.upcFunction + upc)
+    .then((response) => {
+      let resJSON = response.data.json();
+      console.log(resJSON);
       if(resJSON.Items.length > 0){
         console.log("Got valid record back!");
         return new ItemRecord(upc, resJSON.Items[0].name, 0, resJSON.Items[0].highRisk);
@@ -45,7 +45,23 @@ export class AWSCommService {
         console.log("Got empty record back!");
         return new ItemRecord(upc, " ");
       }
-    }).toPromise<ItemRecord>();
+    })
+    .catch((err) => {
+      console.log(err);
+      return new ItemRecord(upc, " ");
+    });
+    // return this.get(this.access.upcFunction + upc).map((response) => {
+    //   console.log("Start of map! Response: " + JSON.stringify(response) + "\nURL: " + this.access.upcFunction + upc);
+    //   let resJSON = response.json();
+    //   console.log("Jsonified the response!" + JSON.stringify(resJSON));
+    //   if(resJSON.Items.length > 0){
+    //     console.log("Got valid record back!");
+    //     return new ItemRecord(upc, resJSON.Items[0].name, 0, resJSON.Items[0].highRisk);
+    //   }else{
+    //     console.log("Got empty record back!");
+    //     return new ItemRecord(upc, " ");
+    //   }
+    // }).toPromise<ItemRecord>();
   }
 
   // put(args).subscribe(

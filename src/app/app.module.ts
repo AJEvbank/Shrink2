@@ -3,7 +3,7 @@ import { ErrorHandler, NgModule } from '@angular/core';
 import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { StatusBar } from '@ionic-native/status-bar';
-import { Http } from '@ionic-native/http';
+import { HTTP } from '@ionic-native/http';
 
 import { BarcodeScanner } from '@ionic-native/barcode-scanner';
 import { File } from '@ionic-native/file';
@@ -97,7 +97,8 @@ import { Accessor } from '../../../Accessor';
     DatePicker,
     DailyNotificationsService,
     ShelfHelperService,
-    AWSCommService
+    AWSCommService,
+    HTTP
   ]
 })
 export class AppModule {}
