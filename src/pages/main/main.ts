@@ -82,7 +82,12 @@ export class MainPage {
           */
         }
       )
-      .catch();
+      .catch(
+        (err) => {
+          loader.dismiss();
+          console.log(err);
+        }
+      );
     }
   }
 
