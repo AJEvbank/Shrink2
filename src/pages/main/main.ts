@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { NavController, NavParams, LoadingController, PopoverController } from 'ionic-angular';
+import 'rxjs/add/operator/toPromise';
 
 import { ScannerService } from '../../services/scanner.service';
 import { ItemRecord } from '../../assets/models/item-record.model';
@@ -45,37 +46,55 @@ export class MainPage {
         (data) => {
           let loader = this.loadingCtrl.create();
           loader.present();
-          this.AWS.AWSgetupc(data).subscribe(
-            (item) => {
-              //console.log(item);
-              loader.dismiss();
-              if(item.upc.length == 12)
-                this.navCtrl.push(ItemRecordPage,{item: item});
-            },
-            (err) => {
-              loader.dismiss();
-              console.log(err);
+
+          this.AWS.AWSgetupc(data)
+          .then((item) => {
+            loader.dismiss();
+            if(item.upc.length == 12){
+              this.navCtrl.push(ItemRecordPage,{item: item});
+            } else if(item.upc == "ERROR"){
+              console.log("I'm an ERROR!");
             }
-          )
+          })
+          .catch((err) => {
+            loader.dismiss();
+            console.log(err);
+          });
         }
       );
     }
     else {
       let loader = this.loadingCtrl.create();
       loader.present();
+
+
+
+
       this.scanner.androidScan()
-      .then(
-        (item) => {
-          loader.dismiss();
-          if(item.upc.length == 12){
-            this.navCtrl.push(ItemRecordPage,{item: item});
-          } else if(item.upc == "ERROR"){
-            console.log("I'm an ERROR!");
+      .then((upc) => {
+          if(upc.length == 12){
+            this.AWS.AWSgetupc(upc)
+            .then((item) => {
+              loader.dismiss();
+              if(item.name != " "){
+                this.navCtrl.push(ItemRecordPage,{item: item});
+              }
+              else{
+                //Stuff here
+              }
+            })
+            .catch((err) => {
+              loader.dismiss();
+              console.log("Server stuff has errored!");
+            });
+            //
+          } else if(upc == " "){
+            loader.dismiss();
+            console.log("Scanner has errored!");
           }
         }
       )
-      .catch(
-        (err) => {
+      .catch((err) => {
           loader.dismiss();
           console.log(err);
         }

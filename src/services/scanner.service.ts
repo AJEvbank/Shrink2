@@ -18,18 +18,15 @@ export class ScannerService {
 
   }
 
-  public androidScan() : Promise<ItemRecord> {
+  public androidScan() : Promise<string> {
     return this.scanner.scan()
-    .then((scan) => {
-      return this.AWS.AWSgetupc(scan.text).toPromise<ItemRecord>();
-    })
-    .then((item) => {
-      return item;
+    .then((result) => {
+      return result.text;
     })
     .catch((err) => {
-      console.log(err);
-      return new ItemRecord("ERROR", " ");
-    });
+      console.log(JSON.stringify(err));
+      return " ";
+    })
   }
 
 }

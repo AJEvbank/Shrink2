@@ -35,7 +35,7 @@ export class AWSCommService {
     return this.http.get(this.access.base + parameter, options);
   }
 
-  AWSgetupc(upc: string) : Observable<ItemRecord> {
+  AWSgetupc(upc: string) : Promise<ItemRecord> {
     return this.get(this.access.upcFunction + upc).map((response) => {
       let resJSON = response.json();
       if(resJSON.Items.length > 0){
@@ -43,7 +43,7 @@ export class AWSCommService {
       }else{
         return new ItemRecord(upc, " ");
       }
-    });
+    }).toPromise<ItemRecord>();
   }
 
   // put(args).subscribe(
