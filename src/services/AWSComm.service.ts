@@ -26,13 +26,11 @@ export class AWSCommService {
   // }
 
   put(url: string, body: any) : Observable<Response> {
-    let options = new RequestOptions();
-    return this.http.put(url, body, options).map(res=>res.json());
+    return this.http.put(url, body).map(res=>res.json());
   }
 
   get(parameter: string) : Observable<Response> {
-    let options = new RequestOptions();
-    return this.http.get(this.access.base + parameter, options);
+    return this.http.get(this.access.base + parameter);
   }
 
   AWSgetupc(upc: string) : Promise<ItemRecord> {
