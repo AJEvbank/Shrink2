@@ -27,6 +27,8 @@ export class MainPage {
   shelfHelperPage = ShelfHelperPage;
   reportsPage = ReportsPage;
 
+  testDebug: string;
+
   constructor(private navCtrl: NavController,
               private navParams: NavParams,
               private scanner: ScannerService,
@@ -36,15 +38,13 @@ export class MainPage {
   }
 
   ionViewDidLoad() {
-    this.AWS.AWSgetupc2("077034009521").subscribe(
-      (item) => {
-        console.log("Got an item record!");
-      },
-      (err) => {
-        console.log("Got an error! FAILED!");
-        console.log(JSON.stringify(err));
-      }
-    )
+    this.AWS.AWSgetupc("077034009521")
+    .then((item) => {
+      this.testDebug = "GOT A RECORD: " + JSON.stringify(item);
+    })
+    .catch((err) => {
+      this.testDebug = "FAILED AGAIN! ARG!";
+    });
   }
 
   scanItem() {
