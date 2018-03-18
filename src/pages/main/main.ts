@@ -56,7 +56,7 @@ export class MainPage {
             }
           )
         }
-      ).then();
+      );
     }
     else {
       let loader = this.loadingCtrl.create({

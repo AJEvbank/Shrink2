@@ -32,11 +32,14 @@ export class AWSCommService {
 
   get(parameter: string) : Observable<any> {
     let options = new RequestOptions();
-    return this.http.get(this.access.base + parameter, options).map(res=>res.json());
+    return this.http.get(this.access.base + parameter, options);//.map(res=>res.json());
   }
 
   AWSgetupc(upc: string) : Observable<any> {
-    return this.get(this.access.upcFunction + upc).map()
+    return this.get(this.access.upcFunction + upc).map((response) => {
+      response.json();
+      response = new ItemRecord(response.Items[0].upcid,response.Items[0].name,0,response.Items[0].highRisk);
+    });
     // return this.get(this.access.upcFunction + upc).subscribe(
     //   function (response) {
     //     return new ItemRecord(response.Items[0].upcid,response.Items[0].name,0,response.Items[0].highRisk);
