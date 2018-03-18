@@ -38,7 +38,7 @@ import { DailyNotificationsService } from '../services/daily-notifications.servi
 import { ShelfHelperService } from '../services/shelf-helper.service';
 import { AWSCommService } from '../services/AWSComm.service';
 
-import { Accessor } from '../../../access';
+import { Accessor } from '../../../Accessor';
 
 @NgModule({
   declarations: [

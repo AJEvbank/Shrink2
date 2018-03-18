@@ -12,7 +12,6 @@ import { HighRiskListPage } from '../high-risk-list/high-risk-list';
 import { ShelfHelperPage } from '../shelf-helper/shelf-helper';
 import { ReportsPage } from '../reports/reports';
 
-import { Accessor } from '../../../../access';
 import { GetUPCPopover } from './getUPCpopover';
 
 @Component({
@@ -26,9 +25,6 @@ export class MainPage {
   highRiskList = HighRiskListPage;
   shelfHelperPage = ShelfHelperPage;
   reportsPage = ReportsPage;
-  accessor = new Accessor();
-  access = this.accessor.access;
-  key = this.accessor.key;
 
   constructor(private navCtrl: NavController,
               private navParams: NavParams,
@@ -47,8 +43,12 @@ export class MainPage {
       pop.present();
       pop.onDidDismiss(
         (data) => {
+          let loader = this.loadingCtrl.create();
+          loader.present();
           this.AWS.AWSgetupc(data).subscribe(
             (item) => {
+              console.log(item);
+              loader.dismiss();
               this.navCtrl.push(ItemRecordPage,{item: item});
             },
             (err) => {
