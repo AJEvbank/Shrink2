@@ -4,14 +4,20 @@ import { Platform } from 'ionic-angular';
 
 import { ItemRecord } from '../assets/models/item-record.model';
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> f1147e6cf28fb1294d952e1ec3c2b6705c5404fe
 import { AWSCommService } from './AWSComm.service';
 
 
 @Injectable()
 export class ScannerService {
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> f1147e6cf28fb1294d952e1ec3c2b6705c5404fe
   constructor(private scanner: BarcodeScanner,
               private AWS: AWSCommService) {
 

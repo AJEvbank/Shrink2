@@ -37,17 +37,9 @@ export class AWSCommService {
 
   AWSgetupc(upc: string) : Observable<any> {
     return this.get(this.access.upcFunction + upc).map((response) => {
-      response.json();
-      response = new ItemRecord(response.Items[0].upcid,response.Items[0].name,0,response.Items[0].highRisk);
+      let resJSON = response.json();
+      return new ItemRecord(resJSON.Items[0].upcid,resJSON.Items[0].name,0,resJSON.Items[0].highRisk);
     });
-    // return this.get(this.access.upcFunction + upc).subscribe(
-    //   function (response) {
-    //     return new ItemRecord(response.Items[0].upcid,response.Items[0].name,0,response.Items[0].highRisk);
-    //   },
-    //   function (err) {
-    //     console.log(err);
-    //   }
-    // );
   }
 
   // put(args).subscribe(

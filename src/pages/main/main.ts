@@ -43,8 +43,12 @@ export class MainPage {
       pop.present();
       pop.onDidDismiss(
         (data) => {
+          let loader = this.loadingCtrl.create();
+          loader.present();
           this.AWS.AWSgetupc(data).subscribe(
             (item) => {
+              console.log(item);
+              loader.dismiss();
               this.navCtrl.push(ItemRecordPage,{item: item});
             },
             (err) => {
