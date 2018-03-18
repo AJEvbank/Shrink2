@@ -3,7 +3,7 @@ import { ErrorHandler, NgModule } from '@angular/core';
 import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { StatusBar } from '@ionic-native/status-bar';
-import { HttpModule, Http } from '@angular/http';
+import { Http } from '@ionic-native/http';
 
 import { BarcodeScanner } from '@ionic-native/barcode-scanner';
 import { File } from '@ionic-native/file';
@@ -64,8 +64,7 @@ import { Accessor } from '../../../Accessor';
   imports: [
     BrowserModule,
     IonicModule.forRoot(MyApp),
-    IonicStorageModule.forRoot(),
-    HttpModule
+    IonicStorageModule.forRoot()
   ],
   bootstrap: [IonicApp],
   entryComponents: [

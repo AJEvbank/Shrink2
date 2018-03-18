@@ -1,4 +1,4 @@
-import {Http, RequestOptions, Headers, Response} from '@angular/http'
+import { Http } from '@ionic-native/http';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 import { Injectable } from '@angular/core';
