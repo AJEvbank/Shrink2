@@ -35,7 +35,16 @@ export class MainPage {
               private popoverController: PopoverController) {
   }
 
-
+  ionViewDidLoad() {
+    this.AWS.AWSgetupc("077034009521")
+    .then((Item) => {
+      console.log("Got it!");
+    })
+    .catch((err) => {
+      console.log("FAILED!");
+      console.log(JSON.stringify(err));
+    });
+  }
 
   scanItem() {
     if (window.location.hostname == "localhost") {
@@ -86,37 +95,6 @@ export class MainPage {
         loader.dismiss();
         console.log(JSON.stringify(err));
       })
-      /*
-      this.scanner.androidScan()
-      .then((upc) => {
-          if(upc.length == 12){
-            this.AWS.AWSgetupc(upc)
-            .then((item) => {
-              loader.dismiss();
-              if(item.name != " "){
-                this.navCtrl.push(ItemRecordPage,{item: item});
-              }
-              else{
-                //Stuff here
-              }
-            })
-            .catch((err) => {
-              loader.dismiss();
-              console.log("Server stuff has errored!");
-            });
-            //
-          } else if(upc == " "){
-            loader.dismiss();
-            console.log("Scanner has errored!");
-          }
-        }
-      )
-      .catch((err) => {
-          loader.dismiss();
-          console.log(err);
-        }
-      );
-      */
     }
   }
 
