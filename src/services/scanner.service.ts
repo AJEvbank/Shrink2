@@ -1,7 +1,7 @@
 import { BarcodeScanner } from '@ionic-native/barcode-scanner';
 import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/operator/toPromise';
 import { Injectable } from '@angular/core';
-import { Platform } from 'ionic-angular';
 
 import { ItemRecord } from '../assets/models/item-record.model';
 
@@ -18,19 +18,18 @@ export class ScannerService {
 
   }
 
-
-  public androidScan() : Promise<any> {
+  public androidScan() : Promise<ItemRecord> {
     return this.scanner.scan()
-    .then(
-      (scan) => {
-        return this.AWS.AWSgetupc(scan.text);
-      }
-    ).catch(
-      (err) => {
-        console.log(err);
-      }
-    )
+    .then((scan) => {
+      return this.AWS.AWSgetupc(scan.text).toPromise<ItemRecord>();
+    })
+    .then((item) => {
+      return item;
+    })
+    .catch((err) => {
+      console.log(err);
+      return new ItemRecord("ERROR", " ");
+    });
   }
-
 
 }

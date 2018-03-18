@@ -1,4 +1,4 @@
-import {Http, RequestOptions, Headers} from '@angular/http'
+import {Http, RequestOptions, Headers, Response} from '@angular/http'
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 import { Injectable } from '@angular/core';
@@ -25,20 +25,24 @@ export class AWSCommService {
   //   return options;
   // }
 
-  put(url: string, body: any) : Observable<any> {
+  put(url: string, body: any) : Observable<Response> {
     let options = new RequestOptions();
     return this.http.put(url, body, options).map(res=>res.json());
   }
 
-  get(parameter: string) : Observable<any> {
+  get(parameter: string) : Observable<Response> {
     let options = new RequestOptions();
-    return this.http.get(this.access.base + parameter, options);//.map(res=>res.json());
+    return this.http.get(this.access.base + parameter, options);
   }
 
-  AWSgetupc(upc: string) : Observable<any> {
+  AWSgetupc(upc: string) : Observable<ItemRecord> {
     return this.get(this.access.upcFunction + upc).map((response) => {
       let resJSON = response.json();
-      return new ItemRecord(resJSON.Items[0].upcid,resJSON.Items[0].name,0,resJSON.Items[0].highRisk);
+      if(resJSON.Items.length > 0){
+        return new ItemRecord(upc, resJSON.Items[0].name, 0, resJSON.Items[0].highRisk);
+      }else{
+        return new ItemRecord(upc, " ");
+      }
     });
   }
 

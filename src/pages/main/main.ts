@@ -47,11 +47,13 @@ export class MainPage {
           loader.present();
           this.AWS.AWSgetupc(data).subscribe(
             (item) => {
-              console.log(item);
+              //console.log(item);
               loader.dismiss();
-              this.navCtrl.push(ItemRecordPage,{item: item});
+              if(item.upc.length == 12)
+                this.navCtrl.push(ItemRecordPage,{item: item});
             },
             (err) => {
+              loader.dismiss();
               console.log(err);
             }
           )
@@ -63,23 +65,13 @@ export class MainPage {
       loader.present();
       this.scanner.androidScan()
       .then(
-        (observable) => {
-          observable.subscribe(
-            (item) => {
-              loader.dismiss();
-              console.log(item);
-              this.navCtrl.push(ItemRecordPage, {item: item});
-            },
-            (err) => {
-              console.log(err);
-            }
-          );
-          /*
+        (item) => {
           loader.dismiss();
-          console.log(JSON.stringify(item));
-          //console.log("UPC: " + item.upc + " Name: " + item.name + " Weight: " + item.weight);
-          this.navCtrl.push(ItemRecordPage,{item: item});
-          */
+          if(item.upc.length == 12){
+            this.navCtrl.push(ItemRecordPage,{item: item});
+          } else if(item.upc == "ERROR"){
+            console.log("I'm an ERROR!");
+          }
         }
       )
       .catch(
