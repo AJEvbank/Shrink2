@@ -3,6 +3,7 @@ import { ErrorHandler, NgModule } from '@angular/core';
 import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { StatusBar } from '@ionic-native/status-bar';
+import { HttpModule, Http } from '@angular/http';
 
 import { BarcodeScanner } from '@ionic-native/barcode-scanner';
 import { File } from '@ionic-native/file';
@@ -19,6 +20,7 @@ import { ShelfHelperPage } from '../pages/shelf-helper/shelf-helper';
 
 import { DailyNotificationsPage } from '../pages/daily-notifications/daily-notifications';
 import { NotificationPopoverPage } from '../pages/daily-notifications/notification-popover';
+import { GetUPCPopover } from '../pages/main/getUPCpopover';
 
 import { ItemRecordPage } from '../pages/item-record/item-record';
 import { EditItemRecordPage } from '../pages/item-record/edit-item-record/edit-item-record';
@@ -34,6 +36,7 @@ import { ShrinkListPage } from '../pages/reports/shrink-list/shrink-list';
 import { ScannerService } from '../services/scanner.service';
 import { DailyNotificationsService } from '../services/daily-notifications.service';
 import { ShelfHelperService } from '../services/shelf-helper.service';
+import { AWSCommService } from '../services/AWSComm.service';
 
 import { Accessor } from '../../../access';
 
@@ -55,12 +58,14 @@ import { Accessor } from '../../../access';
     ReportSpecificationsPage,
     ShrinkListPage,
     NotificationPopoverPage,
-    Accessor
+    Accessor,
+    GetUPCPopover
   ],
   imports: [
     BrowserModule,
     IonicModule.forRoot(MyApp),
-    IonicStorageModule.forRoot()
+    IonicStorageModule.forRoot(),
+    HttpModule
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -79,7 +84,8 @@ import { Accessor } from '../../../access';
     LossOverTimeReportPage,
     ReportSpecificationsPage,
     ShrinkListPage,
-    NotificationPopoverPage
+    NotificationPopoverPage,
+    GetUPCPopover
   ],
   providers: [
     StatusBar,
@@ -91,7 +97,8 @@ import { Accessor } from '../../../access';
     ScannerService,
     DatePicker,
     DailyNotificationsService,
-    ShelfHelperService
+    ShelfHelperService,
+    AWSCommService
   ]
 })
 export class AppModule {}

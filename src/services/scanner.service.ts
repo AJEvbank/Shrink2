@@ -4,24 +4,29 @@ import { Platform } from 'ionic-angular';
 
 import { ItemRecord } from '../assets/models/item-record.model';
 
+import { Accessor } from '../../../access';
+
+import { AWSCommService } from './AWSComm.service';
+
 
 @Injectable()
 export class ScannerService {
 
+  accessor = new Accessor();
+
   constructor(private scanner: BarcodeScanner,
-              private platform: Platform) {
+              private AWS: AWSCommService) {
 
   }
 
-  
+
   public androidScan() {
+    let returnedItem;
     return this.scanner.scan()
     .then(
       (scan) => {
-        return new ItemRecord(scan.text,"thing",0,false);
+        return this.AWS.AWSgetupc(scan.text);
       }
-      // REMINDER: Server communication logic.
-
     )
     .catch(
       (err) => {
@@ -30,5 +35,5 @@ export class ScannerService {
     )
   }
 
-  
+
 }

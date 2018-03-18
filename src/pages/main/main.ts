@@ -1,8 +1,10 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams, LoadingController } from 'ionic-angular';
+import { NavController, NavParams, LoadingController, PopoverController } from 'ionic-angular';
 
 import { ScannerService } from '../../services/scanner.service';
 import { ItemRecord } from '../../assets/models/item-record.model';
+
+import { AWSCommService } from '../../services/AWSComm.service';
 
 import { ItemRecordPage } from '../item-record/item-record';
 import { DailyNotificationsPage } from '../daily-notifications/daily-notifications';
@@ -11,6 +13,7 @@ import { ShelfHelperPage } from '../shelf-helper/shelf-helper';
 import { ReportsPage } from '../reports/reports';
 
 import { Accessor } from '../../../../access';
+import { GetUPCPopover } from './getUPCpopover';
 
 @Component({
   selector: 'page-main',
@@ -30,19 +33,30 @@ export class MainPage {
   constructor(private navCtrl: NavController,
               private navParams: NavParams,
               private scanner: ScannerService,
-              private loadingCtrl: LoadingController) {
+              private loadingCtrl: LoadingController,
+              private AWS: AWSCommService,
+              private popoverController: PopoverController) {
   }
 
-  ionViewDidLoad() {
-    console.log('ionViewDidLoad MainPage');
-    console.log(this.access);
-    console.log(this.key);
-  }
+
 
   scanItem() {
     if (window.location.hostname == "localhost") {
-      let item = new ItemRecord("000000000000","thing",0,false);
-      this.navCtrl.push(ItemRecordPage,{item: item});
+      let upc: string;
+      let pop = this.popoverController.create(GetUPCPopover);
+      pop.present();
+      pop.onDidDismiss(
+        (data) => {
+          this.AWS.AWSgetupc(data).subscribe(
+            (item) => {
+              this.navCtrl.push(ItemRecordPage,{item: item});
+            },
+            (err) => {
+              console.log(err);
+            }
+          )
+        }
+      ).then();
     }
     else {
       let loader = this.loadingCtrl.create({
@@ -52,6 +66,8 @@ export class MainPage {
       .then(
         (item) => {
           loader.dismiss();
+          console.log(JSON.stringify(item));
+          //console.log("UPC: " + item.upc + " Name: " + item.name + " Weight: " + item.weight);
           this.navCtrl.push(ItemRecordPage,{item: item});
         }
       )
