@@ -59,16 +59,27 @@ export class MainPage {
       );
     }
     else {
-      let loader = this.loadingCtrl.create({
-      });
+      let loader = this.loadingCtrl.create();
       loader.present();
       this.scanner.androidScan()
       .then(
-        (item) => {
+        (observable) => {
+          observable.subscribe(
+            (item) => {
+              loader.dismiss();
+              console.log(item);
+              this.navCtrl.push(ItemRecordPage, {item: item});
+            },
+            (err) => {
+              console.log(err);
+            }
+          );
+          /*
           loader.dismiss();
           console.log(JSON.stringify(item));
           //console.log("UPC: " + item.upc + " Name: " + item.name + " Weight: " + item.weight);
           this.navCtrl.push(ItemRecordPage,{item: item});
+          */
         }
       )
       .catch();
