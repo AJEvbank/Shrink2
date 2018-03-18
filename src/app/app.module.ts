@@ -35,6 +35,8 @@ import { ScannerService } from '../services/scanner.service';
 import { DailyNotificationsService } from '../services/daily-notifications.service';
 import { ShelfHelperService } from '../services/shelf-helper.service';
 
+import { Accessor } from '../../../access';
+
 @NgModule({
   declarations: [
     MyApp,
@@ -52,7 +54,8 @@ import { ShelfHelperService } from '../services/shelf-helper.service';
     LossOverTimeReportPage,
     ReportSpecificationsPage,
     ShrinkListPage,
-    NotificationPopoverPage
+    NotificationPopoverPage,
+    Accessor
   ],
   imports: [
     BrowserModule,
