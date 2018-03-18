@@ -37,10 +37,14 @@ export class AWSCommService {
 
   AWSgetupc(upc: string) : Promise<ItemRecord> {
     return this.get(this.access.upcFunction + upc).map((response) => {
+      console.log("Start of map! Response: " + JSON.stringify(response));
       let resJSON = response.json();
+      console.log("Jsonified the response!" + JSON.stringify(resJSON));
       if(resJSON.Items.length > 0){
+        console.log("Got valid record back!");
         return new ItemRecord(upc, resJSON.Items[0].name, 0, resJSON.Items[0].highRisk);
       }else{
+        console.log("Got empty record back!");
         return new ItemRecord(upc, " ");
       }
     }).toPromise<ItemRecord>();

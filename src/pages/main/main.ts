@@ -67,9 +67,26 @@ export class MainPage {
       let loader = this.loadingCtrl.create();
       loader.present();
 
-
-
-
+      this.scanner.androidScan()
+      .then((upc) => {
+        console.log("Successfully got a upc: " + upc);
+        return this.AWS.AWSgetupc(upc);
+      })
+      .then((item) => {
+        console.log("Successfully got an ItemRecord: " + JSON.stringify(item));
+        loader.dismiss();
+        if(item.name != " "){
+          this.navCtrl.push(ItemRecordPage,{item: item});
+        }
+        else{
+          //Stuff here
+        }
+      })
+      .catch((err) => {
+        loader.dismiss();
+        console.log(JSON.stringify(err));
+      })
+      /*
       this.scanner.androidScan()
       .then((upc) => {
           if(upc.length == 12){
@@ -99,6 +116,7 @@ export class MainPage {
           console.log(err);
         }
       );
+      */
     }
   }
 
