@@ -48,10 +48,6 @@ export class AWSCommService {
     }).toPromise<ItemRecord>();
   }
 
-  AWSgetupc2(upc: string) : Observable<Response> {
-    return this.get(this.access.upcFunction + upc);
-  }
-
   // put(args).subscribe(
   //   function(response)/onsuccess,
   //   function(error)/onerror
