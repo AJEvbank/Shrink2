@@ -1,13 +1,9 @@
 import { HTTP, HTTPResponse } from '@ionic-native/http';
 
-
-
 import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/operator/map';
 import { Injectable } from '@angular/core';
 
 import { Accessor } from '../../../Accessor';
-
 import { ItemRecord } from '../assets/models/item-record.model';
 
 
@@ -22,12 +18,12 @@ export class AWSCommService {
 
   // Generic http request functions return Promise<HTTPResponse>.
 
-  private put(url: string, body: any) : Promise<HTTPResponse> {
-    return this.http.put(url, body, {});
+  private put(functionURL: string, body: any) : Promise<HTTPResponse> {
+    return this.http.put(this.access.base + functionURL, body, {});
   }
 
-  private get(parameter: string) : Promise<HTTPResponse> {
-    return this.http.get(this.access.base + parameter, {}, {});
+  private get(functionURL: string) : Promise<HTTPResponse> {
+    return this.http.get(this.access.base + functionURL, {}, {});
   }
 
 
