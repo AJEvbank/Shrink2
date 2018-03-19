@@ -5,6 +5,7 @@ import { ScannerService } from '../../services/scanner.service';
 import { ItemRecord } from '../../assets/models/item-record.model';
 
 import { AWSCommService } from '../../services/AWSComm.service';
+import { AWSCommBrowserService } from '../../services/AWSCommBrowser.service';
 
 import { ItemRecordPage } from '../item-record/item-record';
 import { DailyNotificationsPage } from '../daily-notifications/daily-notifications';
@@ -33,6 +34,7 @@ export class MainPage {
               private scanner: ScannerService,
               private loadingCtrl: LoadingController,
               private AWS: AWSCommService,
+              private AWSB: AWSCommBrowserService,
               private popoverController: PopoverController,
               private alertCtrl: AlertController) {
   }
@@ -47,38 +49,9 @@ export class MainPage {
     });
   }
 
-  scanItem() {
+  private scanItem() {
     if (window.location.hostname == "localhost") {
-      let pop = this.popoverController.create(GetUPCPopover);
-      pop.present();
-      pop.onDidDismiss(
-        (data) => {
-          let loader = this.loadingCtrl.create();
-          loader.present();
-          this.AWS.AWSgetupc(data)
-          .then((item) => {
-            loader.dismiss();
-            if(item.name == " " || item.upc.length != 12){
-              console.log("An error occurred in record retrieval!");
-              let errAlert = this.alertCtrl.create({
-                title: 'Error',
-                message: "An error occurred. Please try again.",
-                buttons: ['Dismiss']
-              });
-              errAlert.present();
-            } else if(item.name == "EMPTY") {
-              let newEmptyItem = new ItemRecord(item.upc,"(Add New Item Name Here)");
-              this.navCtrl.push(ItemRecordPage,{item: newEmptyItem});
-            } else {
-              this.navCtrl.push(ItemRecordPage,{item: item});
-            }
-          })
-          .catch((err) => {
-            loader.dismiss();
-            console.log("This is the error: " + err);
-          });
-        }
-      );
+      this.scanItemBrowser();
     }
     else {
       let loader = this.loadingCtrl.create();
@@ -111,6 +84,39 @@ export class MainPage {
         console.log(JSON.stringify(err));
       })
     }
+  }
+
+  private scanItemBrowser(){
+    let pop = this.popoverController.create(GetUPCPopover);
+    pop.present();
+    pop.onDidDismiss(
+      (data) => {
+        let loader = this.loadingCtrl.create();
+        loader.present();
+        this.AWSB.AWSgetupc(data)
+        .then((item) => {
+          loader.dismiss();
+          if(item.upc.length != 12){
+            console.log("An error occurred in record retrieval!");
+            let errAlert = this.alertCtrl.create({
+              title: 'Error',
+              message: "An error occurred. Please try again.",
+              buttons: ['Dismiss']
+            });
+            errAlert.present();
+          } else if(item.name == " ") {
+            let newEmptyItem = new ItemRecord(item.upc,"(Add New Item Name Here)");
+            this.navCtrl.push(ItemRecordPage,{item: newEmptyItem});
+          } else {
+            this.navCtrl.push(ItemRecordPage,{item: item});
+          }
+        })
+        .catch((err) => {
+          loader.dismiss();
+          console.log("This is the error: " + err);
+        });
+      }
+    );
   }
 
 }

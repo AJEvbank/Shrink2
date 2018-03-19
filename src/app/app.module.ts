@@ -10,6 +10,7 @@ import { SQLite } from '@ionic-native/sqlite';
 import { IonicStorageModule } from '@ionic/storage';
 import { DatePicker } from '@ionic-native/date-picker';
 import { HTTP } from '@ionic-native/http';
+import { HttpModule } from '@angular/http';
 
 import { MyApp } from './app.component';
 
@@ -98,7 +99,8 @@ import { Accessor } from '../../../Accessor';
     DailyNotificationsService,
     ShelfHelperService,
     AWSCommService,
-    HTTP
+    HTTP,
+    HttpModule
   ]
 })
 export class AppModule {}
