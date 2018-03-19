@@ -17,21 +17,18 @@ export class AWSCommService {
 
   }
 
-  // createRequestOptions() : RequestOptions {
-  //   var options = new RequestOptions();
-  //   options.headers = new Headers();
-  //   options.headers.append('Content-Type', 'application/json');
-  //   options.headers.append('Content-Type', 'application/json');
-  //   return options;
-  // }
+  // Generic http request functions return Promise<HTTPResponse>.
 
-  // put(url: string, body: any) : Observable<Response> {
-  //   return this.http.put(url, body).map(res=>res.json());
-  // }
+  put(url: string, body: any) : Promise<HTTPResponse> {
+    return this.http.put(url, body, {});
+  }
 
   get(parameter: string) : Promise<HTTPResponse> {
     return this.http.get(this.access.base + parameter, {}, {});
   }
+
+
+  // Specific requests return a Promise<(desired data type here)>.
 
   AWSgetupc(upc: string) : Promise<ItemRecord> {
     return this.get(this.access.upcFunction + upc)
@@ -43,31 +40,28 @@ export class AWSCommService {
         return new ItemRecord(upc, resJSON.Items[0].name, 0, resJSON.Items[0].highRisk);
       }else{
         console.log("Got empty record back!");
-        return new ItemRecord(upc, " ");
+        return new ItemRecord(upc, "EMPTY");
       }
     })
     .catch((err) => {
-      console.log(JSON.stringify(err));
+      console.log("JSON error: " + JSON.stringify(err));
       return new ItemRecord(upc, " ");
     });
-    // return this.get(this.access.upcFunction + upc).map((response) => {
-    //   console.log("Start of map! Response: " + JSON.stringify(response) + "\nURL: " + this.access.upcFunction + upc);
-    //   let resJSON = response.json();
-    //   console.log("Jsonified the response!" + JSON.stringify(resJSON));
-    //   if(resJSON.Items.length > 0){
-    //     console.log("Got valid record back!");
-    //     return new ItemRecord(upc, resJSON.Items[0].name, 0, resJSON.Items[0].highRisk);
-    //   }else{
-    //     console.log("Got empty record back!");
-    //     return new ItemRecord(upc, " ");
-    //   }
-    // }).toPromise<ItemRecord>();
   }
 
-  // put(args).subscribe(
-  //   function(response)/onsuccess,
-  //   function(error)/onerror
-  // );
+  AWSupdateItemRecord(url: string, item: ItemRecord) {
+    return this.put(url, {item: item})
+    .then(
+      (response) => {
+
+      }
+    )
+    .catch(
+      (err) => {
+        console.log("Error on http request: " + JSON.stringify(err));
+      }
+    )
+  }
 
 
 }

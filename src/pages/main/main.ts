@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams, LoadingController, PopoverController } from 'ionic-angular';
+import { NavController, NavParams, LoadingController, PopoverController, AlertController } from 'ionic-angular';
 import 'rxjs/add/operator/toPromise';
 
 import { ScannerService } from '../../services/scanner.service';
@@ -34,7 +34,8 @@ export class MainPage {
               private scanner: ScannerService,
               private loadingCtrl: LoadingController,
               private AWS: AWSCommService,
-              private popoverController: PopoverController) {
+              private popoverController: PopoverController,
+              private alertCtrl: AlertController) {
   }
 
   ionViewDidLoad() {
@@ -49,26 +50,33 @@ export class MainPage {
 
   scanItem() {
     if (window.location.hostname == "localhost") {
-      let upc: string;
       let pop = this.popoverController.create(GetUPCPopover);
       pop.present();
       pop.onDidDismiss(
         (data) => {
           let loader = this.loadingCtrl.create();
           loader.present();
-
           this.AWS.AWSgetupc(data)
           .then((item) => {
             loader.dismiss();
-            if(item.upc.length == 12){
+            if(item.name == " " || item.upc.length != 12){
+              console.log("An error occurred in record retrieval!");
+              let errAlert = this.alertCtrl.create({
+                title: 'Error',
+                message: "An error occurred. Please try again.",
+                buttons: ['Dismiss']
+              });
+              errAlert.present();
+            } else if(item.name == "EMPTY") {
+              let newEmptyItem = new ItemRecord(item.upc,"(Add New Item Name Here)");
+              this.navCtrl.push(ItemRecordPage,{item: newEmptyItem});
+            } else {
               this.navCtrl.push(ItemRecordPage,{item: item});
-            } else if(item.upc == "ERROR"){
-              console.log("I'm an ERROR!");
             }
           })
           .catch((err) => {
             loader.dismiss();
-            console.log(err);
+            console.log("This is the error: " + err);
           });
         }
       );
@@ -76,7 +84,6 @@ export class MainPage {
     else {
       let loader = this.loadingCtrl.create();
       loader.present();
-
       this.scanner.androidScan()
       .then((upc) => {
         console.log("Successfully got a upc: " + upc);
@@ -85,11 +92,19 @@ export class MainPage {
       .then((item) => {
         console.log("Successfully got an ItemRecord: " + JSON.stringify(item));
         loader.dismiss();
-        if(item.name != " "){
+        if(item.name == " "){
+          console.log("An error occurred in record retrieval!");
+          let errAlert = this.alertCtrl.create({
+            title: 'Error',
+            message: "An error occurred. Please try again.",
+            buttons: ['Dismiss']
+          });
+          errAlert.present();
+        } else if(item.name == "EMPTY") {
+          let newEmptyItem = new ItemRecord(item.upc,"(Add New Item Name Here)");
+          this.navCtrl.push(ItemRecordPage,{item: newEmptyItem});
+        } else {
           this.navCtrl.push(ItemRecordPage,{item: item});
-        }
-        else{
-          //Stuff here
         }
       })
       .catch((err) => {
