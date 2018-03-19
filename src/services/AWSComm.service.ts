@@ -22,11 +22,11 @@ export class AWSCommService {
 
   // Generic http request functions return Promise<HTTPResponse>.
 
-  put(url: string, body: any) : Promise<HTTPResponse> {
+  private put(url: string, body: any) : Promise<HTTPResponse> {
     return this.http.put(url, body, {});
   }
 
-  get(parameter: string) : Promise<HTTPResponse> {
+  private get(parameter: string) : Promise<HTTPResponse> {
     return this.http.get(this.access.base + parameter, {}, {});
   }
 
@@ -53,19 +53,21 @@ export class AWSCommService {
   }
 
   AWSupdateItemRecord(item: ItemRecord) : Promise<ItemRecord> {
-    return this.put(this.access.updateItemRecordFunction, {item: item})
+    return this.put(this.access.updateItemRecordFunction + item.upc, {name: item.name, highRisk: item.isHighRisk})
     .then(
       (response) => {
         let resJSON = JSON.parse(response.data);
         console.log("Got the updated record back! " + JSON.stringify(response));
-        if (resJSON.Items.length == 0) {
-          console.log("Got empty record back!");
+        if (resJSON.upc == undefined) {
+          console.log("Backend shenanigans happened!");
           return new ItemRecord(item.upc, "EMPTY");
-        } else if (item.upc != resJSON.Items[0].upc) {
-          console.log(item.upc + " != " + resJSON.Items[0].upc);
-          return new ItemRecord(resJSON.Items[0].upc, "WRONG_UPC");
+        }
+        let updateItem = resJSON.upc;
+        if (item.upc != updateItem.upcid) {
+          console.log(item.upc + " != " + updateItem.upcid + ": Something went horribly wrong!");
+          return new ItemRecord(item.upc, "WRONG_UPC");
         } else {
-          return new ItemRecord(resJSON.Items[0].upc, resJSON.Items[0].name, 0, resJSON.Items[0].highRisk);
+          return new ItemRecord(updateItem.upc, updateItem.name, 0, updateItem.highRisk);
         }
       }
     )

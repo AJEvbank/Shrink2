@@ -38,6 +38,7 @@ import { ScannerService } from '../services/scanner.service';
 import { DailyNotificationsService } from '../services/daily-notifications.service';
 import { ShelfHelperService } from '../services/shelf-helper.service';
 import { AWSCommService } from '../services/AWSComm.service';
+import { AWSCommBrowserService } from '../services/AWSCommBrowser.service';
 
 import { Accessor } from '../../../Accessor';
 
@@ -65,7 +66,8 @@ import { Accessor } from '../../../Accessor';
   imports: [
     BrowserModule,
     IonicModule.forRoot(MyApp),
-    IonicStorageModule.forRoot()
+    IonicStorageModule.forRoot(),
+    HttpModule
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -99,8 +101,8 @@ import { Accessor } from '../../../Accessor';
     DailyNotificationsService,
     ShelfHelperService,
     AWSCommService,
-    HTTP,
-    HttpModule
+    AWSCommBrowserService,
+    HTTP
   ]
 })
 export class AppModule {}

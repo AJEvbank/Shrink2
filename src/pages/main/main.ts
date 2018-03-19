@@ -40,7 +40,7 @@ export class MainPage {
   }
 
   ionViewDidLoad() {
-    this.AWS.AWSgetupc("077034009521")
+    this.AWSB.AWSgetupc("077034009521")
     .then((item) => {
       this.testDebug = "GOT A RECORD: " + JSON.stringify(item);
     })
