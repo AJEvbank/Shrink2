@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { NavController, NavParams, ModalController, ToastController } from 'ionic-angular';
+import { NavController, NavParams, ModalController, ToastController, AlertController } from 'ionic-angular';
 
 import { ItemRecord } from '../../assets/models/item-record.model';
 
@@ -22,11 +22,12 @@ export class ItemRecordPage implements OnInit {
   constructor(private navCtrl: NavController,
               private navParams: NavParams,
               private modalCtrl: ModalController,
-              private toastCtrl: ToastController) {
+              private toastCtrl: ToastController,
+              private alertCtrl: AlertController) {
   }
 
   ngOnInit() {
-    this.item = this.navParams.get('item');    
+    this.item = this.navParams.get('item');
     if (this.item.name == "") {
       this.isCompleteItemRecord = false;
     }
@@ -37,8 +38,17 @@ export class ItemRecordPage implements OnInit {
     editModal.present();
     editModal.onDidDismiss(
       (data) => {
-        this.item = data;
-        this.isCompleteItemRecord = true;
+        if (data.ErrorCode == "empty/wrong" || data.ErrorCode == "http error") {
+          let errorAlert = this.alertCtrl.create({
+            title: 'Error',
+            message: "The record could not be updated. Please try again.",
+            buttons: ['Dismiss']
+          });
+          errorAlert.present();
+        } else {
+          this.item = data.item;
+          this.isCompleteItemRecord = true;
+        }
       }
     );
   }

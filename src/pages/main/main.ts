@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { NavController, NavParams, LoadingController, PopoverController, AlertController } from 'ionic-angular';
-import 'rxjs/add/operator/toPromise';
 
 import { ScannerService } from '../../services/scanner.service';
 import { ItemRecord } from '../../assets/models/item-record.model';

@@ -2,8 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { NavController, NavParams, ViewController } from 'ionic-angular';
 import { FormGroup, FormControl, Validators, FormArray } from '@angular/forms';
 
-
 import { ItemRecord } from '../../../assets/models/item-record.model';
+
+import { AWSCommService } from '../../../services/AWSComm.service';
 
 @Component({
   selector: 'page-edit-item-record',
@@ -16,7 +17,8 @@ export class EditItemRecordPage implements OnInit {
 
   constructor(private navCtrl: NavController,
               private navParams: NavParams,
-              private viewCtrl: ViewController) {
+              private viewCtrl: ViewController,
+              private AWS: AWSCommService) {
 
   }
 
@@ -36,11 +38,28 @@ export class EditItemRecordPage implements OnInit {
   }
 
   onSubmit() {
+    let oldValue = new ItemRecord(this.item.upc,this.item.name);
     let value = this.itemForm.value;
     this.item.name = value.name;
     this.item.weight = value.weight;
     // REMINDER: Server logic here.
-    this.viewCtrl.dismiss(this.item);
+    this.AWS.AWSupdateItemRecord(this.item)
+    .then(
+      (resItem) => {
+        if (resItem.name == "EMPTY" || resItem.name == "WRONG_UPC") {
+          this.viewCtrl.dismiss({item: oldValue, ErrorCode: "empty/wrong"});
+        } else if (resItem.name == " ") {
+          this.viewCtrl.dismiss({item: oldValue, ErrorCode: "http error"});
+        } else {
+          this.viewCtrl.dismiss({item: this.item, ErrorCode: "none"}.item);
+        }
+      }
+    )
+    .catch(
+      (err) => {
+        console.log("Error caught in onSubmit: " + JSON.stringify(err));
+      }
+    );
   }
 
   cancel() {

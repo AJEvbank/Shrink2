@@ -49,16 +49,27 @@ export class AWSCommService {
     });
   }
 
-  AWSupdateItemRecord(url: string, item: ItemRecord) {
-    return this.put(url, {item: item})
+  AWSupdateItemRecord(item: ItemRecord) : Promise<ItemRecord> {
+    return this.put(this.access.updateItemRecordFunction, {item: item})
     .then(
       (response) => {
-
+        let resJSON = JSON.parse(response.data);
+        console.log("Got the updated record back! " + JSON.stringify(response));
+        if (resJSON.Items.length == 0) {
+          console.log("Got empty record back!");
+          return new ItemRecord(item.upc, "EMPTY");
+        } else if (item.upc != resJSON.Items[0].upc) {
+          console.log(item.upc + " != " + resJSON.Items[0].upc);
+          return new ItemRecord(resJSON.Items[0].upc, "WRONG_UPC");
+        } else {
+          return new ItemRecord(resJSON.Items[0].upc, resJSON.Items[0].name, 0, resJSON.Items[0].highRisk);
+        }
       }
     )
     .catch(
       (err) => {
         console.log("Error on http request: " + JSON.stringify(err));
+        return new ItemRecord(item.upc, " ");
       }
     )
   }
