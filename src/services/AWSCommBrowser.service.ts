@@ -19,12 +19,12 @@ export class AWSCommBrowserService {
 
   // Generic http request functions return Promise<HTTPResponse>.
 
-  private put(url: string, body: any) : Observable<Response> {
-    return this.http.put(url, body);
+  private put(functionURL: string, body: any) : Observable<Response> {
+    return this.http.put(this.access.base + functionURL, body);
   }
 
-  private get(parameter: string) : Observable<Response> {
-    return this.http.get(this.access.base + parameter);
+  private get(functionURL: string) : Observable<Response> {
+    return this.http.get(this.access.base + functionURL);
   }
 
 
