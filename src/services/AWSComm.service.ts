@@ -1,6 +1,4 @@
 import { HTTP, HTTPResponse } from '@ionic-native/http';
-
-import { Observable } from 'rxjs/Observable';
 import { Injectable } from '@angular/core';
 
 import { Accessor } from '../../../Accessor';
@@ -49,7 +47,7 @@ export class AWSCommService {
   }
 
   AWSupdateItemRecord(item: ItemRecord) : Promise<ItemRecord> {
-    return this.put(this.access.updateItemRecordFunction + item.upc, {name: item.name, highRisk: item.isHighRisk})
+    return this.put(this.access.updateItemRecordFunction + item.upc, {"name": item.name, "highRisk": item.isHighRisk})
     .then(
       (response) => {
         let resJSON = JSON.parse(response.data);

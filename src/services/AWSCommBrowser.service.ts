@@ -20,11 +20,11 @@ export class AWSCommBrowserService {
   // Generic http request functions return Promise<HTTPResponse>.
 
   private put(functionURL: string, body: any) : Observable<Response> {
-    return this.http.put(this.access.base + functionURL, body);
+    return this.http.put(this.access.base + functionURL, body, {});
   }
 
   private get(functionURL: string) : Observable<Response> {
-    return this.http.get(this.access.base + functionURL);
+    return this.http.get(this.access.base + functionURL, {});
   }
 
 
@@ -45,7 +45,7 @@ export class AWSCommBrowserService {
   }
 
   AWSupdateItemRecord(item: ItemRecord) : Promise<ItemRecord> {
-    return this.put(this.access.updateItemRecordFunction, {name: item.name, highRisk: item.isHighRisk})
+    return this.put(this.access.updateItemRecordFunction + item.upc, {"name": item.name, "highRisk": item.isHighRisk})
     .map((response) => {
       let resJSON = response.json();
       if(resJSON.upc == undefined){

@@ -5,6 +5,7 @@ import { FormGroup, FormControl, Validators, FormArray } from '@angular/forms';
 import { ItemRecord } from '../../../assets/models/item-record.model';
 
 import { AWSCommService } from '../../../services/AWSComm.service';
+import { AWSCommBrowserService } from '../../../services/AWSCommBrowser.service';
 
 @Component({
   selector: 'page-edit-item-record',
@@ -18,7 +19,8 @@ export class EditItemRecordPage implements OnInit {
   constructor(private navCtrl: NavController,
               private navParams: NavParams,
               private viewCtrl: ViewController,
-              private AWS: AWSCommService) {
+              private AWS: AWSCommService,
+              private AWSB: AWSCommBrowserService) {
 
   }
 
@@ -38,20 +40,32 @@ export class EditItemRecordPage implements OnInit {
   }
 
   onSubmit() {
-    let oldValue = new ItemRecord(this.item.upc,this.item.name);
+    let oldValue = new ItemRecord(this.item.upc,this.item.name, this.item.weight, this.item.isHighRisk);
     let value = this.itemForm.value;
     this.item.name = value.name;
     this.item.weight = value.weight;
     // REMINDER: Server logic here.
-    this.AWS.AWSupdateItemRecord(this.item)
+    if (window.location.hostname == "localhost") {
+      this.editItemBrowser(oldValue);
+    }
+    else {
+      this.editItemAndroid(oldValue);
+    }
+
+  }
+
+  cancel() {
+    this.viewCtrl.dismiss(this.item);
+  }
+
+  editItemBrowser(oldValue: ItemRecord) {
+    this.AWSB.AWSupdateItemRecord(this.item)
     .then(
       (resItem) => {
-        if (resItem.name == "EMPTY" || resItem.name == "WRONG_UPC") {
-          this.viewCtrl.dismiss({item: oldValue, ErrorCode: "empty/wrong"});
-        } else if (resItem.name == " ") {
+        if (resItem.name == "ERROR") {
           this.viewCtrl.dismiss({item: oldValue, ErrorCode: "http error"});
         } else {
-          this.viewCtrl.dismiss({item: this.item, ErrorCode: "none"}.item);
+          this.viewCtrl.dismiss({item: resItem, ErrorCode: "none"});
         }
       }
     )
@@ -62,8 +76,24 @@ export class EditItemRecordPage implements OnInit {
     );
   }
 
-  cancel() {
-    this.viewCtrl.dismiss(this.item);
+  editItemAndroid(oldValue: ItemRecord) {
+    this.AWS.AWSupdateItemRecord(this.item)
+    .then(
+      (resItem) => {
+        if (resItem.name == "EMPTY" || resItem.name == "WRONG_UPC") {
+          this.viewCtrl.dismiss({item: oldValue, ErrorCode: "empty/wrong"});
+        } else if (resItem.name == " ") {
+          this.viewCtrl.dismiss({item: oldValue, ErrorCode: "http error"});
+        } else {
+          this.viewCtrl.dismiss({item: resItem, ErrorCode: "none"});
+        }
+      }
+    )
+    .catch(
+      (err) => {
+        console.log("Error caught in onSubmit: " + JSON.stringify(err));
+      }
+    );
   }
 
 }

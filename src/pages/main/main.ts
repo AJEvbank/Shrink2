@@ -54,35 +54,7 @@ export class MainPage {
       this.scanItemBrowser();
     }
     else {
-      let loader = this.loadingCtrl.create();
-      loader.present();
-      this.scanner.androidScan()
-      .then((upc) => {
-        console.log("Successfully got a upc: " + upc);
-        return this.AWS.AWSgetupc(upc);
-      })
-      .then((item) => {
-        console.log("Successfully got an ItemRecord: " + JSON.stringify(item));
-        loader.dismiss();
-        if(item.name == " "){
-          console.log("An error occurred in record retrieval!");
-          let errAlert = this.alertCtrl.create({
-            title: 'Error',
-            message: "An error occurred. Please try again.",
-            buttons: ['Dismiss']
-          });
-          errAlert.present();
-        } else if(item.name == "EMPTY") {
-          let newEmptyItem = new ItemRecord(item.upc,"(Add New Item Name Here)");
-          this.navCtrl.push(ItemRecordPage,{item: newEmptyItem});
-        } else {
-          this.navCtrl.push(ItemRecordPage,{item: item});
-        }
-      })
-      .catch((err) => {
-        loader.dismiss();
-        console.log(JSON.stringify(err));
-      })
+      this.scanItemAndroid();
     }
   }
 
@@ -117,6 +89,38 @@ export class MainPage {
         });
       }
     );
+  }
+
+  private scanItemAndroid(){
+    let loader = this.loadingCtrl.create();
+    loader.present();
+    this.scanner.androidScan()
+    .then((upc) => {
+      console.log("Successfully got a upc: " + upc);
+      return this.AWS.AWSgetupc(upc);
+    })
+    .then((item) => {
+      console.log("Successfully got an ItemRecord: " + JSON.stringify(item));
+      loader.dismiss();
+      if(item.name == " "){
+        console.log("An error occurred in record retrieval!");
+        let errAlert = this.alertCtrl.create({
+          title: 'Error',
+          message: "An error occurred. Please try again.",
+          buttons: ['Dismiss']
+        });
+        errAlert.present();
+      } else if(item.name == "EMPTY") {
+        let newEmptyItem = new ItemRecord(item.upc,"(Add New Item Name Here)");
+        this.navCtrl.push(ItemRecordPage,{item: newEmptyItem});
+      } else {
+        this.navCtrl.push(ItemRecordPage,{item: item});
+      }
+    })
+    .catch((err) => {
+      loader.dismiss();
+      console.log(JSON.stringify(err));
+    })
   }
 
 }
