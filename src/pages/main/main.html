@@ -18,6 +18,12 @@
 
   <ion-row padding>
     <ion-col>
+      <button ion-button block round color="primary" (click)="getItemByUPC()">Find Item By UPC</button> 
+    </ion-col>
+  </ion-row>
+
+  <ion-row padding>
+    <ion-col>
       <button ion-button block round color="yellow" [navPush]="dailyNotificationsPage">Notifications</button>
     </ion-col>
   </ion-row>
