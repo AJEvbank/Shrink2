@@ -45,6 +45,7 @@ export class ItemRecordPage implements OnInit {
             buttons: ['Dismiss']
           });
           errorAlert.present();
+          this.item = data.item;
         } else {
           this.item = data.item;
           this.isCompleteItemRecord = true;

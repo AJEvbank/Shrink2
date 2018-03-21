@@ -51,14 +51,14 @@ export class EditItemRecordPage implements OnInit {
     else {
       this.editItemAndroid(oldValue);
     }
-
   }
 
   cancel() {
-    this.viewCtrl.dismiss(this.item);
+    this.viewCtrl.dismiss({item: this.item});
   }
 
   editItemBrowser(oldValue: ItemRecord) {
+    console.log(JSON.stringify(oldValue));
     this.AWSB.AWSupdateItemRecord(this.item)
     .then(
       (resItem) => {

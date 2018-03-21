@@ -59,34 +59,38 @@ export class MainPage {
   }
 
   private scanItemBrowser(){
-    let pop = this.popoverController.create(GetUPCPopover);
+    let pop = this.popoverController.create(GetUPCPopover, { enableBackdropDismiss: false });
     pop.present();
     pop.onDidDismiss(
       (data) => {
-        let loader = this.loadingCtrl.create();
-        loader.present();
-        this.AWSB.AWSgetupc(data)
-        .then((item) => {
-          loader.dismiss();
-          if(item.upc.length != 12){
-            console.log("An error occurred in record retrieval!");
-            let errAlert = this.alertCtrl.create({
-              title: 'Error',
-              message: "An error occurred. Please try again.",
-              buttons: ['Dismiss']
-            });
-            errAlert.present();
-          } else if(item.name == " ") {
-            let newEmptyItem = new ItemRecord(item.upc,"(Add New Item Name Here)");
-            this.navCtrl.push(ItemRecordPage,{item: newEmptyItem});
-          } else {
-            this.navCtrl.push(ItemRecordPage,{item: item});
-          }
-        })
-        .catch((err) => {
-          loader.dismiss();
-          console.log("This is the error: " + err);
-        });
+        console.log(data.upc);
+        if (data.upc != "NO_UPC")
+        {
+          let loader = this.loadingCtrl.create();
+          loader.present();
+          this.AWSB.AWSgetupc(data)
+          .then((item) => {
+            loader.dismiss();
+            if(item.upc.length != 12){
+              console.log("An error occurred in record retrieval!");
+              let errAlert = this.alertCtrl.create({
+                title: 'Error',
+                message: "An error occurred. Please try again.",
+                buttons: ['Dismiss']
+              });
+              errAlert.present();
+            } else if(item.name == " ") {
+              let newEmptyItem = new ItemRecord(item.upc,"(Add New Item Name Here)");
+              this.navCtrl.push(ItemRecordPage,{item: newEmptyItem});
+            } else {
+              this.navCtrl.push(ItemRecordPage,{item: item});
+            }
+          })
+          .catch((err) => {
+            loader.dismiss();
+            console.log("This is the error: " + err);
+          });
+        }
       }
     );
   }
@@ -128,34 +132,37 @@ export class MainPage {
       this.scanItemBrowser();
     }
     else {
-      let pop = this.popoverController.create(GetUPCPopover);
+      let pop = this.popoverController.create(GetUPCPopover, { enableBackdropDismiss: false });
       pop.present();
       pop.onDidDismiss(
         (data) => {
-          let loader = this.loadingCtrl.create();
-          loader.present();
-          this.AWS.AWSgetupc(data)
-          .then((item) => {
-            loader.dismiss();
-            if(item.upc.length != 12){
-              console.log("An error occurred in record retrieval!");
-              let errAlert = this.alertCtrl.create({
-                title: 'Error',
-                message: "An error occurred. Please try again.",
-                buttons: ['Dismiss']
-              });
-              errAlert.present();
-            } else if(item.name == " ") {
-              let newEmptyItem = new ItemRecord(item.upc,"(Add New Item Name Here)");
-              this.navCtrl.push(ItemRecordPage,{item: newEmptyItem});
-            } else {
-              this.navCtrl.push(ItemRecordPage,{item: item});
-            }
-          })
-          .catch((err) => {
-            loader.dismiss();
-            console.log("This is the error caught from AWS.AWSgetupc: " + err);
-          });
+          console.log(data.upc);
+          if (data.upc != "NO_UPC") {
+            let loader = this.loadingCtrl.create();
+            loader.present();
+            this.AWS.AWSgetupc(data)
+            .then((item) => {
+              loader.dismiss();
+              if(item.upc.length != 12){
+                console.log("An error occurred in record retrieval!");
+                let errAlert = this.alertCtrl.create({
+                  title: 'Error',
+                  message: "An error occurred. Please try again.",
+                  buttons: ['Dismiss']
+                });
+                errAlert.present();
+              } else if(item.name == " ") {
+                let newEmptyItem = new ItemRecord(item.upc,"(Add New Item Name Here)");
+                this.navCtrl.push(ItemRecordPage,{item: newEmptyItem});
+              } else {
+                this.navCtrl.push(ItemRecordPage,{item: item});
+              }
+            })
+            .catch((err) => {
+              loader.dismiss();
+              console.log("This is the error caught from AWS.AWSgetupc: " + err);
+            });
+          }
         }
       );
     }
