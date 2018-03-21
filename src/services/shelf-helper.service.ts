@@ -14,19 +14,37 @@ export class ShelfHelperService {
 
   }
 
-  addItem(item: ToGetItem) {
-    this.shelfHelperList.push(item);
+  public addItem(item: ToGetItem) {
+    let found = false, oldQuantity: number, oldIndex: number;
+    for(let eachItem of this.shelfHelperList) {
+      console.log(item.item.upc + " ? " + eachItem.item.upc);
+      if (item.item.upc == eachItem.item.upc) {
+        oldQuantity = eachItem.quantity;
+        oldIndex = this.shelfHelperList.indexOf(eachItem);
+        eachItem.quantity += item.quantity;
+        found = true;
+        break;
+      }
+    }
+    if (!found) {
+      this.shelfHelperList.push(item);
+    }
     this.storage.set('shelfHelperList',this.shelfHelperList)
     .then()
     .catch(
       (err) => {
         console.log(err);
-        this.shelfHelperList.splice(this.shelfHelperList.indexOf(item),1);
+        if (!found) {
+          this.shelfHelperList.splice(this.shelfHelperList.indexOf(item),1);
+        }
+        else {
+          this.shelfHelperList[oldIndex].quantity = oldQuantity;
+        }
       }
     );
   }
 
-  removeItem(index: number) {
+  public removeItem(index: number) {
     const itemSave: ToGetItem = this.shelfHelperList.slice(index,index + 1)[0];
     this.shelfHelperList.splice(index, 1);
     this.storage.set('shelfHelperList',this.shelfHelperList)
@@ -39,7 +57,7 @@ export class ShelfHelperService {
     )
   };
 
-  fetchList() {
+  public fetchList() {
     return this.storage.get('shelfHelperList')
     .then(
       (list: ToGetItem []) => {
@@ -52,5 +70,9 @@ export class ShelfHelperService {
         console.log(err);
       }
     )
+  }
+
+  public loadList() {
+    return this.shelfHelperList.slice();
   }
 }

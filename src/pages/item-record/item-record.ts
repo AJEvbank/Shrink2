@@ -1,11 +1,15 @@
 import { Component, OnInit } from '@angular/core';
-import { NavController, NavParams, ModalController, ToastController, AlertController } from 'ionic-angular';
+import { NavController, NavParams, ModalController, ToastController, AlertController, PopoverController } from 'ionic-angular';
 
 import { ItemRecord } from '../../assets/models/item-record.model';
+import { ToGetItem } from '../../assets/models/to-get-item.model';
 
 import { EditItemRecordPage } from './edit-item-record/edit-item-record';
 import { CreateNotificationPage } from './create-notification/create-notification';
 import { MainPage } from '../main/main';
+import { ShelfHelperAddQuantityPopover } from './shelf-helper_popover';
+
+import { ShelfHelperService } from '../../services/shelf-helper.service';
 
 @Component({
   selector: 'page-item-record',
@@ -23,7 +27,10 @@ export class ItemRecordPage implements OnInit {
               private navParams: NavParams,
               private modalCtrl: ModalController,
               private toastCtrl: ToastController,
-              private alertCtrl: AlertController) {
+              private alertCtrl: AlertController,
+              private shelfHelperService: ShelfHelperService,
+              private popoverCtrl: PopoverController
+              ) {
   }
 
   ngOnInit() {
@@ -31,6 +38,7 @@ export class ItemRecordPage implements OnInit {
     if (this.item.name == "") {
       this.isCompleteItemRecord = false;
     }
+    this.shelfHelperService.fetchList();
   }
 
   editItem() {
@@ -88,7 +96,16 @@ export class ItemRecordPage implements OnInit {
   addToShelfHelperList() {
     console.log("addToShelfHelperList()");
     if (this.isCompleteItemRecord) {
-
+      let getQuantity = this.popoverCtrl.create(ShelfHelperAddQuantityPopover, {item: this.item}, { enableBackdropDismiss: false});
+      getQuantity.present();
+      getQuantity.onDidDismiss(
+        (data) => {
+          if(data.quantity != "NO_Quantity") {
+            this.shelfHelperService.addItem(new ToGetItem(this.item, 1));
+          }
+          console.log(this.shelfHelperService.loadList());
+        }
+      );
     }
     else {
       let toast = this.toastCtrl.create({

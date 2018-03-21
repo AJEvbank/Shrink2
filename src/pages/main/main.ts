@@ -59,7 +59,7 @@ export class MainPage {
   }
 
   private scanItemBrowser(){
-    let pop = this.popoverController.create(GetUPCPopover, { enableBackdropDismiss: false });
+    let pop = this.popoverController.create(GetUPCPopover, {}, { enableBackdropDismiss: false });
     pop.present();
     pop.onDidDismiss(
       (data) => {
@@ -132,7 +132,7 @@ export class MainPage {
       this.scanItemBrowser();
     }
     else {
-      let pop = this.popoverController.create(GetUPCPopover, { enableBackdropDismiss: false });
+      let pop = this.popoverController.create(GetUPCPopover, {}, { enableBackdropDismiss: false });
       pop.present();
       pop.onDidDismiss(
         (data) => {
