@@ -9,6 +9,8 @@ import { File } from '@ionic-native/file';
 import { SQLite } from '@ionic-native/sqlite';
 import { IonicStorageModule } from '@ionic/storage';
 import { DatePicker } from '@ionic-native/date-picker';
+import { HTTP } from '@ionic-native/http';
+import { HttpModule } from '@angular/http';
 
 import { MyApp } from './app.component';
 
@@ -19,6 +21,7 @@ import { ShelfHelperPage } from '../pages/shelf-helper/shelf-helper';
 
 import { DailyNotificationsPage } from '../pages/daily-notifications/daily-notifications';
 import { NotificationPopoverPage } from '../pages/daily-notifications/notification-popover';
+import { GetUPCPopover } from '../pages/main/getUPCpopover';
 
 import { ItemRecordPage } from '../pages/item-record/item-record';
 import { EditItemRecordPage } from '../pages/item-record/edit-item-record/edit-item-record';
@@ -34,6 +37,10 @@ import { ShrinkListPage } from '../pages/reports/shrink-list/shrink-list';
 import { ScannerService } from '../services/scanner.service';
 import { DailyNotificationsService } from '../services/daily-notifications.service';
 import { ShelfHelperService } from '../services/shelf-helper.service';
+import { AWSCommService } from '../services/AWSComm.service';
+import { AWSCommBrowserService } from '../services/AWSCommBrowser.service';
+
+import { Accessor } from '../../../Accessor';
 
 @NgModule({
   declarations: [
@@ -52,12 +59,15 @@ import { ShelfHelperService } from '../services/shelf-helper.service';
     LossOverTimeReportPage,
     ReportSpecificationsPage,
     ShrinkListPage,
-    NotificationPopoverPage
+    NotificationPopoverPage,
+    Accessor,
+    GetUPCPopover
   ],
   imports: [
     BrowserModule,
     IonicModule.forRoot(MyApp),
-    IonicStorageModule.forRoot()
+    IonicStorageModule.forRoot(),
+    HttpModule
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -76,7 +86,8 @@ import { ShelfHelperService } from '../services/shelf-helper.service';
     LossOverTimeReportPage,
     ReportSpecificationsPage,
     ShrinkListPage,
-    NotificationPopoverPage
+    NotificationPopoverPage,
+    GetUPCPopover
   ],
   providers: [
     StatusBar,
@@ -88,7 +99,10 @@ import { ShelfHelperService } from '../services/shelf-helper.service';
     ScannerService,
     DatePicker,
     DailyNotificationsService,
-    ShelfHelperService
+    ShelfHelperService,
+    AWSCommService,
+    AWSCommBrowserService,
+    HTTP
   ]
 })
 export class AppModule {}

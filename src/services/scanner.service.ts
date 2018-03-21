@@ -1,34 +1,32 @@
 import { BarcodeScanner } from '@ionic-native/barcode-scanner';
+import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/operator/toPromise';
 import { Injectable } from '@angular/core';
-import { Platform } from 'ionic-angular';
 
 import { ItemRecord } from '../assets/models/item-record.model';
+
+
+import { AWSCommService } from './AWSComm.service';
 
 
 @Injectable()
 export class ScannerService {
 
+
   constructor(private scanner: BarcodeScanner,
-              private platform: Platform) {
+              private AWS: AWSCommService) {
 
   }
 
-  
-  public androidScan() {
+  public androidScan() : Promise<string> {
     return this.scanner.scan()
-    .then(
-      (scan) => {
-        return new ItemRecord(scan.text,"thing",0,false);
-      }
-      // REMINDER: Server communication logic.
-
-    )
-    .catch(
-      (err) => {
-        console.log(err);
-      }
-    )
+    .then((result) => {
+      return result.text;
+    })
+    .catch((err) => {
+      console.log(JSON.stringify(err));
+      return " ";
+    })
   }
 
-  
 }

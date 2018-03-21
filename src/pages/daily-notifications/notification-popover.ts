@@ -10,7 +10,7 @@ import { Notification } from '../../assets/models/notification.model';
         <ion-list no-lines>
         <h3>{{ notification.item.item.name }}</h3>
           <ion-item>
-            <ion-label>Weight: {{ notification.item.quantity }}</ion-label>
+            <ion-label>Quantity: {{ notification.item.quantity }}</ion-label>
           </ion-item>
           <ion-item>
             <ion-label>Memo:</ion-label>
