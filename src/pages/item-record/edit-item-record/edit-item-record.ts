@@ -39,7 +39,7 @@ export class EditItemRecordPage implements OnInit {
   }
 
   onSubmit() {
-    let oldValue = new ItemRecord(this.item.upc,this.item.name, this.item.isHighRisk);
+    let oldValue = new ItemRecord(this.item.upc, this.item.name, this.item.isHighRisk);
     let value = this.itemForm.value;
     this.item.name = value.name;
     // REMINDER: Server logic here.

@@ -36,7 +36,7 @@ export class AWSCommBrowserService {
       //console.log(resJSON);
       if(resJSON.Items.length > 0){
         //console.log("Got valid record back!");
-        return new ItemRecord(upc, resJSON.Items[0].name, 0, resJSON.Items[0].highRisk);
+        return new ItemRecord(upc, resJSON.Items[0].name, resJSON.Items[0].highRisk);
       }else{
         //console.log("Got empty record back!");
         return new ItemRecord(upc, " ");
@@ -54,7 +54,7 @@ export class AWSCommBrowserService {
       }
       else{
         let updateItem = resJSON.upc;
-        return new ItemRecord(updateItem.upcid, updateItem.name, 0, updateItem.highRisk);
+        return new ItemRecord(updateItem.upcid, updateItem.name, updateItem.highRisk);
       }
     }).toPromise<ItemRecord>();
   }

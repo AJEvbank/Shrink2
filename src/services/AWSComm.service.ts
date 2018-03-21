@@ -34,7 +34,7 @@ export class AWSCommService {
       console.log(resJSON);
       if(resJSON.Items.length > 0){
         console.log("Got valid record back!");
-        return new ItemRecord(upc, resJSON.Items[0].name, 0, resJSON.Items[0].highRisk);
+        return new ItemRecord(upc, resJSON.Items[0].name, resJSON.Items[0].highRisk);
       }else{
         console.log("Got empty record back!");
         return new ItemRecord(upc, "EMPTY");
@@ -61,7 +61,7 @@ export class AWSCommService {
           console.log(item.upc + " != " + updateItem.upcid + ": Something went horribly wrong!");
           return new ItemRecord(item.upc, "WRONG_UPC");
         } else {
-          return new ItemRecord(updateItem.upc, updateItem.name, 0, updateItem.highRisk);
+          return new ItemRecord(updateItem.upc, updateItem.name, updateItem.highRisk);
         }
       }
     )
