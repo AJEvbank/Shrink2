@@ -33,17 +33,15 @@ export class EditItemRecordPage implements OnInit {
     this.itemForm = new FormGroup({
       'upc': new FormControl(this.item.upc, Validators.required),
       'name': new FormControl(this.item.name, Validators.required),
-      'weight': new FormControl(this.item.weight, Validators.required),
       'isHighRisk': new FormControl(this.item.isHighRisk, Validators.required),
       'references': new FormControl(this.item.references, Validators.required)
     });
   }
 
   onSubmit() {
-    let oldValue = new ItemRecord(this.item.upc,this.item.name, this.item.weight, this.item.isHighRisk);
+    let oldValue = new ItemRecord(this.item.upc,this.item.name, this.item.isHighRisk);
     let value = this.itemForm.value;
     this.item.name = value.name;
-    this.item.weight = value.weight;
     // REMINDER: Server logic here.
     if (window.location.hostname == "localhost") {
       this.editItemBrowser(oldValue);
