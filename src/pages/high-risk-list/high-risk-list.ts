@@ -1,25 +1,30 @@
-import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { Component, OnInit } from '@angular/core';
+import { NavController, NavParams } from 'ionic-angular';
 
-/**
- * Generated class for the HighRiskListPage page.
- *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
- */
+import { ItemRecord } from '../../assets/models/item-record.model';
 
-@IonicPage()
 @Component({
   selector: 'page-high-risk-list',
   templateUrl: 'high-risk-list.html',
 })
-export class HighRiskListPage {
 
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
+export class HighRiskListPage implements OnInit {
+
+  highRiskList: ItemRecord [] = [];
+
+  constructor(private navCtrl: NavController,
+              private navParams: NavParams) {
   }
 
-  ionViewDidLoad() {
-    console.log('ionViewDidLoad HighRiskListPage');
+  ngOnInit() {
+    // Fetch high-risk list from server here.
+    this.highRiskList.push(new ItemRecord("021130332021","Beets",true));
+    this.highRiskList.push(new ItemRecord("021130332022","Carrots",true));
+    this.highRiskList.push(new ItemRecord("021130332023","Yams",true));
+  }
+
+  deleteFromList(upc: string, index: number) {
+    this.highRiskList.splice(index,1);
   }
 
 }
