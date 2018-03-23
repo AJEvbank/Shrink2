@@ -46,6 +46,7 @@ export class MainPage {
     })
     .catch((err) => {
       this.testDebug = "FAILED AGAIN! ARG!";
+      console.log(JSON.stringify(err));
     });
   }
 

@@ -1,4 +1,4 @@
-import { Http, Response } from '@angular/http';
+import { Http, Response, RequestOptions, Headers } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 import { Injectable } from '@angular/core';
@@ -20,11 +20,16 @@ export class AWSCommBrowserService {
   // Generic http request functions return Promise<HTTPResponse>.
 
   private put(functionURL: string, body: any) : Observable<Response> {
-    return this.http.put(this.access.base + functionURL, body, {});
+    // let header = new Headers();
+    // header.append('Content-Type', 'application/json');
+    // header.append('Authorization', 'Basic');
+    // let options = new RequestOptions( {headers: header} );
+    // return this.http.put(this.access.base + functionURL, body, options);
+    return this.http.put(this.access.base + functionURL, body);
   }
 
   private get(functionURL: string) : Observable<Response> {
-    return this.http.get(this.access.base + functionURL, {});
+    return this.http.get(this.access.base + functionURL);
   }
 
 
