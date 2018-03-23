@@ -5,14 +5,15 @@ import { FormGroup, FormControl, Validators, AbstractControl } from '@angular/fo
 import { ItemRecord } from '../../assets/models/item-record.model';
 
 @Component({
-  selector: 'shelf-helper-popover',
+  selector: 'throwaway-popover',
   template: `
   <ion-content padding>
     <ion-item>
-      <h2>{{ item.name }} </h2>
+      <h2> {{ item.name }} </h2>
     </ion-item>
-    <form [formGroup]="quantity">
+    <form [formGroup]="discard">
       <ion-input type="number" formControlName="quantity"></ion-input>
+      <ion-input type="number" formControlName="unitPrice"></ion-input>
       <button ion-button block (click)="submit()" [disabled]="!quantity.valid">Use UPC</button>
     </form>
     <button ion-button block color="danger" (click)="dismiss()">Cancel</button>
@@ -20,9 +21,9 @@ import { ItemRecord } from '../../assets/models/item-record.model';
   `
 })
 
-export class ShelfHelperAddQuantityPopover implements OnInit {
+export class ThrowawayQuantityPricePopoverPage implements OnInit {
 
-  quantity: FormGroup;
+  discard: FormGroup;
   item: ItemRecord;
 
   constructor(private viewCtrl: ViewController,
@@ -36,27 +37,32 @@ export class ShelfHelperAddQuantityPopover implements OnInit {
   }
 
   private initializeForm() {
-    this.quantity = new FormGroup({
+    this.discard = new FormGroup({
       'quantity': new FormControl("1",
                               [
                                 Validators.required,
                                 Validators.min(1)
                               ]
-                             )
+                            ),
+      'unitPrice': new FormControl("1.00",
+                              [
+                                Validators.required,
+                                Validators.min(0.01)
+                              ]
+                            ),
     });
   }
 
   submit() {
-    let value = this.quantity.value;
+    let value = this.discard.value;
     console.log("value = " + value);
-    this.viewCtrl.dismiss({quantity: value.quantity});
+    this.viewCtrl.dismiss({quantity: value.quantity, unitPrice: value.unitPrice});
   }
 
 
-  dismiss() {
-    let dismissString = "NO_Quantity";
-    this.viewCtrl.dismiss({quantity: dismissString});
-  }
+dismiss() {
+  this.viewCtrl.dismiss({quantity: "CANCELLED", unitPrice: 0});
+}
 
 
 }

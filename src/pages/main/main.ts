@@ -88,6 +88,12 @@ export class MainPage {
           })
           .catch((err) => {
             loader.dismiss();
+            let errAlert = this.alertCtrl.create({
+              title: 'Error',
+              message: "An error occurred. Please try again.",
+              buttons: ['Dismiss']
+            });
+            errAlert.present();
             console.log("This is the error: " + err);
           });
         }

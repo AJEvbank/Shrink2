@@ -3,13 +3,17 @@ import { NavController, NavParams, ModalController, ToastController, AlertContro
 
 import { ItemRecord } from '../../assets/models/item-record.model';
 import { ToGetItem } from '../../assets/models/to-get-item.model';
+import { Throwaway } from '../../assets/models/throwaway.model';
+import { ItemCollection } from '../../assets/models/item-collection.model';
 
 import { EditItemRecordPage } from './edit-item-record/edit-item-record';
 import { CreateNotificationPage } from './create-notification/create-notification';
 import { MainPage } from '../main/main';
 import { ShelfHelperAddQuantityPopover } from './shelf-helper_popover';
+import { ThrowawayQuantityPricePopoverPage } from './throwaway_popover';
 
 import { ShelfHelperService } from '../../services/shelf-helper.service';
+
 
 @Component({
   selector: 'page-item-record',
@@ -35,7 +39,7 @@ export class ItemRecordPage implements OnInit {
 
   ngOnInit() {
     this.item = this.navParams.get('item');
-    if (this.item.name == "") {
+    if (this.item.name == "(Add New Item Name Here)") {
       this.isCompleteItemRecord = false;
     }
     this.shelfHelperService.fetchList();
@@ -120,7 +124,22 @@ export class ItemRecordPage implements OnInit {
   throwaway() {
     console.log("throwaway()");
     if (this.isCompleteItemRecord) {
-
+      let throwaway = this.popoverCtrl.create(ThrowawayQuantityPricePopoverPage, { item: this.item }, { enableBackdropDismiss: false });
+      throwaway.present();
+      throwaway.onDidDismiss(
+        (data) => {
+          let newThrowaway: Throwaway;
+          // This is repetitive, but will be necessary later.
+          if(data.quantity != "CANCELLED") {
+            newThrowaway = new Throwaway(new ItemCollection(this.item,data.quantity,data.unitPrice), new Date());
+            // Server logic here as soon as they've created the lambda function and url for it.
+          }
+          else{
+            newThrowaway = new Throwaway(new ItemCollection(this.item,1,data.unitPrice), new Date());
+          }
+          console.log(JSON.stringify(newThrowaway));
+        }
+      );
     }
     else {
       let toast = this.toastCtrl.create({
