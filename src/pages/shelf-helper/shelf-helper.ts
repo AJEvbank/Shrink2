@@ -10,7 +10,7 @@ import { ToGetItem } from '../../assets/models/to-get-item.model';
 })
 export class ShelfHelperPage implements OnInit {
 
-  shelfHelperList: ToGetItem [];
+  shelfHelperList: ToGetItem [] = [];
 
   constructor(private navCtrl: NavController,
               private navParams: NavParams,
@@ -30,6 +30,12 @@ export class ShelfHelperPage implements OnInit {
         this.shelfHelperList = [];
       }
     )
+  }
+
+  deleteToGetItem(index: number) {
+    this.shelfHelperService.removeItem(index);
+    this.shelfHelperList = this.shelfHelperService.loadList();
+    console.log(this.shelfHelperList);
   }
 
 }
