@@ -38,7 +38,7 @@ export class AWSCommBrowserService {
   AWSgetupc(upc: string) : Promise<ItemRecord> {
     return this.get(this.access.upcFunction + upc).map((response) => {
       let resJSON = response.json();
-      //console.log(resJSON);
+      console.log(resJSON);
       if(resJSON.Items.length > 0){
         //console.log("Got valid record back!");
         return new ItemRecord(upc, resJSON.Items[0].name, resJSON.Items[0].highRisk);
@@ -59,6 +59,7 @@ export class AWSCommBrowserService {
       }
       else{
         let updateItem = resJSON.upc;
+        console.log("not undefined");
         return new ItemRecord(updateItem.upcid, updateItem.name, updateItem.highRisk);
       }
     }).toPromise<ItemRecord>();

@@ -56,7 +56,7 @@ export class EditItemRecordPage implements OnInit {
   }
 
   editItemBrowser(oldValue: ItemRecord) {
-    console.log(JSON.stringify(oldValue));
+    console.log("editItemBrowser: " + JSON.stringify(oldValue));
     this.AWSB.AWSupdateItemRecord(this.item)
     .then(
       (resItem) => {
@@ -70,6 +70,7 @@ export class EditItemRecordPage implements OnInit {
     .catch(
       (err) => {
         console.log("Error caught in onSubmit: " + JSON.stringify(err));
+        this.viewCtrl.dismiss({item: oldValue, ErrorCode: "http error"});
       }
     );
   }
@@ -90,6 +91,7 @@ export class EditItemRecordPage implements OnInit {
     .catch(
       (err) => {
         console.log("Error caught in onSubmit: " + JSON.stringify(err));
+        this.viewCtrl.dismiss({item: oldValue, ErrorCode: "http error"});
       }
     );
   }
