@@ -49,13 +49,12 @@ export class ToGetEditPopover implements OnInit {
     //let oldValue = new ToGetItem(new ItemRecord(this.toGet.item.upc,this.toGet.item.name,this.toGet.item.isHighRisk),this.toGet.quantity);
     let value = this.toGetForm.value;
     this.toGet.quantity = value.quantity;
-    console.log(JSON.stringify(this.toGet));
-    this.shelfHelperService.updateItem(this.toGet);
-    this.viewCtrl.dismiss();
+    console.log("onSubmit: " + JSON.stringify(this.toGet));
+    this.viewCtrl.dismiss({toGet: this.toGet});
   }
 
   dismiss() {
-    this.viewCtrl.dismiss();
+    this.viewCtrl.dismiss({toGet: this.toGet});
   }
 
 

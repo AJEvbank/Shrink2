@@ -16,14 +16,16 @@ export class ShelfHelperService {
 
   public addItem(item: ToGetItem) {
     let found = false, oldQuantity: number, oldIndex: number;
+    console.log("The list: " + JSON.stringify(this.shelfHelperList));
     for(let eachItem of this.shelfHelperList) {
       console.log(item.item.upc + " ? " + eachItem.item.upc);
+      console.log("eachItem: " + JSON.stringify(eachItem));
       if (item.item.upc == eachItem.item.upc) {
         oldQuantity = eachItem.quantity;
         oldIndex = this.shelfHelperList.indexOf(eachItem);
-        // let sum = eachItem.quantity + item.quantity;
-        // console.log(eachItem.quantity + " + " + item.quantity + " = " + sum);
-        eachItem.quantity += item.quantity;
+        let sum : number = Number(eachItem.quantity) + Number(item.quantity);
+        console.log(item.quantity + " + " + item.quantity + " = " + sum);
+        eachItem.quantity = sum;
         found = true;
         break;
       }

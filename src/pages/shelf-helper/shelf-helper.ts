@@ -46,7 +46,9 @@ export class ShelfHelperPage implements OnInit {
     let popover = this.popoverCtrl.create(ToGetEditPopover, {toGet: toGet});
     popover.present();
     popover.onDidDismiss(
-      () => {
+      ({toGet: ToGetItem}) => {
+
+        this.shelfHelperService.updateItem(toGet);
         this.shelfHelperList = this.shelfHelperService.loadList();
       }
     );
