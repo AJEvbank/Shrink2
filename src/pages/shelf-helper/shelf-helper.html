@@ -10,7 +10,7 @@
 <ion-content padding>
 
   <ion-list>
-  <ion-item-sliding *ngFor="let toGet of shelfHelperList; let i = index" nowrap>
+  <ion-item-sliding *ngFor="let toGet of shelfHelperList; let i = index" (click)="editQuantity($event, toGet)" nowrap>
     <ion-item>
       <h2>Name: {{ toGet.item.name }}</h2>
       <p>
@@ -25,5 +25,7 @@
 
   </ion-item-sliding>
 </ion-list>
+
+
 
 </ion-content>

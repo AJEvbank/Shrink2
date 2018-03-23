@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { NavController, NavParams } from 'ionic-angular';
+import { NavController, NavParams, PopoverController } from 'ionic-angular';
 
 import { ShelfHelperService } from '../../services/shelf-helper.service';
 import { ToGetItem } from '../../assets/models/to-get-item.model';
+
+import { ToGetEditPage } from './to-get-popover';
 
 @Component({
   selector: 'page-shelf-helper',
@@ -14,7 +16,8 @@ export class ShelfHelperPage implements OnInit {
 
   constructor(private navCtrl: NavController,
               private navParams: NavParams,
-              private shelfHelperService: ShelfHelperService) {
+              private shelfHelperService: ShelfHelperService,
+              private popoverCtrl: PopoverController) {
   }
 
   ngOnInit() {
@@ -36,6 +39,11 @@ export class ShelfHelperPage implements OnInit {
     this.shelfHelperService.removeItem(index);
     this.shelfHelperList = this.shelfHelperService.loadList();
     console.log(this.shelfHelperList);
+  }
+
+  editQuantity(clickEvent, toGet: ToGetItem) {
+    let popover = this.popoverCtrl.create(ToGetEditPage, {toGet: toGet});
+    popover.present();
   }
 
 }

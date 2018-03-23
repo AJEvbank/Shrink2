@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { NavController, NavParams, ModalController, ToastController, AlertController, PopoverController } from 'ionic-angular';
+import { NavController, NavParams, ModalController, ToastController, AlertController, PopoverController, LoadingController } from 'ionic-angular';
 
 import { ItemRecord } from '../../assets/models/item-record.model';
 import { ToGetItem } from '../../assets/models/to-get-item.model';
@@ -33,7 +33,8 @@ export class ItemRecordPage implements OnInit {
               private toastCtrl: ToastController,
               private alertCtrl: AlertController,
               private shelfHelperService: ShelfHelperService,
-              private popoverCtrl: PopoverController
+              private popoverCtrl: PopoverController,
+              private loadingCtrl: LoadingController
               ) {
   }
 
@@ -82,10 +83,15 @@ export class ItemRecordPage implements OnInit {
     }
   }
 
-  addToHighRiskList() {
-    console.log("addToHighRiskList()");
+  addToHighRiskList(status: string) {
+    console.log("addToHighRiskList(" + status + ")");
     if (this.isCompleteItemRecord) {
-
+      let loader = this.loadingCtrl.create({
+        content: "Waiting...",
+        duration: 2000
+      });
+      loader.present();
+      // Server logic here and pass in the item upc and the status.
     }
     else {
       let toast = this.toastCtrl.create({
@@ -132,12 +138,30 @@ export class ItemRecordPage implements OnInit {
           // This is repetitive, but will be necessary later.
           if(data.quantity != "CANCELLED") {
             newThrowaway = new Throwaway(new ItemCollection(this.item,data.quantity,data.unitPrice), new Date());
+            console.log("Created: " + JSON.stringify(newThrowaway));
             // Server logic here as soon as they've created the lambda function and url for it.
+            if (window.location.hostname == "localhost") {
+              console.log("Used AWSB service.");
+              let loader = this.loadingCtrl.create({
+                content: "Waiting...",
+                duration: 2000
+              });
+              loader.present();
+            }
+            else {
+              console.log("Used AWS service.");
+              let loader = this.loadingCtrl.create({
+                content: "Waiting...",
+                duration: 2000
+              });
+              loader.present();
+            }
           }
-          else{
+          else {
             newThrowaway = new Throwaway(new ItemCollection(this.item,1,data.unitPrice), new Date());
+            console.log("Created odd object: " + JSON.stringify(newThrowaway));
+
           }
-          console.log(JSON.stringify(newThrowaway));
         }
       );
     }
