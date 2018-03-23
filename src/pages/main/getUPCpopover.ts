@@ -49,7 +49,7 @@ export class GetUPCPopover implements OnInit {
 
 dismiss() {
   let dismissString = "NO_UPC";
-  this.viewCtrl.dismiss({upc: dismissString});
+  this.viewCtrl.dismiss(dismissString);
 }
 
 
