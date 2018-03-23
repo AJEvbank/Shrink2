@@ -46,6 +46,7 @@ export class MainPage {
     })
     .catch((err) => {
       this.testDebug = "FAILED AGAIN! ARG!";
+      console.log(JSON.stringify(err));
     });
   }
 
@@ -62,13 +63,13 @@ export class MainPage {
     let pop = this.popoverController.create(GetUPCPopover, {}, { enableBackdropDismiss: false });
     pop.present();
     pop.onDidDismiss(
-      (data) => {
-        console.log(data.upc);
-        if (data.upc != "NO_UPC")
+      (upc) => {
+        console.log(upc);
+        if (upc != "NO_UPC")
         {
           let loader = this.loadingCtrl.create();
           loader.present();
-          this.AWSB.AWSgetupc(data)
+          this.AWSB.AWSgetupc(upc)
           .then((item) => {
             loader.dismiss();
             if(item.upc.length != 12){
