@@ -21,6 +21,8 @@ export class ShelfHelperService {
       if (item.item.upc == eachItem.item.upc) {
         oldQuantity = eachItem.quantity;
         oldIndex = this.shelfHelperList.indexOf(eachItem);
+        // let sum = eachItem.quantity + item.quantity;
+        // console.log(eachItem.quantity + " + " + item.quantity + " = " + sum);
         eachItem.quantity += item.quantity;
         found = true;
         break;
@@ -74,5 +76,37 @@ export class ShelfHelperService {
 
   public loadList() {
     return this.shelfHelperList.slice();
+  }
+
+  public updateItem(toGet: ToGetItem) {
+    let found = false, oldQuantity: number, oldIndex: number;
+    for(let eachItem of this.shelfHelperList) {
+      console.log(toGet.item.upc + " ? " + eachItem.item.upc);
+      if (toGet.item.upc == eachItem.item.upc) {
+        oldQuantity = eachItem.quantity;
+        oldIndex = this.shelfHelperList.indexOf(eachItem);
+        // let sum = eachItem.quantity + item.quantity;
+        // console.log(eachItem.quantity + " + " + item.quantity + " = " + sum);
+        eachItem.quantity = toGet.quantity;
+        found = true;
+        break;
+      }
+    }
+    if (!found) {
+      this.shelfHelperList.push(toGet);
+    }
+    this.storage.set('shelfHelperList',this.shelfHelperList)
+    .then()
+    .catch(
+      (err) => {
+        console.log(err);
+        if (!found) {
+          this.shelfHelperList.splice(this.shelfHelperList.indexOf(toGet),1);
+        }
+        else {
+          this.shelfHelperList[oldIndex].quantity = oldQuantity;
+        }
+      }
+    );
   }
 }

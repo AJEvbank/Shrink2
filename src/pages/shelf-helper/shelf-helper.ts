@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { NavController, NavParams, PopoverController } from 'ionic-angular';
 
+
 import { ShelfHelperService } from '../../services/shelf-helper.service';
 import { ToGetItem } from '../../assets/models/to-get-item.model';
 
-import { ToGetEditPage } from './to-get-popover';
+import { ToGetEditPopover } from './to-get-popover';
 
 @Component({
   selector: 'page-shelf-helper',
@@ -42,8 +43,13 @@ export class ShelfHelperPage implements OnInit {
   }
 
   editQuantity(clickEvent, toGet: ToGetItem) {
-    let popover = this.popoverCtrl.create(ToGetEditPage, {toGet: toGet});
+    let popover = this.popoverCtrl.create(ToGetEditPopover, {toGet: toGet});
     popover.present();
+    popover.onDidDismiss(
+      () => {
+        this.shelfHelperList = this.shelfHelperService.loadList();
+      }
+    );
   }
 
 }

@@ -22,6 +22,7 @@ import { ShelfHelperPage } from '../pages/shelf-helper/shelf-helper';
 import { DailyNotificationsPage } from '../pages/daily-notifications/daily-notifications';
 import { NotificationPopoverPage } from '../pages/daily-notifications/notification-popover';
 import { GetUPCPopover } from '../pages/main/getUPCpopover';
+import { ToGetEditPopover } from '../pages/shelf-helper/to-get-popover';
 
 import { ItemRecordPage } from '../pages/item-record/item-record';
 import { ShelfHelperAddQuantityPopover } from '../pages/item-record/shelf-helper_popover';
@@ -65,7 +66,8 @@ import { Accessor } from '../../../Accessor';
     Accessor,
     GetUPCPopover,
     ShelfHelperAddQuantityPopover,
-    ThrowawayQuantityPricePopoverPage
+    ThrowawayQuantityPricePopoverPage,
+    ToGetEditPopover
   ],
   imports: [
     BrowserModule,
@@ -93,7 +95,8 @@ import { Accessor } from '../../../Accessor';
     NotificationPopoverPage,
     GetUPCPopover,
     ShelfHelperAddQuantityPopover,
-    ThrowawayQuantityPricePopoverPage
+    ThrowawayQuantityPricePopoverPage,
+    ToGetEditPopover
   ],
   providers: [
     StatusBar,
