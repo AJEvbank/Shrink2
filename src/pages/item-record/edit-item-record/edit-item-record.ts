@@ -42,6 +42,7 @@ export class EditItemRecordPage implements OnInit {
     let oldValue = new ItemRecord(this.item.upc, this.item.name, this.item.isHighRisk);
     let value = this.itemForm.value;
     this.item.name = value.name;
+
     // REMINDER: Server logic here.
     if (window.location.hostname == "localhost") {
       this.editItemBrowser(oldValue);

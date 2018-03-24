@@ -13,7 +13,7 @@ import { ItemRecord } from '../../assets/models/item-record.model';
     </ion-item>
     <form [formGroup]="quantity">
       <ion-input type="number" formControlName="quantity"></ion-input>
-      <button ion-button block (click)="submit()" [disabled]="!quantity.valid">Use UPC</button>
+      <button ion-button block (click)="submit()" [disabled]="!quantity.valid">Add</button>
     </form>
     <button ion-button block color="danger" (click)="dismiss()">Cancel</button>
   </ion-content>

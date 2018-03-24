@@ -41,7 +41,7 @@ export class AWSCommService {
       }
     })
     .catch((err) => {
-      console.log("JSON error: " + JSON.stringify(err));
+      console.log("Caught error from get: " + JSON.stringify(err));
       return new ItemRecord(upc, " ");
     });
   }
@@ -52,16 +52,16 @@ export class AWSCommService {
       (response) => {
         let resJSON = JSON.parse(response.data);
         console.log("Got the updated record back! " + JSON.stringify(response));
-        if (resJSON.upc == undefined) {
+        if (resJSON.upcId == undefined) {
           console.log("Backend shenanigans happened!");
           return new ItemRecord(item.upc, "EMPTY");
         }
-        let updateItem = resJSON.upc;
-        if (item.upc != updateItem.upcid) {
-          console.log(item.upc + " != " + updateItem.upcid + ": Something went horribly wrong!");
+        let updateItem = resJSON;
+        if (item.upc != updateItem.upcId) {
+          console.log(item.upc + " != " + updateItem.upcId + ": Something went horribly wrong!");
           return new ItemRecord(item.upc, "WRONG_UPC");
         } else {
-          return new ItemRecord(updateItem.upc, updateItem.name, updateItem.highRisk);
+          return new ItemRecord(updateItem.upcId, updateItem.name, updateItem.highRisk);
         }
       }
     )

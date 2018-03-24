@@ -139,12 +139,13 @@ export class MainPage {
       this.scanItemBrowser();
     }
     else {
+      console.log("getItemByUPC()");
       let pop = this.popoverController.create(GetUPCPopover, {}, { enableBackdropDismiss: false });
       pop.present();
       pop.onDidDismiss(
         (data) => {
-          console.log(data.upc);
-          if (data.upc != "NO_UPC") {
+          console.log("onDidDismiss " + JSON.stringify(data));
+          if (data != "NO_UPC") {
             let loader = this.loadingCtrl.create();
             loader.present();
             this.AWS.AWSgetupc(data)
@@ -169,6 +170,9 @@ export class MainPage {
               loader.dismiss();
               console.log("This is the error caught from AWS.AWSgetupc: " + err);
             });
+          }
+          else {
+            console.log("Cancelled with: " + data.upc);
           }
         }
       );

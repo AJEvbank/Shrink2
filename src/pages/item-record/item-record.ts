@@ -62,6 +62,8 @@ export class ItemRecordPage implements OnInit {
         } else {
           this.item = data.item;
           this.isCompleteItemRecord = true;
+          console.log("Checking data..." + JSON.stringify(data.item));
+          console.log("Checking current item..." + JSON.stringify(this.item));
         }
       }
     );
@@ -111,7 +113,7 @@ export class ItemRecordPage implements OnInit {
       getQuantity.onDidDismiss(
         (data) => {
           if(data.quantity != "NO_Quantity") {
-            this.shelfHelperService.addItem(new ToGetItem(this.item, 1));
+            this.shelfHelperService.addItem(new ToGetItem(this.item, data.quantity));
           }
           console.log(this.shelfHelperService.loadList());
         }

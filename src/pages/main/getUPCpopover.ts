@@ -7,10 +7,12 @@ import { FormGroup, FormControl, Validators, ValidatorFn, AbstractControl } from
   template: `
   <ion-content padding>
     <form [formGroup]="upc">
-      <ion-input type="text" formControlName="upc"></ion-input>
+      <ion-input type="text" formControlName="upc" (ngSubmit)="submit()"></ion-input>
       <button ion-button block (click)="submit()" [disabled]="!upc.valid">Use UPC</button>
     </form>
-    <button ion-button block color="danger" (click)="dismiss()">Cancel</button>
+    <ion-content padding>
+      <button ion-button block color="danger" (click)="dismiss()">Cancel</button>
+    </ion-content>
   </ion-content>
   `
 })

@@ -14,7 +14,7 @@ import { ItemRecord } from '../../assets/models/item-record.model';
     <form [formGroup]="discard">
       <ion-input type="number" formControlName="quantity"></ion-input>
       <ion-input type="number" formControlName="unitPrice"></ion-input>
-      <button ion-button block (click)="submit()" [disabled]="!quantity.valid">Use UPC</button>
+      <button ion-button block (click)="submit()" [disabled]="!discard.valid">Throwaway</button>
     </form>
     <button ion-button block color="danger" (click)="dismiss()">Cancel</button>
   </ion-content>
@@ -55,7 +55,7 @@ export class ThrowawayQuantityPricePopoverPage implements OnInit {
 
   submit() {
     let value = this.discard.value;
-    console.log("value = " + value);
+    console.log("value.quantity = " + value.quantity + " value.unitPrice = " + value.unitPrice);
     this.viewCtrl.dismiss({quantity: value.quantity, unitPrice: value.unitPrice});
   }
 
