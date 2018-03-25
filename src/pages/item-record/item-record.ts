@@ -51,6 +51,7 @@ export class ItemRecordPage implements OnInit {
     editModal.present();
     editModal.onDidDismiss(
       (data) => {
+        console.log("In editItem(): " + JSON.stringify(data));
         if (data.ErrorCode == "empty/wrong" || data.ErrorCode == "http error") {
           let errorAlert = this.alertCtrl.create({
             title: 'Error',
