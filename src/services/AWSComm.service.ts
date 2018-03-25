@@ -16,7 +16,7 @@ export class AWSCommService {
 
   // Generic http request functions return Promise<HTTPResponse>.
 
-  private put(functionURL: string, body: any) : Promise<HTTPResponse> {
+  public put(functionURL: string, body: any) : Promise<HTTPResponse> {
     return this.http.put(this.access.base + functionURL, body, {});
   }
 

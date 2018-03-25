@@ -15,6 +15,9 @@ import { ReportsPage } from '../reports/reports';
 
 import { GetUPCPopover } from './getUPCpopover';
 
+import { Accessor } from '../../../../Accessor';
+import { HTTP, HTTPResponse } from '@ionic-native/http';
+
 @Component({
   selector: 'page-main',
   templateUrl: 'main.html',
@@ -29,6 +32,8 @@ export class MainPage {
 
   testDebug: string;
 
+  access: Accessor;
+
   constructor(private navCtrl: NavController,
               private navParams: NavParams,
               private scanner: ScannerService,
@@ -36,18 +41,46 @@ export class MainPage {
               private AWS: AWSCommService,
               private AWSB: AWSCommBrowserService,
               private popoverController: PopoverController,
-              private alertCtrl: AlertController) {
+              private alertCtrl: AlertController,
+              private http: HTTP) {
   }
 
   ionViewDidLoad() {
-    this.AWSB.AWSgetupc("077034009521")
-    .then((item) => {
-      this.testDebug = "GOT A RECORD: " + JSON.stringify(item);
-    })
-    .catch((err) => {
-      this.testDebug = "FAILED AGAIN! ARG!";
-      console.log(JSON.stringify(err));
-    });
+    this.access = new Accessor();
+    if (window.location.hostname != "localhost") {
+      // this.AWS.put(this.access.updateItemRecordFunction + "0",{"name": "Snacks", "highRisk": false})
+      // .then(
+      // (response) => {
+      //   console.log(JSON.stringify(response));
+      // }
+      // )
+      // .catch(
+      //   (err) => {
+      //     console.log(JSON.stringify(err));
+      //   }
+      // );
+      this.http.put("http://czqlnbulv0.execute-api.us-east-1.amazonaws.com/beta/upc?upcId=0",{"name": "Snacks", "highRisk": true},{})
+      .then(
+        (response) => {
+           console.log(JSON.stringify(response));
+        }
+      )
+      .catch(
+        (err) => {
+          console.log(JSON.stringify(err));
+        }
+      );
+    }
+    else {
+      this.AWSB.AWSgetupc("0")
+      .then((item) => {
+        this.testDebug = "GOT A RECORD: " + JSON.stringify(item);
+      })
+      .catch((err) => {
+        this.testDebug = "FAILED AGAIN! ARG!";
+        console.log(JSON.stringify(err));
+      });
+    }
   }
 
   private scanItem() {
