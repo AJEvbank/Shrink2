@@ -40,7 +40,7 @@ export class ItemRecordPage implements OnInit {
 
   ngOnInit() {
     this.item = this.navParams.get('item');
-    if (this.item.name == "(Add New Item Name Here)") {
+    if (this.item.name == "(Add New Item Name Here)" || this.item.name == "EMPTY" || this.item.name == "WRONG_UPC") {
       this.isCompleteItemRecord = false;
     }
     this.shelfHelperService.fetchList();
@@ -72,7 +72,7 @@ export class ItemRecordPage implements OnInit {
 
   createNotification() {
     console.log("createNotification()");
-    if (this.isCompleteItemRecord) {
+    if (this.isCompleteItemRecord == true) {
       let createNotificationModal = this.modalCtrl.create(CreateNotificationPage, {item: this.item});
       createNotificationModal.present();
     }
@@ -88,7 +88,7 @@ export class ItemRecordPage implements OnInit {
 
   addToHighRiskList(status: string) {
     console.log("addToHighRiskList(" + status + ")");
-    if (this.isCompleteItemRecord) {
+    if (this.isCompleteItemRecord == true) {
       let loader = this.loadingCtrl.create({
         content: "Waiting...",
         duration: 2000
@@ -108,7 +108,7 @@ export class ItemRecordPage implements OnInit {
 
   addToShelfHelperList() {
     console.log("addToShelfHelperList()");
-    if (this.isCompleteItemRecord) {
+    if (this.isCompleteItemRecord == true) {
       let getQuantity = this.popoverCtrl.create(ShelfHelperAddQuantityPopover, {item: this.item}, { enableBackdropDismiss: false});
       getQuantity.present();
       getQuantity.onDidDismiss(
@@ -132,7 +132,7 @@ export class ItemRecordPage implements OnInit {
 
   throwaway() {
     console.log("throwaway()");
-    if (this.isCompleteItemRecord) {
+    if (this.isCompleteItemRecord == true) {
       let throwaway = this.popoverCtrl.create(ThrowawayQuantityPricePopoverPage, { item: this.item }, { enableBackdropDismiss: false });
       throwaway.present();
       throwaway.onDidDismiss(

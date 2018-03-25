@@ -31,13 +31,13 @@ export class AWSCommService {
     return this.get(this.access.upcFunction + upc)
     .then((response) => {
       let resJSON = JSON.parse(response.data);
-      console.log(resJSON);
+      console.log("resJSON: " + JSON.stringify(resJSON));
       if(resJSON.Items.length > 0){
         console.log("Got valid record back!");
         return new ItemRecord(upc, resJSON.Items[0].name, resJSON.Items[0].highRisk);
       }else{
         console.log("Got empty record back!");
-        return new ItemRecord(upc, "EMPTY");
+        return new ItemRecord(upc, "(Add New Item Name Here)");
       }
     })
     .catch((err) => {
