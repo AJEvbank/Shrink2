@@ -17,6 +17,9 @@ export class AWSCommService {
   // Generic http request functions return Promise<HTTPResponse>.
 
   public put(functionURL: string, body: any) : Promise<HTTPResponse> {
+
+    this.http.setDataSerializer("json");
+
     return this.http.put(this.access.base + functionURL, body, {});
   }
 
@@ -52,16 +55,17 @@ export class AWSCommService {
       (response) => {
         let resJSON = JSON.parse(response.data);
         console.log("Got the updated record back! " + JSON.stringify(response));
-        if (resJSON.upcId == undefined) {
+        console.log("resJSON.upc.upcId = " + JSON.stringify(resJSON.upc.upcId));
+        if (resJSON.upc.upcId == undefined) {
           console.log("Backend shenanigans happened!");
           return new ItemRecord(item.upc, "EMPTY");
         }
         let updateItem = resJSON;
-        if (item.upc != updateItem.upcId) {
-          console.log(item.upc + " != " + updateItem.upcId + ": Something went horribly wrong!");
+        if (item.upc != updateItem.upc.upcId) {
+          console.log(item.upc + " != " + updateItem.upc.upcId + ": Something went horribly wrong!");
           return new ItemRecord(item.upc, "WRONG_UPC");
         } else {
-          return new ItemRecord(updateItem.upcId, updateItem.name, updateItem.highRisk);
+          return new ItemRecord(updateItem.upc.upcId, updateItem.upc.name, updateItem.upc.highRisk);
         }
       }
     )
