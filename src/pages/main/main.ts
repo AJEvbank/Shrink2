@@ -59,27 +59,27 @@ export class MainPage {
       //     console.log(JSON.stringify(err));
       //   }
       // );
-      this.http.put("http://czqlnbulv0.execute-api.us-east-1.amazonaws.com/beta/upc?upcId=0",{"name": "Snacks", "highRisk": true},{})
-      .then(
-        (response) => {
-           console.log(JSON.stringify(response));
-        }
-      )
-      .catch(
-        (err) => {
-          console.log(JSON.stringify(err));
-        }
-      );
-    }
-    else {
-      this.AWSB.AWSgetupc("0")
-      .then((item) => {
-        this.testDebug = "GOT A RECORD: " + JSON.stringify(item);
-      })
-      .catch((err) => {
-        this.testDebug = "FAILED AGAIN! ARG!";
-        console.log(JSON.stringify(err));
-      });
+    //   this.http.put("http://czqlnbulv0.execute-api.us-east-1.amazonaws.com/beta/upc?upcId=0",{"name": "Snacks", "highRisk": true},{})
+    //   .then(
+    //     (response) => {
+    //        console.log(JSON.stringify(response));
+    //     }
+    //   )
+    //   .catch(
+    //     (err) => {
+    //       console.log(JSON.stringify(err));
+    //     }
+    //   );
+    // }
+    // else {
+    //   this.AWSB.AWSgetupc("0")
+    //   .then((item) => {
+    //     this.testDebug = "GOT A RECORD: " + JSON.stringify(item);
+    //   })
+    //   .catch((err) => {
+    //     this.testDebug = "FAILED AGAIN! ARG!";
+    //     console.log(JSON.stringify(err));
+    //   });
     }
   }
 

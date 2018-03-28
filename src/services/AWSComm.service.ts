@@ -35,6 +35,11 @@ export class AWSCommService {
     .then((response) => {
       let resJSON = JSON.parse(response.data);
       console.log("resJSON: " + JSON.stringify(resJSON));
+      // if (resJSON.upcnumber != undefined) {
+      //   console.log("Got valid record back from upcdatabase.org! ");
+      //   return new ItemRecord(upc, resJSON.title, false);
+      // }
+      // else
       if(resJSON.Items.length > 0){
         console.log("Got valid record back!");
         return new ItemRecord(upc, resJSON.Items[0].name, resJSON.Items[0].highRisk);
