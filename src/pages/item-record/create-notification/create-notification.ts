@@ -3,6 +3,7 @@ import { NavController, NavParams, ViewController } from 'ionic-angular';
 import { FormGroup, FormControl, Validators, FormArray } from '@angular/forms';
 
 
+
 import { ItemRecord } from '../../../assets/models/item-record.model';
 import { ItemCollection } from '../../../assets/models/item-collection.model';
 import { Notification } from '../../../assets/models/notification.model';
@@ -70,6 +71,7 @@ export class CreateNotificationPage implements OnInit {
     // Server logic here.
     // For now.
     this.dailyNotificationsService.addItem(this.notification);
+
     this.viewCtrl.dismiss();
   }
 

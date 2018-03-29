@@ -8,6 +8,8 @@ import { Accessor } from '../../../Accessor';
 import { ItemRecord } from '../assets/models/item-record.model';
 
 
+//import { uuid } from 'uuid/v1';
+
 @Injectable()
 export class AWSCommBrowserService {
 
@@ -65,5 +67,22 @@ export class AWSCommBrowserService {
     }).toPromise<ItemRecord>();
   }
 
+  public AWScreateNotification(notification: Notification)  {
+
+    //console.log("Id: " + JSON.stringify(id));
+    console.log("Notification: " + JSON.stringify(notification));
+    return;
+    // return this.put(this.access.notificationFunction + this.access.notificationId + id, { "notification" : JSON.stringify(notification)})
+    // .then(
+    //   (response) => {
+    //
+    //   }
+    // )
+    // .catch(
+    //   (err) => {
+    //     console.log(err);
+    //   }
+    // );
+  }
 
 }
