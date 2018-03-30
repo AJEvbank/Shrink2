@@ -14,6 +14,5 @@ export class ReportsPage {
   RT_shrinkList = 'Shrink List';
   RT_lossOverTime = 'Loss Over Time';
   RT_calendarView = 'Calendar View';
-  RT_excelSpreadsheet = 'Excel Spreadsheet';
-
+  RT_excelSpreadsheet = 'Excel Spreadsheet';                      
 }

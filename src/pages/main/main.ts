@@ -15,6 +15,9 @@ import { ReportsPage } from '../reports/reports';
 
 import { GetUPCPopover } from './getUPCpopover';
 
+import { Accessor } from '../../../../Accessor';
+import { HTTP, HTTPResponse } from '@ionic-native/http';
+
 @Component({
   selector: 'page-main',
   templateUrl: 'main.html',
@@ -29,6 +32,8 @@ export class MainPage {
 
   testDebug: string;
 
+  access: Accessor;
+
   constructor(private navCtrl: NavController,
               private navParams: NavParams,
               private scanner: ScannerService,
@@ -36,17 +41,46 @@ export class MainPage {
               private AWS: AWSCommService,
               private AWSB: AWSCommBrowserService,
               private popoverController: PopoverController,
-              private alertCtrl: AlertController) {
+              private alertCtrl: AlertController,
+              private http: HTTP) {
   }
 
   ionViewDidLoad() {
-    this.AWSB.AWSgetupc("077034009521")
-    .then((item) => {
-      this.testDebug = "GOT A RECORD: " + JSON.stringify(item);
-    })
-    .catch((err) => {
-      this.testDebug = "FAILED AGAIN! ARG!";
-    });
+    this.access = new Accessor();
+    if (window.location.hostname != "localhost") {
+      // this.AWS.put(this.access.updateItemRecordFunction + "0",{"name": "Snacks", "highRisk": false})
+      // .then(
+      // (response) => {
+      //   console.log(JSON.stringify(response));
+      // }
+      // )
+      // .catch(
+      //   (err) => {
+      //     console.log(JSON.stringify(err));
+      //   }
+      // );
+    //   this.http.put("http://czqlnbulv0.execute-api.us-east-1.amazonaws.com/beta/upc?upcId=0",{"name": "Snacks", "highRisk": true},{})
+    //   .then(
+    //     (response) => {
+    //        console.log(JSON.stringify(response));
+    //     }
+    //   )
+    //   .catch(
+    //     (err) => {
+    //       console.log(JSON.stringify(err));
+    //     }
+    //   );
+    // }
+    // else {
+    //   this.AWSB.AWSgetupc("0")
+    //   .then((item) => {
+    //     this.testDebug = "GOT A RECORD: " + JSON.stringify(item);
+    //   })
+    //   .catch((err) => {
+    //     this.testDebug = "FAILED AGAIN! ARG!";
+    //     console.log(JSON.stringify(err));
+    //   });
+    }
   }
 
   private scanItem() {
@@ -59,16 +93,16 @@ export class MainPage {
   }
 
   private scanItemBrowser(){
-    let pop = this.popoverController.create(GetUPCPopover, { enableBackdropDismiss: false });
+    let pop = this.popoverController.create(GetUPCPopover, {}, { enableBackdropDismiss: false });
     pop.present();
     pop.onDidDismiss(
-      (data) => {
-        console.log(data.upc);
-        if (data.upc != "NO_UPC")
+      (upc) => {
+        console.log(upc);
+        if (upc != "NO_UPC")
         {
           let loader = this.loadingCtrl.create();
           loader.present();
-          this.AWSB.AWSgetupc(data)
+          this.AWSB.AWSgetupc(upc)
           .then((item) => {
             loader.dismiss();
             if(item.upc.length != 12){
@@ -88,6 +122,12 @@ export class MainPage {
           })
           .catch((err) => {
             loader.dismiss();
+            let errAlert = this.alertCtrl.create({
+              title: 'Error',
+              message: "An error occurred. Please try again.",
+              buttons: ['Dismiss']
+            });
+            errAlert.present();
             console.log("This is the error: " + err);
           });
         }
@@ -132,12 +172,13 @@ export class MainPage {
       this.scanItemBrowser();
     }
     else {
-      let pop = this.popoverController.create(GetUPCPopover, { enableBackdropDismiss: false });
+      console.log("getItemByUPC()");
+      let pop = this.popoverController.create(GetUPCPopover, {}, { enableBackdropDismiss: false });
       pop.present();
       pop.onDidDismiss(
         (data) => {
-          console.log(data.upc);
-          if (data.upc != "NO_UPC") {
+          console.log("onDidDismiss " + JSON.stringify(data));
+          if (data != "NO_UPC") {
             let loader = this.loadingCtrl.create();
             loader.present();
             this.AWS.AWSgetupc(data)
@@ -162,6 +203,9 @@ export class MainPage {
               loader.dismiss();
               console.log("This is the error caught from AWS.AWSgetupc: " + err);
             });
+          }
+          else {
+            console.log("Cancelled with: " + data.upc);
           }
         }
       );

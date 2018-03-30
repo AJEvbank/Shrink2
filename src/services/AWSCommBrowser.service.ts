@@ -1,4 +1,4 @@
-import { Http, Response } from '@angular/http';
+import { Http, Response, RequestOptions, Headers } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 import { Injectable } from '@angular/core';
@@ -6,7 +6,10 @@ import { Injectable } from '@angular/core';
 import { Accessor } from '../../../Accessor';
 
 import { ItemRecord } from '../assets/models/item-record.model';
+import { Notification } from '../assets/models/notification.model';
 
+
+//import { uuid } from 'uuid/v1';
 
 @Injectable()
 export class AWSCommBrowserService {
@@ -20,11 +23,16 @@ export class AWSCommBrowserService {
   // Generic http request functions return Promise<HTTPResponse>.
 
   private put(functionURL: string, body: any) : Observable<Response> {
-    return this.http.put(this.access.base + functionURL, body, {});
+    // let header = new Headers();
+    // header.append('Content-Type', 'application/json');
+    // header.append('Authorization', 'Basic');
+    // let options = new RequestOptions( {headers: header} );
+    // return this.http.put(this.access.base + functionURL, body, options);
+    return this.http.put(this.access.base + functionURL, body);
   }
 
   private get(functionURL: string) : Observable<Response> {
-    return this.http.get(this.access.base + functionURL, {});
+    return this.http.get(this.access.base + functionURL);
   }
 
 
@@ -33,7 +41,7 @@ export class AWSCommBrowserService {
   AWSgetupc(upc: string) : Promise<ItemRecord> {
     return this.get(this.access.upcFunction + upc).map((response) => {
       let resJSON = response.json();
-      //console.log(resJSON);
+      console.log(resJSON);
       if(resJSON.Items.length > 0){
         //console.log("Got valid record back!");
         return new ItemRecord(upc, resJSON.Items[0].name, resJSON.Items[0].highRisk);
@@ -54,10 +62,46 @@ export class AWSCommBrowserService {
       }
       else{
         let updateItem = resJSON.upc;
-        return new ItemRecord(updateItem.upcid, updateItem.name, updateItem.highRisk);
+        console.log("not undefined");
+        return new ItemRecord(updateItem.upcId, updateItem.name, updateItem.highRisk);
       }
     }).toPromise<ItemRecord>();
   }
 
+  public AWScreateNotification(notification: Notification) : Promise<string> {
+    console.log("Notification: " + JSON.stringify(notification));
+    return this.put(this.access.notificationFunction, {
+                                                        "item" :
+                                                        {
+                                                            "item" :
+                                                            {
+                                                                "upc" : notification.item.item.upc,
+                                                                "name" : notification.item.item.name,
+                                                                "isHighRisk" :notification.item.item.isHighRisk
+                                                            },
+                                                            "quantity" : notification.item.quantity,
+                                                            "unitPrice" : notification.item.unitPrice
+                                                        },
+                                                        "sellByDate" : notification.sellByDate.toString(),
+                                                        "daysPrior" : notification.daysPrior,
+                                                        "deliveryOption" : notification.deliveryOption,
+                                                        "dateOfCreation" : notification.dateOfCreation.toString(),
+                                                        "memo" : notification.memo
+                                                      }
+    )
+    .map(
+      (response) => {
+        let resJSON = response.json();
+        if(resJSON == undefined) {
+          console.log("Undefined response from server: " + JSON.stringify(resJSON));
+          return "UNDEFINED";
+        }
+        else {
+          console.log("Response from server: " + JSON.stringify(resJSON));
+          return "SUCCESS";
+        }
+      }
+    ).toPromise<string>();
+  }
 
 }

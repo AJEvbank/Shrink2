@@ -1,18 +1,26 @@
-<!--
-  Generated template for the HighRiskListPage page.
-
-  See http://ionicframework.com/docs/components/#navigation for more info on
-  Ionic pages and navigation.
--->
 <ion-header>
 
   <ion-navbar>
-    <ion-title>high_risk_list</ion-title>
+    <ion-title>High-Risk Items</ion-title>
   </ion-navbar>
 
 </ion-header>
 
 
 <ion-content padding>
+
+  <ion-list>
+  <ion-item-sliding *ngFor="let item of highRiskList; let i = index" nowrap>
+    <ion-item>
+      <h2>{{ item.name }}</h2>
+    </ion-item>
+    <ion-item-options side="left">
+      <button ion-button color='danger' (click)="deleteFromList(item.upc,i)">
+        <ion-icon name="md-trash"></ion-icon>
+      </button>
+    </ion-item-options>
+
+  </ion-item-sliding>
+</ion-list>
 
 </ion-content>

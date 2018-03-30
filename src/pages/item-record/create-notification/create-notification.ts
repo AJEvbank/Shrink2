@@ -3,6 +3,7 @@ import { NavController, NavParams, ViewController } from 'ionic-angular';
 import { FormGroup, FormControl, Validators, FormArray } from '@angular/forms';
 
 
+
 import { ItemRecord } from '../../../assets/models/item-record.model';
 import { ItemCollection } from '../../../assets/models/item-collection.model';
 import { Notification } from '../../../assets/models/notification.model';
@@ -69,8 +70,18 @@ export class CreateNotificationPage implements OnInit {
     console.log(this.notification);
     // Server logic here.
     // For now.
-    this.dailyNotificationsService.addItem(this.notification);
-    this.viewCtrl.dismiss();
+    this.dailyNotificationsService.addItem(this.notification)
+    .then(
+      (data) => {
+        this.viewCtrl.dismiss(data);
+      }
+    )
+    .catch(
+      (err) => {
+        console.log("Error caught in onSubmit(): " + err.toString() + " Stringified error: " + JSON.stringify(err));
+        this.viewCtrl.dismiss("ERROR");
+      }
+    );
   }
 
   // getDate() {

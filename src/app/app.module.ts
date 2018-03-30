@@ -22,8 +22,11 @@ import { ShelfHelperPage } from '../pages/shelf-helper/shelf-helper';
 import { DailyNotificationsPage } from '../pages/daily-notifications/daily-notifications';
 import { NotificationPopoverPage } from '../pages/daily-notifications/notification-popover';
 import { GetUPCPopover } from '../pages/main/getUPCpopover';
+import { ToGetEditPopover } from '../pages/shelf-helper/to-get-popover';
 
 import { ItemRecordPage } from '../pages/item-record/item-record';
+import { ShelfHelperAddQuantityPopover } from '../pages/item-record/shelf-helper_popover';
+import { ThrowawayQuantityPricePopoverPage } from '../pages/item-record/throwaway_popover';
 import { EditItemRecordPage } from '../pages/item-record/edit-item-record/edit-item-record';
 import { CreateNotificationPage } from '../pages/item-record/create-notification/create-notification';
 import { ThrowawayPage } from '../pages/item-record/throwaway/throwaway';
@@ -61,7 +64,10 @@ import { Accessor } from '../../../Accessor';
     ShrinkListPage,
     NotificationPopoverPage,
     Accessor,
-    GetUPCPopover
+    GetUPCPopover,
+    ShelfHelperAddQuantityPopover,
+    ThrowawayQuantityPricePopoverPage,
+    ToGetEditPopover
   ],
   imports: [
     BrowserModule,
@@ -87,7 +93,10 @@ import { Accessor } from '../../../Accessor';
     ReportSpecificationsPage,
     ShrinkListPage,
     NotificationPopoverPage,
-    GetUPCPopover
+    GetUPCPopover,
+    ShelfHelperAddQuantityPopover,
+    ThrowawayQuantityPricePopoverPage,
+    ToGetEditPopover
   ],
   providers: [
     StatusBar,

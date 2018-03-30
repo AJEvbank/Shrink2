@@ -41,8 +41,12 @@
 </ion-row>
 
 <ion-row padding>
-  <ion-col>
-    <button ion-button block color="orange" (click)="addToHighRiskList()">Add To High-Risk List</button>
+  <ion-col *ngIf="this.item.isHighRisk == false">
+    <button ion-button block color="danger" (click)="addToHighRiskList('add')">Add To High-Risk List</button>
+  </ion-col>
+
+  <ion-col *ngIf="this.item.isHighRisk == true">
+    <button ion-button block color="green" (click)="addToHighRiskList('remove')">Remove From High-Risk List</button>
   </ion-col>
 </ion-row>
 

@@ -3,27 +3,58 @@ import { Injectable } from '@angular/core';
 
 import { Notification } from '../assets/models/notification.model';
 
+import { AWSCommService } from './AWSComm.service';
+import { AWSCommBrowserService } from './AWSCommBrowser.service';
+
+
 @Injectable()
 export class DailyNotificationsService {
 
   dailyNotificationsList: Notification [] = [];
 
-  constructor(private storage: Storage){}
+  constructor(private storage: Storage,
+              private AWS: AWSCommService,
+              private AWSB: AWSCommBrowserService){}
 
-  addItem(item: Notification){
-    this.dailyNotificationsList.push(item);
-    this.storage.set('dailyNotificationsList', this.dailyNotificationsList)
+  public addItem(item: Notification) : Promise<string> {
+    console.log("Firing addItem(): " + JSON.stringify(item));
+    return this.AWSB.AWScreateNotification(item)
     .then(
-      // Push to server...
-      // Storage won't be needed in this case. It should be a server communication
-      // function.
+      (data) => {
+        if (data == "SUCCESS") {
+          return data;
+        }
+        else if (data == "UNDEFINED"){
+          return "ERROR";
+        }
+      }
     )
     .catch(
       (err) => {
-        console.log(err);
-        this.dailyNotificationsList.splice(this.dailyNotificationsList.indexOf(item, 1), 1);
+        console.log("Error caught in addItem(): " + err.toString() + " Stringified error: " + JSON.stringify(err));
+        return "ERROR";
       }
     );
+    // this.dailyNotificationsList.push(item);
+    // this.storage.set('dailyNotificationsList', this.dailyNotificationsList)
+    // .then(
+    //   (val) => {
+    //     console.log("Val: " + JSON.stringify(val));
+    //     console.log("In then: " + JSON.stringify(item));
+    //     this.AWSB.AWScreateNotification(val[0]);
+    //     return;
+    //   }
+    //   // (rtrn) => {
+    //   //   this.AWS.AWScreateNotification(item);
+    //   // }
+    // )
+    // .catch(
+    //   (err) => {
+    //     console.log("Caught in addItem: " + err.toString());
+    //     this.dailyNotificationsList.splice(this.dailyNotificationsList.indexOf(item, 1), 1);
+    //     return;
+    //   }
+    // );
   }
 
   removeItem(index: number){

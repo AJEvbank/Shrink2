@@ -1,8 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { NavController, NavParams } from 'ionic-angular';
+import { NavController, NavParams, PopoverController } from 'ionic-angular';
+
 
 import { ShelfHelperService } from '../../services/shelf-helper.service';
 import { ToGetItem } from '../../assets/models/to-get-item.model';
+
+import { ToGetEditPopover } from './to-get-popover';
 
 @Component({
   selector: 'page-shelf-helper',
@@ -10,11 +13,12 @@ import { ToGetItem } from '../../assets/models/to-get-item.model';
 })
 export class ShelfHelperPage implements OnInit {
 
-  shelfHelperList: ToGetItem [];
+  shelfHelperList: ToGetItem [] = [];
 
   constructor(private navCtrl: NavController,
               private navParams: NavParams,
-              private shelfHelperService: ShelfHelperService) {
+              private shelfHelperService: ShelfHelperService,
+              private popoverCtrl: PopoverController) {
   }
 
   ngOnInit() {
@@ -30,6 +34,24 @@ export class ShelfHelperPage implements OnInit {
         this.shelfHelperList = [];
       }
     )
+  }
+
+  deleteToGetItem(index: number) {
+    this.shelfHelperService.removeItem(index);
+    this.shelfHelperList = this.shelfHelperService.loadList();
+    console.log(this.shelfHelperList);
+  }
+
+  editQuantity(clickEvent, toGet: ToGetItem) {
+    let popover = this.popoverCtrl.create(ToGetEditPopover, {toGet: toGet});
+    popover.present();
+    popover.onDidDismiss(
+      ({toGet: ToGetItem}) => {
+
+        this.shelfHelperService.updateItem(toGet);
+        this.shelfHelperList = this.shelfHelperService.loadList();
+      }
+    );
   }
 
 }

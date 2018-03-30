@@ -12,7 +12,9 @@
 
 <ion-content padding *ngIf='reportType == "Calendar View"'>
   <p>
-    This is the calendar stuff...
+    This is the calendar stuff... Uses the notifications.
+    Input for maximum allowable Loss
+    Date range: starting month and year..
   </p>
   <ion-item>
     <ion-label>Chosen Date: {{ dateTime }}</ion-label>
@@ -22,6 +24,9 @@
 
 <ion-content padding *ngIf='reportType == "Excel Spreadsheet"'>
   <p>
-    This is the excel stuff...
+    This is the excel stuff... Uses throwaways a lot.
+    Selection type: Scan Item, High-Risk-Items, All Items, None
+    Date range: Start date, end date.
+    Email input: Gimme the mail.
   </p>
 </ion-content>

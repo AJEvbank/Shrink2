@@ -7,10 +7,12 @@ import { FormGroup, FormControl, Validators, ValidatorFn, AbstractControl } from
   template: `
   <ion-content padding>
     <form [formGroup]="upc">
-      <ion-input type="text" formControlName="upc"></ion-input>
+      <ion-input type="text" formControlName="upc" (ngSubmit)="submit()"></ion-input>
       <button ion-button block (click)="submit()" [disabled]="!upc.valid">Use UPC</button>
     </form>
-    <button ion-button block color="danger" (click)="dismiss()">Cancel</button>
+    <ion-content padding>
+      <button ion-button block color="danger" (click)="dismiss()">Cancel</button>
+    </ion-content>
   </ion-content>
   `
 })
@@ -29,7 +31,7 @@ export class GetUPCPopover implements OnInit {
 
   private initializeForm() {
     this.upc = new FormGroup({
-      'upc': new FormControl("021130332021",
+      'upc': new FormControl("077034009521",
                               [
                                 Validators.required,
                                 Validators.minLength(12),
@@ -49,7 +51,7 @@ export class GetUPCPopover implements OnInit {
 
 dismiss() {
   let dismissString = "NO_UPC";
-  this.viewCtrl.dismiss({upc: dismissString});
+  this.viewCtrl.dismiss(dismissString);
 }
 
 

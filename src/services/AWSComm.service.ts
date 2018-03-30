@@ -3,6 +3,9 @@ import { Injectable } from '@angular/core';
 
 import { Accessor } from '../../../Accessor';
 import { ItemRecord } from '../assets/models/item-record.model';
+import { Notification } from '../assets/models/notification.model';
+
+
 
 
 @Injectable()
@@ -16,7 +19,10 @@ export class AWSCommService {
 
   // Generic http request functions return Promise<HTTPResponse>.
 
-  private put(functionURL: string, body: any) : Promise<HTTPResponse> {
+  public put(functionURL: string, body: any) : Promise<HTTPResponse> {
+
+    this.http.setDataSerializer("json");
+
     return this.http.put(this.access.base + functionURL, body, {});
   }
 
@@ -31,17 +37,22 @@ export class AWSCommService {
     return this.get(this.access.upcFunction + upc)
     .then((response) => {
       let resJSON = JSON.parse(response.data);
-      console.log(resJSON);
+      console.log("resJSON: " + JSON.stringify(resJSON));
+      // if (resJSON.upcnumber != undefined) {
+      //   console.log("Got valid record back from upcdatabase.org! ");
+      //   return new ItemRecord(upc, resJSON.title, false);
+      // }
+      // else
       if(resJSON.Items.length > 0){
         console.log("Got valid record back!");
         return new ItemRecord(upc, resJSON.Items[0].name, resJSON.Items[0].highRisk);
       }else{
         console.log("Got empty record back!");
-        return new ItemRecord(upc, "EMPTY");
+        return new ItemRecord(upc, "(Add New Item Name Here)");
       }
     })
     .catch((err) => {
-      console.log("JSON error: " + JSON.stringify(err));
+      console.log("Caught error from get: " + JSON.stringify(err));
       return new ItemRecord(upc, " ");
     });
   }
@@ -52,16 +63,17 @@ export class AWSCommService {
       (response) => {
         let resJSON = JSON.parse(response.data);
         console.log("Got the updated record back! " + JSON.stringify(response));
-        if (resJSON.upc == undefined) {
+        console.log("resJSON.upc.upcId = " + JSON.stringify(resJSON.upc.upcId));
+        if (resJSON.upc.upcId == undefined) {
           console.log("Backend shenanigans happened!");
           return new ItemRecord(item.upc, "EMPTY");
         }
-        let updateItem = resJSON.upc;
-        if (item.upc != updateItem.upcid) {
-          console.log(item.upc + " != " + updateItem.upcid + ": Something went horribly wrong!");
+        let updateItem = resJSON;
+        if (item.upc != updateItem.upc.upcId) {
+          console.log(item.upc + " != " + updateItem.upc.upcId + ": Something went horribly wrong!");
           return new ItemRecord(item.upc, "WRONG_UPC");
         } else {
-          return new ItemRecord(updateItem.upc, updateItem.name, updateItem.highRisk);
+          return new ItemRecord(updateItem.upc.upcId, updateItem.upc.name, updateItem.upc.highRisk);
         }
       }
     )
@@ -73,5 +85,45 @@ export class AWSCommService {
     )
   }
 
+  public AWScreateNotification(notification: Notification) : Promise<string> {
+    console.log("Notification: " + JSON.stringify(notification));
+    return this.put(this.access.notificationFunction, {
+                                                        "item" :
+                                                        {
+                                                            "item" :
+                                                            {
+                                                                "upc" : notification.item.item.upc,
+                                                                "name" : notification.item.item.name,
+                                                                "isHighRisk" :notification.item.item.isHighRisk
+                                                            },
+                                                            "quantity" : notification.item.quantity,
+                                                            "unitPrice" : notification.item.unitPrice
+                                                        },
+                                                        "sellByDate" : notification.sellByDate.toString(),
+                                                        "daysPrior" : notification.daysPrior,
+                                                        "deliveryOption" : notification.deliveryOption,
+                                                        "dateOfCreation" : notification.dateOfCreation.toString(),
+                                                        "memo" : notification.memo
+                                                      }
+    )
+    .then(
+      (response) => {
+        let resJSON = JSON.parse(response.data);
+        if(resJSON == undefined) {
+          console.log("Undefined response from server: " + JSON.stringify(resJSON));
+          return "UNDEFINED";
+        }
+        else {
+          console.log("Response from server: " + JSON.stringify(resJSON));
+          return "SUCCESS";
+        }
+      }
+    )
+    .catch(
+      (err) => {
+        return "ERROR";
+      }
+    );
+  }
 
 }
