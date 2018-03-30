@@ -1,6 +1,13 @@
 <ion-header>
 
   <ion-navbar>
+    <ion-buttons end>
+      <button ion-button icon-only (click)="refreshList()">
+        Refresh List
+        <ion-icon name="cloud-download"></ion-icon>
+      </button>
+    </ion-buttons>
+
     <ion-title>Today's Notifications</ion-title>
   </ion-navbar>
 
@@ -19,7 +26,7 @@
       </p>
     </ion-item>
     <ion-item-options side="left">
-      <button ion-button color='danger' (click)="deleteTask(i)">
+      <button ion-button color='danger' (click)="deleteItem(i)">
         <ion-icon name="md-trash"></ion-icon>
       </button>
     </ion-item-options>

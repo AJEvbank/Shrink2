@@ -23,26 +23,39 @@ export class DailyNotificationsPage implements OnInit {
   }
 
   ngOnInit() {
-    this.dailyNotificationsService.fetchListTemp()
-    .then(
-      (list: Notification[]) => {
-        this.notificationList = list;
+    if (window.location.hostname == "localhost") {
+      if (this.dailyNotificationsService.isListLoaded() == false) {
+        console.log("Fetch the list here using browser service.");
       }
-    )
-    .catch(
-      (err) => console.log(err)
-    );
+      else {
+        console.log("Do not fetch the list using browser service.");
+        this.notificationList = this.dailyNotificationsService.loadList();
+      }
+    }
+    else {
+      if (this.dailyNotificationsService.isListLoaded() == false) {
+        console.log("Fetch the list here using device service.");
+      }
+      else {
+        console.log("Do not fetch the list using device service.");
+        this.notificationList = this.dailyNotificationsService.loadList();
+      }
+    }
   }
 
-  deleteTask(index: number) {
+  private deleteItem(index: number) {
     console.log("delete " + index);
     this.dailyNotificationsService.removeItem(index);
     this.notificationList = this.dailyNotificationsService.loadList();
   }
 
-  viewNotes(clickEvent, notification: Notification) {
+  private viewNotes(clickEvent, notification: Notification) {
     let popover = this.popoverController.create(NotificationPopoverPage, {notification: notification});
     popover.present();
+  }
+
+  public refreshList() {
+    console.log("Refresh the list.");
   }
 
 }
