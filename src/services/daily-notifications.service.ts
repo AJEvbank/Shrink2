@@ -16,9 +16,25 @@ export class DailyNotificationsService {
               private AWS: AWSCommService,
               private AWSB: AWSCommBrowserService){}
 
-  public addItem(item: Notification){
-    console.log("In then: " + JSON.stringify(item));
-    this.AWSB.AWScreateNotification(item);
+  public addItem(item: Notification) : Promise<string> {
+    console.log("Firing addItem(): " + JSON.stringify(item));
+    return this.AWSB.AWScreateNotification(item)
+    .then(
+      (data) => {
+        if (data == "SUCCESS") {
+          return data;
+        }
+        else if (data == "UNDEFINED"){
+          return "ERROR";
+        }
+      }
+    )
+    .catch(
+      (err) => {
+        console.log("Error caught in addItem(): " + err.toString() + " Stringified error: " + JSON.stringify(err));
+        return "ERROR";
+      }
+    );
     // this.dailyNotificationsList.push(item);
     // this.storage.set('dailyNotificationsList', this.dailyNotificationsList)
     // .then(

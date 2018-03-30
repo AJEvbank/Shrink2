@@ -75,6 +75,26 @@ export class ItemRecordPage implements OnInit {
     if (this.isCompleteItemRecord == true) {
       let createNotificationModal = this.modalCtrl.create(CreateNotificationPage, {item: this.item});
       createNotificationModal.present();
+      createNotificationModal.onDidDismiss(
+        (data) => {
+          if (data == "SUCCESS") {
+            let toast = this.toastCtrl.create({
+              message: 'Your notification was saved.',
+              duration: 2000,
+              position: 'bottom'
+            });
+            toast.present();
+          }
+          else if (data == "ERROR"){
+            let toast = this.toastCtrl.create({
+              message: 'There was a problem. Please try again.',
+              duration: 2000,
+              position: 'bottom'
+            });
+            toast.present();
+          }
+        }
+      );
     }
     else {
       let toast = this.toastCtrl.create({

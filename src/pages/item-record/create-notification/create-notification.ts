@@ -70,9 +70,18 @@ export class CreateNotificationPage implements OnInit {
     console.log(this.notification);
     // Server logic here.
     // For now.
-    this.dailyNotificationsService.addItem(this.notification);
-
-    this.viewCtrl.dismiss();
+    this.dailyNotificationsService.addItem(this.notification)
+    .then(
+      (data) => {
+        this.viewCtrl.dismiss(data);
+      }
+    )
+    .catch(
+      (err) => {
+        console.log("Error caught in onSubmit(): " + err.toString() + " Stringified error: " + JSON.stringify(err));
+        this.viewCtrl.dismiss("ERROR");
+      }
+    );
   }
 
   // getDate() {

@@ -6,6 +6,7 @@ import { Injectable } from '@angular/core';
 import { Accessor } from '../../../Accessor';
 
 import { ItemRecord } from '../assets/models/item-record.model';
+import { Notification } from '../assets/models/notification.model';
 
 
 //import { uuid } from 'uuid/v1';
@@ -67,22 +68,40 @@ export class AWSCommBrowserService {
     }).toPromise<ItemRecord>();
   }
 
-  public AWScreateNotification(notification: Notification)  {
-
-    //console.log("Id: " + JSON.stringify(id));
+  public AWScreateNotification(notification: Notification) : Promise<string> {
     console.log("Notification: " + JSON.stringify(notification));
-    return;
-    // return this.put(this.access.notificationFunction + this.access.notificationId + id, { "notification" : JSON.stringify(notification)})
-    // .then(
-    //   (response) => {
-    //
-    //   }
-    // )
-    // .catch(
-    //   (err) => {
-    //     console.log(err);
-    //   }
-    // );
+    return this.put(this.access.notificationFunction, {
+                                                        "item" :
+                                                        {
+                                                            "item" :
+                                                            {
+                                                                "upc" : notification.item.item.upc,
+                                                                "name" : notification.item.item.name,
+                                                                "isHighRisk" :notification.item.item.isHighRisk
+                                                            },
+                                                            "quantity" : notification.item.quantity,
+                                                            "unitPrice" : notification.item.unitPrice
+                                                        },
+                                                        "sellByDate" : notification.sellByDate.toString(),
+                                                        "daysPrior" : notification.daysPrior,
+                                                        "deliveryOption" : notification.deliveryOption,
+                                                        "dateOfCreation" : notification.dateOfCreation.toString(),
+                                                        "memo" : notification.memo
+                                                      }
+    )
+    .map(
+      (response) => {
+        let resJSON = response.json();
+        if(resJSON == undefined) {
+          console.log("Undefined response from server: " + JSON.stringify(resJSON));
+          return "UNDEFINED";
+        }
+        else {
+          console.log("Response from server: " + JSON.stringify(resJSON));
+          return "SUCCESS";
+        }
+      }
+    ).toPromise<string>();
   }
 
 }
