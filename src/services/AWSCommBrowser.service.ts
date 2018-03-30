@@ -104,4 +104,21 @@ export class AWSCommBrowserService {
     ).toPromise<string>();
   }
 
+  // This is for fetching today's deliverable notifications.
+  public AWSFetchTodaysNotifications() : Promise<string> {
+    return this.get("something")
+    .map(
+      (response) => {
+        let resJSON = response.json();
+        console.log("Response from server: " + JSON.stringify(resJSON));
+        if (resJSON == undefined) {
+          return "ERROR";
+        }
+        else {
+          return "SUCCESS";
+        }
+      }
+    ).toPromise<string>();
+  }
+
 }
