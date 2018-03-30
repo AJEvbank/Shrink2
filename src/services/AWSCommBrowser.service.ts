@@ -92,7 +92,7 @@ export class AWSCommBrowserService {
     .map(
       (response) => {
         let resJSON = response.json();
-        if(resJSON == undefined) {
+        if(resJSON.notification == undefined) {
           console.log("Undefined response from server: " + JSON.stringify(resJSON));
           return "UNDEFINED";
         }

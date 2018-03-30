@@ -109,7 +109,7 @@ export class AWSCommService {
     .then(
       (response) => {
         let resJSON = JSON.parse(response.data);
-        if(resJSON == undefined) {
+        if(resJSON.notification == undefined) {
           console.log("Undefined response from server: " + JSON.stringify(resJSON));
           return "UNDEFINED";
         }
