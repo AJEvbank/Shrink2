@@ -1,18 +1,18 @@
 import { Storage } from '@ionic/storage';
 import { Injectable } from '@angular/core';
 
-import { HighRiskItem } from '../assets/models/high-risk-item.model';
+import { ItemRecord } from '../assets/models/item-record.model';
 
 
 @Injectable()
 export class HighRiskListService {
 
-  highRiskList: HighRiskItem [];
+  private highRiskList: ItemRecord [];
+  private listLoaded = false;
 
-  constructor(private storage: Storage,
-              private file: File) {}
+  constructor(private storage: Storage) {}
 
-  addItem(item: HighRiskItem) {
+  public addItem(item: ItemRecord) {
     this.highRiskList.push(item);
     this.storage.set('highRiskList',this.highRiskList)
     .then(
@@ -26,8 +26,8 @@ export class HighRiskListService {
     );
   }
 
-  removeItem(index: number) {
-    const itemSave: HighRiskItem = this.highRiskList.slice(index, index + 1)[0];
+  public removeItem(index: number) {
+    const itemSave: ItemRecord = this.highRiskList.slice(index, index + 1)[0];
     this.highRiskList.splice(index, 1);
     this.storage.set('shelfHelperList',this.highRiskList)
     .then(
@@ -41,19 +41,29 @@ export class HighRiskListService {
     )
   }
 
-  fetchList() {
+  public fetchList() : Promise<void> {
     return this.storage.get('highRiskList')
     .then(
-      (list: HighRiskItem []) => {
+      (list: ItemRecord []) => {
         this.highRiskList = list != null ? list: [];
-        return this.highRiskList;
+        this.listLoaded = true;
       }
     )
     .catch(
       (err) => {
         console.log(err);
+        this.highRiskList = [];
+        this.listLoaded = true;
       }
     )
+  }
+
+  public getList() : ItemRecord[] {
+    return this.highRiskList.slice();
+  }
+
+  public isListLoaded() : boolean {
+    return this.listLoaded;
   }
 
 

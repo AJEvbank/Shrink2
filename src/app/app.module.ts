@@ -42,6 +42,7 @@ import { DailyNotificationsService } from '../services/daily-notifications.servi
 import { ShelfHelperService } from '../services/shelf-helper.service';
 import { AWSCommService } from '../services/AWSComm.service';
 import { AWSCommBrowserService } from '../services/AWSCommBrowser.service';
+import { HighRiskListService } from '../services/high-risk-list.service';
 
 import { Accessor } from '../../../Accessor';
 
@@ -111,6 +112,7 @@ import { Accessor } from '../../../Accessor';
     ShelfHelperService,
     AWSCommService,
     AWSCommBrowserService,
+    HighRiskListService,
     HTTP
   ]
 })
