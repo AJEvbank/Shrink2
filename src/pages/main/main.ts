@@ -28,6 +28,8 @@ export class MainPage {
   shelfHelperPage = ShelfHelperPage;
   reportsPage = ReportsPage;
 
+  highRiskListButtonDisabled = false;
+
   testDebug: string;
 
 
@@ -47,7 +49,32 @@ export class MainPage {
     // if (window.location.hostname != "localhost") {
     //
     // }
-    this.hrService.fetchList()
+    //this.hrService.fetchList()
+  }
+
+  private prepareHighRiskList(){
+    if(this.hrService.isListLoaded() == false)
+    {
+      this.highRiskListButtonDisabled = true;
+      this.hrService.fetchList()
+      .then(() => {
+        this.highRiskListButtonDisabled = false;
+        this.navCtrl.push(this.highRiskList);
+      })
+      .catch((err) => {
+        console.log(err);
+        this.highRiskListButtonDisabled = false;
+        let errAlert = this.alertCtrl.create({
+          title: 'Error',
+          message: "An error occurred. Please try again.",
+          buttons: ['Dismiss']
+        });
+        errAlert.present();
+      });
+    }
+    else{
+      this.navCtrl.push(this.highRiskList);
+    }
   }
 
   private scanItem() {

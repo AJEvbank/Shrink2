@@ -19,18 +19,11 @@ export class HighRiskListPage implements OnInit {
   }
 
   ngOnInit() {
-    if(this.hrService.isListLoaded){
-      this.highRiskList = this.hrService.getList();
-    }
-    else{
-      this.waitOnList()
-      .then((list) => {
-
-      })
-      .catch((err) => {
-        console.log(err);
-        
-      });
+    this.highRiskList = this.hrService.getList();
+    if(this.highRiskList.length <= 0){
+      this.hrService.addItem(new ItemRecord("021130332021","Beets",true));
+      this.hrService.addItem(new ItemRecord("021130332022","Carrots",true));
+      this.hrService.addItem(new ItemRecord("021130332023","Yams",true));
     }
     // Fetch high-risk list from server here.
     // this.highRiskList.push(new ItemRecord("021130332021","Beets",true));
@@ -38,17 +31,9 @@ export class HighRiskListPage implements OnInit {
     // this.highRiskList.push(new ItemRecord("021130332023","Yams",true));
   }
 
-  private deleteFromList(upc: string, index: number) {
-    this.highRiskList.splice(index,1);
+  private deleteFromList(index: number) {
+    //this.highRiskList.splice(index,1);
+    this.hrService.removeItem(index);
+    this.highRiskList = this.hrService.getList();
   }
-
-  private waitOnList() : Promise<ItemRecord[]> {
-    return new Promise<ItemRecord[]>((resolve, reject) => {
-      while(this.hrService.isListLoaded() == false){
-        //Grr, busy waiting...
-      }
-      resolve(this.hrService.getList());
-    });
-  }
-
 }

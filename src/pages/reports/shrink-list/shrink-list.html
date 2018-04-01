@@ -1,12 +1,25 @@
 <ion-header>
 
   <ion-navbar>
-    <ion-title>shrink_list</ion-title>
+    <ion-title>Shrink List</ion-title>
   </ion-navbar>
 
 </ion-header>
 
 
 <ion-content padding>
+
+  <ion-list>
+  <ion-item-sliding *ngFor="let throwaway of throwawayList; let i = index" nowrap>
+    <ion-item>
+      <h2>{{ throwaway.item.item.name }}</h2>
+    </ion-item>
+    <ion-item-options side="left">
+      <button ion-button color='danger' (click)="console.log('Clicked the thing...')">
+        <ion-icon name="ion-star"></ion-icon>
+      </button>
+    </ion-item-options>
+  </ion-item-sliding>
+</ion-list>
 
 </ion-content>

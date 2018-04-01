@@ -13,17 +13,19 @@ export class HighRiskListService {
   constructor(private storage: Storage) {}
 
   public addItem(item: ItemRecord) {
-    this.highRiskList.push(item);
-    this.storage.set('highRiskList',this.highRiskList)
-    .then(
-      // REMINDER: Push to server.
-    )
-    .catch(
-      (err) => {
-        console.log(err);
-        this.highRiskList.splice(this.highRiskList.indexOf(item,1),1);
-      }
-    );
+    if(this.highRiskList.indexOf(item) < 0){
+      this.highRiskList.push(item);
+      this.storage.set('highRiskList',this.highRiskList)
+      .then(
+        // REMINDER: Push to server.
+      )
+      .catch(
+        (err) => {
+          console.log(err);
+          this.highRiskList.splice(this.highRiskList.indexOf(item,1),1);
+        }
+      );
+    }
   }
 
   public removeItem(index: number) {

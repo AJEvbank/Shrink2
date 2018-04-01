@@ -13,6 +13,7 @@ import { ShelfHelperAddQuantityPopover } from './shelf-helper_popover';
 import { ThrowawayQuantityPricePopoverPage } from './throwaway_popover';
 
 import { ShelfHelperService } from '../../services/shelf-helper.service';
+import { HighRiskListService } from '../../services/high-risk-list.service';
 
 
 @Component({
@@ -33,6 +34,7 @@ export class ItemRecordPage implements OnInit {
               private toastCtrl: ToastController,
               private alertCtrl: AlertController,
               private shelfHelperService: ShelfHelperService,
+              private hrService: HighRiskListService,
               private popoverCtrl: PopoverController,
               private loadingCtrl: LoadingController
               ) {
@@ -115,6 +117,7 @@ export class ItemRecordPage implements OnInit {
       });
       loader.present();
       // Server logic here and pass in the item upc and the status.
+      this.hrService.addItem(this.item);
     }
     else {
       let toast = this.toastCtrl.create({

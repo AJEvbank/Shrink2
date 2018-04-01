@@ -15,11 +15,10 @@
       <h2>{{ item.name }}</h2>
     </ion-item>
     <ion-item-options side="left">
-      <button ion-button color='danger' (click)="deleteFromList(item.upc,i)">
+      <button ion-button color='danger' (click)="deleteFromList(i)">
         <ion-icon name="md-trash"></ion-icon>
       </button>
     </ion-item-options>
-
   </ion-item-sliding>
 </ion-list>
 

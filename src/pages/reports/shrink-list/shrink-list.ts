@@ -1,25 +1,19 @@
-import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { Component, OnInit } from '@angular/core';
 
-/**
- * Generated class for the ShrinkListPage page.
- *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
- */
+import { Throwaway } from '../../../assets/models/throwaway.model';
 
-@IonicPage()
+
 @Component({
   selector: 'page-shrink-list',
   templateUrl: 'shrink-list.html',
 })
-export class ShrinkListPage {
+export class ShrinkListPage implements OnInit {
+  private throwawayList : Throwaway[];
 
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
-  }
+  constructor() {}
 
-  ionViewDidLoad() {
-    console.log('ionViewDidLoad ShrinkListPage');
+  ngOnInit(){
+    //this.throwAwayList.push(new Throwaway())
   }
 
 }
