@@ -157,43 +157,24 @@ export class ItemRecordPage implements OnInit {
       throwaway.present();
       throwaway.onDidDismiss(
         (data) => {
-          let newThrowaway: Throwaway;
           // This is repetitive, but will be necessary later.
-          if(data.quantity != "CANCELLED") {
-            newThrowaway = new Throwaway(new ItemCollection(this.item,data.quantity,data.unitPrice), new Date());
-            console.log("Created: " + JSON.stringify(newThrowaway));
-            // Server logic here as soon as they've created the lambda function and url for it.
-            if (window.location.hostname == "localhost") {
-              console.log("Used AWSB service.");
-              let loader = this.loadingCtrl.create({
-                content: "Waiting...",
-                duration: 2000
-              });
-              loader.present();
-            }
-            else {
-              console.log("Used AWS service.");
-              let loader = this.loadingCtrl.create({
-                content: "Waiting...",
-                duration: 2000
-              });
-              loader.present();
-            }
+          if(data.response == "ERROR") {
+            console.log("Error from server: " + JSON.stringify(data));
+            let errorAlert = this.alertCtrl.create({title: 'Error',message: "Could not create throwaway record. Please try again.",buttons: ['Dismiss']});
+            errorAlert.present();
+          }
+          else if(data.response == "CANCELLED"){
+            console.log("Action cancelled: " + JSON.stringify(data));
           }
           else {
-            newThrowaway = new Throwaway(new ItemCollection(this.item,1,data.unitPrice), new Date());
-            console.log("Created odd object: " + JSON.stringify(newThrowaway));
-
+            let toast = this.toastCtrl.create({message: 'Throwaway record saved.',duration: 2000,position: 'bottom'});
+            toast.present();
           }
         }
       );
     }
     else {
-      let toast = this.toastCtrl.create({
-        message: 'This record is not complete. Please complete all fields.',
-        duration: 2000,
-        position: 'middle'
-      });
+      let toast = this.toastCtrl.create({message: 'This record is not complete. Please complete all fields.',duration: 2000,position: 'middle'});
       toast.present();
     }
   }

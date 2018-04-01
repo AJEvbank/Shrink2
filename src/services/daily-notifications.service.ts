@@ -83,23 +83,28 @@ export class DailyNotificationsService {
     );
   }
 
-  public fetchListLocal() {
-    // Use this for local host.
-    this.AWSB.AWSFetchTodaysNotifications()
+  public fetchListLocal() : Promise<string> {
+    return this.AWSB.AWSFetchTodaysNotifications()
     .then(
       (message) => {
         if (message == "SUCCESS") {
           // Store the fetched list.
           // Set listLoaded to true.
+          console.log("SUCCESS detected in fetchListLocal().");
+          return message;
         }
         else if (message == "ERROR") {
           // Set the list to [].
+          console.log("ERROR detected in fetchListLocal().");
+          return message;
         }
       }
     )
     .catch(
       (err) => {
-        // Set the list to [].
+        // Do not change the existing list.
+        console.log("Error from AWSB in fetchListLocal()." + err.json() + " :=> " + JSON.stringify(err));
+        return "ERROR";
       }
     );
     return;

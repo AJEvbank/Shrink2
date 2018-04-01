@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { NavController, NavParams, PopoverController, ViewController } from 'ionic-angular';
+import { NavController, NavParams, PopoverController, ViewController, LoadingController, AlertController, ToastController } from 'ionic-angular';
 
 import { NotificationPopoverPage } from './notification-popover';
 
@@ -19,7 +19,10 @@ export class DailyNotificationsPage implements OnInit {
               private navParams: NavParams,
               private dailyNotificationsService: DailyNotificationsService,
               private popoverController: PopoverController,
-              private viewCtrl: ViewController) {
+              private viewCtrl: ViewController,
+              private loadingCtrl: LoadingController,
+              private alertCtrl: AlertController,
+              private toastCtrl: ToastController) {
   }
 
   ngOnInit() {
@@ -55,7 +58,37 @@ export class DailyNotificationsPage implements OnInit {
   }
 
   public refreshList() {
-    console.log("Refresh the list.");
+    console.log("Refreshing the list.");
+    let loader = this.loadingCtrl.create();
+    loader.present();
+    if (window.location.hostname == "localhost") {
+      console.log("Use fetchListLocal().");
+      this.dailyNotificationsService.fetchListLocal()
+      .then(
+        (response) => {
+          loader.dismiss();
+          if (response == "SUCCESS") {
+            console.log("In refreshList, response: " + response);
+          }
+          else if (response == "ERROR") {
+            console.log("In refreshList, response: " + response);
+            let errorAlert = this.alertCtrl.create({title: 'Error',message: "Could not refresh the list. Please try again.",buttons: ['Dismiss']});
+            errorAlert.present();
+          }
+        }
+      )
+      .catch(
+        (err) => {
+          loader.dismiss();
+          console.log("Caught error in refreshList: " + err.json() + " :=> " + JSON.stringify(err));
+          let errorAlert = this.alertCtrl.create({title: 'Error',message: "Could not refresh the list. Please try again.",buttons: ['Dismiss']});
+          errorAlert.present();
+        }
+      );
+    }
+    else {
+      console.log("Use fetchListDevice().");
+    }
   }
 
 }

@@ -7,6 +7,7 @@ import { Accessor } from '../../../Accessor';
 
 import { ItemRecord } from '../assets/models/item-record.model';
 import { Notification } from '../assets/models/notification.model';
+import { Throwaway } from '../assets/models/throwaway.model';
 
 
 //import { uuid } from 'uuid/v1';
@@ -104,14 +105,32 @@ export class AWSCommBrowserService {
     ).toPromise<string>();
   }
 
-  // This is for fetching today's deliverable notifications.
+
   public AWSFetchTodaysNotifications() : Promise<string> {
-    return this.get("something")
+    return this.get(this.access.notificationFunction + this.access.notificationRetrieval)
     .map(
       (response) => {
         let resJSON = response.json();
         console.log("Response from server: " + JSON.stringify(resJSON));
-        if (resJSON == undefined) {
+        if (resJSON == undefined) { // What property is undefined?
+          return "ERROR";
+        }
+        else {
+          return "SUCCESS";
+        }
+      }
+    ).toPromise<string>();
+  }
+
+  // This is for creating a throwaway entry.
+  public AWSCreateThrowaway(throwaway: Throwaway) : Promise<string> {
+    console.log("Creating throwaway: " + JSON.stringify(throwaway));
+    return this.put(this.access.throwawayFunction, {"throwaway": JSON.stringify(throwaway)})
+    .map(
+      (response) => {
+        let resJSON = response.json();
+        console.log("Response from server: " + JSON.stringify(resJSON));
+        if (resJSON == undefined) { // What property is undefined?
           return "ERROR";
         }
         else {
