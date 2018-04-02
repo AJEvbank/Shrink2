@@ -6,6 +6,7 @@ import { ItemRecord } from '../../assets/models/item-record.model';
 
 import { AWSCommService } from '../../services/AWSComm.service';
 import { AWSCommBrowserService } from '../../services/AWSCommBrowser.service';
+import { HighRiskListService } from '../../services/high-risk-list.service';
 
 import { ItemRecordPage } from '../item-record/item-record';
 import { DailyNotificationsPage } from '../daily-notifications/daily-notifications';
@@ -14,9 +15,6 @@ import { ShelfHelperPage } from '../shelf-helper/shelf-helper';
 import { ReportsPage } from '../reports/reports';
 
 import { GetUPCPopover } from './getUPCpopover';
-
-import { Accessor } from '../../../../Accessor';
-import { HTTP, HTTPResponse } from '@ionic-native/http';
 
 @Component({
   selector: 'page-main',
@@ -30,9 +28,10 @@ export class MainPage {
   shelfHelperPage = ShelfHelperPage;
   reportsPage = ReportsPage;
 
+  highRiskListButtonDisabled = false;
+
   testDebug: string;
 
-  access: Accessor;
 
   constructor(private navCtrl: NavController,
               private navParams: NavParams,
@@ -42,45 +41,15 @@ export class MainPage {
               private AWSB: AWSCommBrowserService,
               private popoverController: PopoverController,
               private alertCtrl: AlertController,
-              private http: HTTP) {
+              private hrService: HighRiskListService) {
   }
 
   ionViewDidLoad() {
-    this.access = new Accessor();
-    if (window.location.hostname != "localhost") {
-      // this.AWS.put(this.access.updateItemRecordFunction + "0",{"name": "Snacks", "highRisk": false})
-      // .then(
-      // (response) => {
-      //   console.log(JSON.stringify(response));
-      // }
-      // )
-      // .catch(
-      //   (err) => {
-      //     console.log(JSON.stringify(err));
-      //   }
-      // );
-    //   this.http.put("http://czqlnbulv0.execute-api.us-east-1.amazonaws.com/beta/upc?upcId=0",{"name": "Snacks", "highRisk": true},{})
-    //   .then(
-    //     (response) => {
-    //        console.log(JSON.stringify(response));
-    //     }
-    //   )
-    //   .catch(
-    //     (err) => {
-    //       console.log(JSON.stringify(err));
-    //     }
-    //   );
+    // this.access = new Accessor();
+    // if (window.location.hostname != "localhost") {
+    //
     // }
-    // else {
-    //   this.AWSB.AWSgetupc("0")
-    //   .then((item) => {
-    //     this.testDebug = "GOT A RECORD: " + JSON.stringify(item);
-    //   })
-    //   .catch((err) => {
-    //     this.testDebug = "FAILED AGAIN! ARG!";
-    //     console.log(JSON.stringify(err));
-    //   });
-    }
+    //this.hrService.fetchList()
   }
 
   private scanItem() {
@@ -107,11 +76,7 @@ export class MainPage {
             loader.dismiss();
             if(item.upc.length != 12){
               console.log("An error occurred in record retrieval!");
-              let errAlert = this.alertCtrl.create({
-                title: 'Error',
-                message: "An error occurred. Please try again.",
-                buttons: ['Dismiss']
-              });
+              let errAlert = this.alertCtrl.create({title: 'Error',message: "An error occurred. Please try again.",buttons: ['Dismiss']});
               errAlert.present();
             } else if(item.name == " ") {
               let newEmptyItem = new ItemRecord(item.upc,"(Add New Item Name Here)");
@@ -148,11 +113,7 @@ export class MainPage {
       loader.dismiss();
       if(item.name == " "){
         console.log("An error occurred in record retrieval!");
-        let errAlert = this.alertCtrl.create({
-          title: 'Error',
-          message: "An error occurred. Please try again.",
-          buttons: ['Dismiss']
-        });
+        let errAlert = this.alertCtrl.create({title: 'Error',message: "An error occurred. Please try again.",buttons: ['Dismiss']});
         errAlert.present();
       } else if(item.name == "EMPTY") {
         let newEmptyItem = new ItemRecord(item.upc,"(Add New Item Name Here)");
@@ -184,13 +145,9 @@ export class MainPage {
             this.AWS.AWSgetupc(data)
             .then((item) => {
               loader.dismiss();
-              if(item.upc.length != 12){
+              if(item.upc.length != 12) {
                 console.log("An error occurred in record retrieval!");
-                let errAlert = this.alertCtrl.create({
-                  title: 'Error',
-                  message: "An error occurred. Please try again.",
-                  buttons: ['Dismiss']
-                });
+                let errAlert = this.alertCtrl.create({title: 'Error',message: "An error occurred. Please try again.",buttons: ['Dismiss']});
                 errAlert.present();
               } else if(item.name == " ") {
                 let newEmptyItem = new ItemRecord(item.upc,"(Add New Item Name Here)");

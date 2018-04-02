@@ -1,12 +1,31 @@
 <ion-header>
 
   <ion-navbar>
-    <ion-title>shrink_list</ion-title>
+    <ion-title>Shrink List</ion-title>
   </ion-navbar>
 
 </ion-header>
 
 
 <ion-content padding>
+
+<ion-list *ngIf="!shrinkListEmpty">
+  <ion-item-sliding *ngFor="let shrink of shrinkList; let i = index" nowrap>
+    <ion-item>
+      <h2>{{ shrink.name }}</h2>
+      <h3>Loss: <b ion-text color='danger'>${{ shrink.shrink }}</b></h3>
+      <p>UPC: {{ shrink.upc }}</p>
+    </ion-item>
+    <ion-item-options side="left">
+      <button ion-button color='danger' (click)="onToggleHighRisk(i)">
+        <ion-icon name="md-clipboard"></ion-icon>
+      </button>
+    </ion-item-options>
+  </ion-item-sliding>
+</ion-list>
+
+<h1 *ngIf="shrinkListEmpty" class="test">
+  No records in database!
+</h1>
 
 </ion-content>

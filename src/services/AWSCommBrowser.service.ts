@@ -7,6 +7,8 @@ import { Accessor } from '../../../Accessor';
 
 import { ItemRecord } from '../assets/models/item-record.model';
 import { Notification } from '../assets/models/notification.model';
+import { ShrinkAggregate } from '../assets/models/shrink-agreggate.model';
+import { Throwaway } from '../assets/models/throwaway.model';
 
 
 //import { uuid } from 'uuid/v1';
@@ -23,11 +25,6 @@ export class AWSCommBrowserService {
   // Generic http request functions return Promise<HTTPResponse>.
 
   private put(functionURL: string, body: any) : Observable<Response> {
-    // let header = new Headers();
-    // header.append('Content-Type', 'application/json');
-    // header.append('Authorization', 'Basic');
-    // let options = new RequestOptions( {headers: header} );
-    // return this.http.put(this.access.base + functionURL, body, options);
     return this.http.put(this.access.base + functionURL, body);
   }
 
@@ -38,11 +35,11 @@ export class AWSCommBrowserService {
 
   // Specific requests return a Promise<(desired data type here)>.
 
-  AWSgetupc(upc: string) : Promise<ItemRecord> {
+  public AWSgetupc(upc: string) : Promise<ItemRecord> {
     return this.get(this.access.upcFunction + upc).map((response) => {
       let resJSON = response.json();
       console.log(resJSON);
-      if(resJSON.Items.length > 0){
+      if(resJSON.Items.length > 0) {
         //console.log("Got valid record back!");
         return new ItemRecord(upc, resJSON.Items[0].name, resJSON.Items[0].highRisk);
       }else{
@@ -52,7 +49,7 @@ export class AWSCommBrowserService {
     }).toPromise<ItemRecord>();
   }
 
-  AWSupdateItemRecord(item: ItemRecord) : Promise<ItemRecord> {
+  public AWSupdateItemRecord(item: ItemRecord) : Promise<ItemRecord> {
     return this.put(this.access.updateItemRecordFunction + item.upc, {"name": item.name, "highRisk": item.isHighRisk})
     .map((response) => {
       let resJSON = response.json();
@@ -62,7 +59,7 @@ export class AWSCommBrowserService {
       }
       else{
         let updateItem = resJSON.upc;
-        console.log("not undefined");
+        //console.log("not undefined");
         return new ItemRecord(updateItem.upcId, updateItem.name, updateItem.highRisk);
       }
     }).toPromise<ItemRecord>();
@@ -92,7 +89,7 @@ export class AWSCommBrowserService {
     .map(
       (response) => {
         let resJSON = response.json();
-        if(resJSON == undefined) {
+        if(resJSON.notification == undefined) {
           console.log("Undefined response from server: " + JSON.stringify(resJSON));
           return "UNDEFINED";
         }
@@ -102,6 +99,55 @@ export class AWSCommBrowserService {
         }
       }
     ).toPromise<string>();
+  }
+
+
+  public AWSFetchTodaysNotifications() : Promise<Response> {
+    let current = new Date();
+    return this.get(this.access.notificationFunction + this.access.notificationRetrieval + current.toString())
+    .map(
+      (response) => {
+        let resJSON = response.json();
+        console.log("Response from server: " + JSON.stringify(resJSON));
+        return response;
+      }
+    ).toPromise<Response>();
+  }
+
+  // This is for creating a throwaway entry.
+  public AWSCreateThrowaway(throwaway: Throwaway) : Promise<string> {
+    console.log("Creating throwaway: " + JSON.stringify(throwaway));
+    return this.put(this.access.throwawayFunction, {"throwaway": JSON.stringify(throwaway)})
+    .map(
+      (response) => {
+        let resJSON = response.json();
+        console.log("Response from server: " + JSON.stringify(resJSON));
+        if (resJSON == undefined) { // What property is undefined?
+          return "ERROR";
+        }
+        else {
+          return "SUCCESS";
+        }
+      }
+    ).toPromise<string>();
+  }
+
+  public AWSFetchShrinkList() : Promise<ShrinkAggregate[]> {
+    return this.get(this.access.shrinkFunction)
+    .map((response) => {
+      let resJSON = response.json();
+      let result: ShrinkAggregate[];
+      result = [];
+      for(let item of resJSON.Items){
+        result.push(new ShrinkAggregate(item.upcId, item.name == undefined || item.name == "" ? "Blank Name": item.name, item.totalShrink));
+      }
+      if(resJSON == undefined){
+        return [];
+      }
+      else{
+        return result;
+      }
+    }).toPromise<ShrinkAggregate[]>();
   }
 
 }

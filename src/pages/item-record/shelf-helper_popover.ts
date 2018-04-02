@@ -12,7 +12,10 @@ import { ItemRecord } from '../../assets/models/item-record.model';
       <h2>{{ item.name }} </h2>
     </ion-item>
     <form [formGroup]="quantity">
-      <ion-input type="number" formControlName="quantity"></ion-input>
+      <ion-item>
+        <ion-label>Quantity: </ion-label>
+        <ion-input type="number" formControlName="quantity"></ion-input>
+      </ion-item>      
       <button ion-button block (click)="submit()" [disabled]="!quantity.valid">Add</button>
     </form>
     <button ion-button block color="danger" (click)="dismiss()">Cancel</button>

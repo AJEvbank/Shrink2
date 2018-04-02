@@ -2,8 +2,10 @@ import { HTTP, HTTPResponse } from '@ionic-native/http';
 import { Injectable } from '@angular/core';
 
 import { Accessor } from '../../../Accessor';
+
 import { ItemRecord } from '../assets/models/item-record.model';
 import { Notification } from '../assets/models/notification.model';
+import { Throwaway } from '../assets/models/throwaway.model';
 
 
 
@@ -19,7 +21,7 @@ export class AWSCommService {
 
   // Generic http request functions return Promise<HTTPResponse>.
 
-  public put(functionURL: string, body: any) : Promise<HTTPResponse> {
+  private put(functionURL: string, body: any) : Promise<HTTPResponse> {
 
     this.http.setDataSerializer("json");
 
@@ -33,7 +35,7 @@ export class AWSCommService {
 
   // Specific requests return a Promise<(desired data type here)>.
 
-  AWSgetupc(upc: string) : Promise<ItemRecord> {
+  public AWSgetupc(upc: string) : Promise<ItemRecord> {
     return this.get(this.access.upcFunction + upc)
     .then((response) => {
       let resJSON = JSON.parse(response.data);
@@ -57,7 +59,7 @@ export class AWSCommService {
     });
   }
 
-  AWSupdateItemRecord(item: ItemRecord) : Promise<ItemRecord> {
+  public AWSupdateItemRecord(item: ItemRecord) : Promise<ItemRecord> {
     return this.put(this.access.updateItemRecordFunction + item.upc, {"name": item.name, "highRisk": item.isHighRisk})
     .then(
       (response) => {
@@ -109,7 +111,7 @@ export class AWSCommService {
     .then(
       (response) => {
         let resJSON = JSON.parse(response.data);
-        if(resJSON == undefined) {
+        if(resJSON.notification == undefined) {
           console.log("Undefined response from server: " + JSON.stringify(resJSON));
           return "UNDEFINED";
         }
@@ -121,6 +123,52 @@ export class AWSCommService {
     )
     .catch(
       (err) => {
+        return "ERROR";
+      }
+    );
+  }
+
+  // This is for fetching today's deliverable notifications.
+  public AWSFetchTodaysNotifications() : Promise<string> {
+    return this.get(this.access.notificationRetrieval)
+    .then(
+      (response) => {
+        let resJSON = response.data.json();
+        console.log("Response from server: " + JSON.stringify(resJSON));
+        if (resJSON == undefined) {
+          return "ERROR";
+        }
+        else {
+          return "SUCCESS";
+        }
+      }
+    )
+    .catch(
+      (err) => {
+        console.log("Caught error from get: " + err.json());
+        return "ERROR";
+      }
+    );
+  }
+
+  public AWSCreateThrowaway(throwaway: Throwaway) : Promise<string>{
+    console.log("Creating throwaway: " + JSON.stringify(throwaway));
+    return this.put(this.access.throwawayFunction, {"throwaway": JSON.stringify(throwaway)})
+    .then(
+      (response) => {
+        let resJSON = response.data.json();
+        console.log("Response from server: " + JSON.stringify(resJSON) + " :=> " + resJSON);
+        if (resJSON == undefined) {
+          return "ERROR";
+        }
+        else {
+          return "SUCCESS";
+        }
+      }
+    )
+    .catch(
+      (err) => {
+        console.log("Caught error from put: " + err.json());
         return "ERROR";
       }
     );

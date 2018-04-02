@@ -1,25 +1,41 @@
-import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { Component, OnInit } from '@angular/core';
+import { NavParams, NavController } from 'ionic-angular';
 
-/**
- * Generated class for the ShrinkListPage page.
- *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
- */
+import { Throwaway } from '../../../assets/models/throwaway.model';
+import { ShrinkAggregate } from '../../../assets/models/shrink-agreggate.model';
 
-@IonicPage()
+
 @Component({
   selector: 'page-shrink-list',
   templateUrl: 'shrink-list.html',
 })
-export class ShrinkListPage {
+export class ShrinkListPage implements OnInit {
+  private throwawayList : Throwaway[];
+  private shrinkList: ShrinkAggregate[];
+  private shrinkListEmpty = false;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
+  constructor(private navParams: NavParams) {}
+
+  ngOnInit(){
+    this.shrinkList = this.navParams.data as ShrinkAggregate[];
+    console.log(this.shrinkList);
+    this.shrinkList.sort((a, b) => {
+      if(a.shrink > b.shrink){
+        return -1;
+      }
+      else if(a.shrink < b.shrink){
+        return 1;
+      }
+      else{
+        return 0;
+      }
+    })
+    this.shrinkListEmpty = this.shrinkList.length == 0;
   }
 
-  ionViewDidLoad() {
-    console.log('ionViewDidLoad ShrinkListPage');
+  onToggleHighRisk(index: number){
+    console.log("Clicked on " + this.shrinkList[index].upc);
+
   }
 
 }

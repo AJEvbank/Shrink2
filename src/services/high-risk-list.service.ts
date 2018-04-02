@@ -1,60 +1,60 @@
-import { Storage } from '@ionic/storage';
 import { Injectable } from '@angular/core';
 
-import { HighRiskItem } from '../assets/models/high-risk-item.model';
+import { ItemRecord } from '../assets/models/item-record.model';
+
+import { AWSCommBrowserService } from '../services/AWSCommBrowser.service';
+import { AWSCommService } from '../services/AWSComm.service';
 
 
 @Injectable()
 export class HighRiskListService {
 
-  highRiskList: HighRiskItem [];
+  private highRiskList: ItemRecord [];
+  private listLoaded = false;
 
-  constructor(private storage: Storage,
-              private file: File) {}
-
-  addItem(item: HighRiskItem) {
-    this.highRiskList.push(item);
-    this.storage.set('highRiskList',this.highRiskList)
-    .then(
-      // REMINDER: Push to server.
-    )
-    .catch(
-      (err) => {
-        console.log(err);
-        this.highRiskList.splice(this.highRiskList.indexOf(item,1),1);
-      }
-    );
+  constructor(private AWSCommBrowser: AWSCommBrowserService,
+              private AWSCommMobile: AWSCommService) {
+    this.highRiskList = [];
   }
 
-  removeItem(index: number) {
-    const itemSave: HighRiskItem = this.highRiskList.slice(index, index + 1)[0];
-    this.highRiskList.splice(index, 1);
-    this.storage.set('shelfHelperList',this.highRiskList)
-    .then(
-      // REMINDER: Push to server.
-    )
-    .catch(
-      (err) => {
-        console.log(err);
-        this.highRiskList.push(itemSave);
+  public ToggleHighRisk(oldItem: ItemRecord, toggle: boolean) : Promise<ItemRecord> {
+    //Choose appropriate comm tool.
+    let AWSComm = (window.location.hostname == "localhost") ? this.AWSCommBrowser : this.AWSCommMobile;
+    //Make server request.
+    return AWSComm.AWSupdateItemRecord(new ItemRecord(oldItem.upc, oldItem.name, toggle))
+    .then((itemResponse) => {
+      let index = this.highRiskList.indexOf(itemResponse);
+      if(itemResponse.isHighRisk){
+        //Only add the item if it isn't already there.\
+        if(index == -1){
+          this.highRiskList.push(itemResponse);
+        }
       }
-    )
+      else{
+        //Same principle here.
+        if(index > -1){
+          this.highRiskList.splice(index, 1);
+        }
+      }
+      return itemResponse;
+    })
+    .catch((err) => {
+      console.log(err);
+      return oldItem;
+    });
   }
 
-  fetchList() {
-    return this.storage.get('highRiskList')
-    .then(
-      (list: HighRiskItem []) => {
-        this.highRiskList = list != null ? list: [];
-        return this.highRiskList;
-      }
-    )
-    .catch(
-      (err) => {
-        console.log(err);
-      }
-    )
+  // public FetchList() : Promise<any>{
+  //
+  // }
+
+  public GetList() : ItemRecord[] {
+    return this.highRiskList.slice();
   }
+
+  // public isListLoaded() : boolean {
+  //   return this.listLoaded;
+  // }
 
 
 }

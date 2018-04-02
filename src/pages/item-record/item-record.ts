@@ -13,6 +13,7 @@ import { ShelfHelperAddQuantityPopover } from './shelf-helper_popover';
 import { ThrowawayQuantityPricePopoverPage } from './throwaway_popover';
 
 import { ShelfHelperService } from '../../services/shelf-helper.service';
+import { HighRiskListService } from '../../services/high-risk-list.service';
 
 
 @Component({
@@ -33,6 +34,7 @@ export class ItemRecordPage implements OnInit {
               private toastCtrl: ToastController,
               private alertCtrl: AlertController,
               private shelfHelperService: ShelfHelperService,
+              private hrService: HighRiskListService,
               private popoverCtrl: PopoverController,
               private loadingCtrl: LoadingController
               ) {
@@ -106,17 +108,28 @@ export class ItemRecordPage implements OnInit {
     }
   }
 
-  addToHighRiskList(status: string) {
-    console.log("addToHighRiskList(" + status + ")");
-    if (this.isCompleteItemRecord == true) {
+  //Nick: This should work no problems, let me know if it breaks.
+  ToggleHighRisk(toggle: boolean){
+    if(this.isCompleteItemRecord == true){
       let loader = this.loadingCtrl.create({
-        content: "Waiting...",
-        duration: 2000
+        content: "Updating...",
+        // duration: 2000,
       });
       loader.present();
-      // Server logic here and pass in the item upc and the status.
+      //Update the status
+      this.hrService.ToggleHighRisk(this.item, toggle)
+      .then((itemResponse) => {
+        this.item = itemResponse;
+        loader.dismiss();
+      })
+      .catch((err) => {
+        console.log(err);
+        loader.dismiss();
+      });
+
     }
-    else {
+    else{
+      //Item record not complete. Fix dat shit, user.
       let toast = this.toastCtrl.create({
         message: 'This record is not complete. Please complete all fields.',
         duration: 2000,
@@ -157,43 +170,24 @@ export class ItemRecordPage implements OnInit {
       throwaway.present();
       throwaway.onDidDismiss(
         (data) => {
-          let newThrowaway: Throwaway;
           // This is repetitive, but will be necessary later.
-          if(data.quantity != "CANCELLED") {
-            newThrowaway = new Throwaway(new ItemCollection(this.item,data.quantity,data.unitPrice), new Date());
-            console.log("Created: " + JSON.stringify(newThrowaway));
-            // Server logic here as soon as they've created the lambda function and url for it.
-            if (window.location.hostname == "localhost") {
-              console.log("Used AWSB service.");
-              let loader = this.loadingCtrl.create({
-                content: "Waiting...",
-                duration: 2000
-              });
-              loader.present();
-            }
-            else {
-              console.log("Used AWS service.");
-              let loader = this.loadingCtrl.create({
-                content: "Waiting...",
-                duration: 2000
-              });
-              loader.present();
-            }
+          if(data.response == "ERROR") {
+            console.log("Error from server: " + JSON.stringify(data));
+            let errorAlert = this.alertCtrl.create({title: 'Error',message: "Could not create throwaway record. Please try again.",buttons: ['Dismiss']});
+            errorAlert.present();
+          }
+          else if(data.response == "CANCELLED"){
+            console.log("Action cancelled: " + JSON.stringify(data));
           }
           else {
-            newThrowaway = new Throwaway(new ItemCollection(this.item,1,data.unitPrice), new Date());
-            console.log("Created odd object: " + JSON.stringify(newThrowaway));
-
+            let toast = this.toastCtrl.create({message: 'Throwaway record saved.',duration: 2000,position: 'bottom'});
+            toast.present();
           }
         }
       );
     }
     else {
-      let toast = this.toastCtrl.create({
-        message: 'This record is not complete. Please complete all fields.',
-        duration: 2000,
-        position: 'middle'
-      });
+      let toast = this.toastCtrl.create({message: 'This record is not complete. Please complete all fields.',duration: 2000,position: 'middle'});
       toast.present();
     }
   }
