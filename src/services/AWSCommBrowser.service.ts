@@ -7,7 +7,11 @@ import { Accessor } from '../../../Accessor';
 
 import { ItemRecord } from '../assets/models/item-record.model';
 import { Notification } from '../assets/models/notification.model';
+<<<<<<< HEAD
 import { ShrinkAggregate } from '../assets/models/shrink-agreggate.model';
+=======
+import { Throwaway } from '../assets/models/throwaway.model';
+>>>>>>> Austin_Continuing_Notifications
 
 
 //import { uuid } from 'uuid/v1';
@@ -39,11 +43,11 @@ export class AWSCommBrowserService {
 
   // Specific requests return a Promise<(desired data type here)>.
 
-  AWSgetupc(upc: string) : Promise<ItemRecord> {
+  public AWSgetupc(upc: string) : Promise<ItemRecord> {
     return this.get(this.access.upcFunction + upc).map((response) => {
       let resJSON = response.json();
       console.log(resJSON);
-      if(resJSON.Items.length > 0){
+      if(resJSON.Items.length > 0) {
         //console.log("Got valid record back!");
         return new ItemRecord(upc, resJSON.Items[0].name, resJSON.Items[0].highRisk);
       }else{
@@ -53,7 +57,7 @@ export class AWSCommBrowserService {
     }).toPromise<ItemRecord>();
   }
 
-  AWSupdateItemRecord(item: ItemRecord) : Promise<ItemRecord> {
+  public AWSupdateItemRecord(item: ItemRecord) : Promise<ItemRecord> {
     return this.put(this.access.updateItemRecordFunction + item.upc, {"name": item.name, "highRisk": item.isHighRisk})
     .map((response) => {
       let resJSON = response.json();
@@ -105,14 +109,28 @@ export class AWSCommBrowserService {
     ).toPromise<string>();
   }
 
-  // This is for fetching today's deliverable notifications.
-  public AWSFetchTodaysNotifications() : Promise<string> {
-    return this.get("something")
+
+  public AWSFetchTodaysNotifications() : Promise<Response> {
+    let current = new Date();
+    return this.get(this.access.notificationFunction + this.access.notificationRetrieval + current.toString())
     .map(
       (response) => {
         let resJSON = response.json();
         console.log("Response from server: " + JSON.stringify(resJSON));
-        if (resJSON == undefined) {
+        return response;
+      }
+    ).toPromise<Response>();
+  }
+
+  // This is for creating a throwaway entry.
+  public AWSCreateThrowaway(throwaway: Throwaway) : Promise<string> {
+    console.log("Creating throwaway: " + JSON.stringify(throwaway));
+    return this.put(this.access.throwawayFunction, {"throwaway": JSON.stringify(throwaway)})
+    .map(
+      (response) => {
+        let resJSON = response.json();
+        console.log("Response from server: " + JSON.stringify(resJSON));
+        if (resJSON == undefined) { // What property is undefined?
           return "ERROR";
         }
         else {

@@ -1,8 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { NavController, NavParams, ViewController } from 'ionic-angular';
+import { NavController, NavParams, ViewController, LoadingController } from 'ionic-angular';
 import { FormGroup, FormControl, Validators, AbstractControl } from '@angular/forms';
 
 import { ItemRecord } from '../../assets/models/item-record.model';
+import { ItemCollection } from '../../assets/models/item-collection.model';
+import { Throwaway } from '../../assets/models/throwaway.model';
+
+import { AWSCommService } from '../../services/AWSComm.service';
+import { AWSCommBrowserService } from '../../services/AWSCommBrowser.service';
 
 @Component({
   selector: 'throwaway-popover',
@@ -33,7 +38,10 @@ export class ThrowawayQuantityPricePopoverPage implements OnInit {
   item: ItemRecord;
 
   constructor(private viewCtrl: ViewController,
-              private navParams: NavParams) {
+              private navParams: NavParams,
+              private loadingCtrl: LoadingController,
+              private AWS: AWSCommService,
+              private AWSB: AWSCommBrowserService) {
 
   }
 
@@ -61,13 +69,46 @@ export class ThrowawayQuantityPricePopoverPage implements OnInit {
 
   submit() {
     let value = this.discard.value;
+    let loader = this.loadingCtrl.create();
+    loader.present();
     console.log("value.quantity = " + value.quantity + " value.unitPrice = " + value.unitPrice);
-    this.viewCtrl.dismiss({quantity: value.quantity, unitPrice: value.unitPrice});
+    if (window.location.hostname == "localhost") {
+      this.AWSB.AWSCreateThrowaway(new Throwaway(new ItemCollection(this.item,value.quantity,value.unitPrice),new Date()))
+      .then(
+        (response) => {
+          loader.dismiss();
+          console.log("response from AWS Service: " + JSON.stringify(response));
+          this.viewCtrl.dismiss({response: response});
+        }
+      )
+      .catch(
+        (err) => {
+          loader.dismiss();
+          this.viewCtrl.dismiss({response: "ERROR"});
+        }
+      );
+    }
+    else {
+      this.AWS.AWSCreateThrowaway(new Throwaway(new ItemCollection(this.item,value.quantity,value.unitPrice),new Date()))
+      .then(
+        (response) => {
+          loader.dismiss();
+          console.log("response from AWS Service: " + JSON.stringify(response));
+          this.viewCtrl.dismiss({response: response});
+        }
+      )
+      .catch(
+        (err) => {
+          loader.dismiss();
+          this.viewCtrl.dismiss({response: "ERROR"});
+        }
+      );
+    }
   }
 
 
 dismiss() {
-  this.viewCtrl.dismiss({quantity: "CANCELLED", unitPrice: 0});
+  this.viewCtrl.dismiss({response: "CANCELLED"});
 }
 
 

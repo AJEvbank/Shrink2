@@ -11,9 +11,11 @@
   <ion-card (click)="editItem()">
 
   <ion-card-header>
-    <ion-label>
-      {{ item.name }}
-    </ion-label>
+    <ion-item>
+      <ion-label>
+        {{ item.name }}
+      </ion-label>
+    </ion-item>
   </ion-card-header>
 
   <ion-card-content>
@@ -29,6 +31,10 @@
     </p>
     <p>
       This item has been referenced {{ item.references }} times.
+    </p>
+    <hr/>
+    <p>
+      (Tap To Edit)
     </p>
   </ion-card-content>
 
@@ -67,6 +73,7 @@
     <button ion-button block (click)="home()">Home</button>
   </ion-col>
 </ion-row>
+
 
 
 </ion-content>
