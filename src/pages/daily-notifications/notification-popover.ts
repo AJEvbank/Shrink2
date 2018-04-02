@@ -17,7 +17,7 @@ import { Notification } from '../../assets/models/notification.model';
           </ion-item>
           <ion-item text-wrap>{{ notification.memo }}</ion-item>
         </ion-list>
-        <button ion-button (click)="dismiss()">Ok</button>
+        <button ion-button block (click)="dismiss()">Ok</button>
     </ion-content>
   `
 })

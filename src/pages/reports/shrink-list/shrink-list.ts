@@ -1,8 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { NavParams, NavController } from 'ionic-angular';
+import { NavParams, LoadingController, AlertController } from 'ionic-angular';
 
 import { Throwaway } from '../../../assets/models/throwaway.model';
+import { ItemRecord } from '../../../assets/models/item-record.model';
 import { ShrinkAggregate } from '../../../assets/models/shrink-agreggate.model';
+
+import { HighRiskListService } from '../../../services/high-risk-list.service';
 
 
 @Component({
@@ -14,7 +17,10 @@ export class ShrinkListPage implements OnInit {
   private shrinkList: ShrinkAggregate[];
   private shrinkListEmpty = false;
 
-  constructor(private navParams: NavParams) {}
+  constructor(private navParams: NavParams,
+              private loadingCtrl: LoadingController,
+              private alertCtrl: AlertController,
+              private hrService: HighRiskListService) {}
 
   ngOnInit(){
     this.shrinkList = this.navParams.data as ShrinkAggregate[];
@@ -33,9 +39,28 @@ export class ShrinkListPage implements OnInit {
     this.shrinkListEmpty = this.shrinkList.length == 0;
   }
 
-  onToggleHighRisk(index: number){
-    console.log("Clicked on " + this.shrinkList[index].upc);
+  onToggleHighRisk(index: number, toggle: boolean){
+    //Setup loader...
+    let loader = this.loadingCtrl.create({
+      content: "Updating item..."
+    });
+    loader.present();
 
+    let item = this.shrinkList[index];
+    this.hrService.ToggleHighRisk(new ItemRecord(item.upc, item.name, item.highRisk), toggle)
+    .then((newItem) => {
+      item.highRisk = newItem.isHighRisk;
+      //this.shrinkList[index] = item;
+      loader.dismiss();
+    })
+    .catch((err) => {
+      console.log(err);
+      let errorAlert = this.alertCtrl.create({title: 'Error',
+                                              message: "Could not set to high risk. Error has been printed.",
+                                              buttons: ['Dismiss']});
+      errorAlert.present();
+      loader.dismiss();
+    })
   }
 
 }

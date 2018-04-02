@@ -111,8 +111,7 @@ export class ItemRecordPage implements OnInit {
   ToggleHighRisk(toggle: boolean){
     if(this.isCompleteItemRecord == true){
       let loader = this.loadingCtrl.create({
-        content: "Updating...",
-        // duration: 2000,
+        content: "Updating..."
       });
       loader.present();
       //Update the status
