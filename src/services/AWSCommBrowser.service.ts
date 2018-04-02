@@ -43,7 +43,7 @@ export class AWSCommBrowserService {
     return this.get(this.access.upcFunction + upc).map((response) => {
       let resJSON = response.json();
       console.log(resJSON);
-      if(resJSON.Items.length > 0){
+      if(resJSON.Items.length > 0) {
         //console.log("Got valid record back!");
         return new ItemRecord(upc, resJSON.Items[0].name, resJSON.Items[0].highRisk);
       }else{
@@ -106,20 +106,16 @@ export class AWSCommBrowserService {
   }
 
 
-  public AWSFetchTodaysNotifications() : Promise<string> {
-    return this.get(this.access.notificationFunction + this.access.notificationRetrieval)
+  public AWSFetchTodaysNotifications() : Promise<Response> {
+    let current = new Date();
+    return this.get(this.access.notificationFunction + this.access.notificationRetrieval + current.toString())
     .map(
       (response) => {
         let resJSON = response.json();
         console.log("Response from server: " + JSON.stringify(resJSON));
-        if (resJSON == undefined) { // What property is undefined?
-          return "ERROR";
-        }
-        else {
-          return "SUCCESS";
-        }
+        return response;
       }
-    ).toPromise<string>();
+    ).toPromise<Response>();
   }
 
   // This is for creating a throwaway entry.

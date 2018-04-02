@@ -28,7 +28,10 @@ export class DailyNotificationsPage implements OnInit {
   ngOnInit() {
     if (window.location.hostname == "localhost") {
       if (this.dailyNotificationsService.isListLoaded() == false) {
+        let loader = this.loadingCtrl.create();
+        loader.present();
         console.log("Fetch the list here using browser service.");
+        this.browserFetch(loader);
       }
       else {
         console.log("Do not fetch the list using browser service.");
@@ -37,7 +40,10 @@ export class DailyNotificationsPage implements OnInit {
     }
     else {
       if (this.dailyNotificationsService.isListLoaded() == false) {
+        let loader = this.loadingCtrl.create();
+        loader.present();
         console.log("Fetch the list here using device service.");
+        loader.dismiss();
       }
       else {
         console.log("Do not fetch the list using device service.");
@@ -75,13 +81,17 @@ export class DailyNotificationsPage implements OnInit {
     .then(
       (response) => {
         loader.dismiss();
-        if (response == "SUCCESS") {
-          console.log("In refreshList, response: " + response);
+        if (response.statusCode == "SUCCESS") {
+          console.log("In refreshList('SUCCESS'), response: " + JSON.stringify(response));
+          this.notificationList = this.dailyNotificationsService.loadList();
         }
-        else if (response == "ERROR") {
-          console.log("In refreshList, response: " + response);
+        else if (response.statusCode == "ERROR" || response.statusCode == "UNDEFINED") {
+          console.log("In refreshList('" + response.statusCode + "'), response: " + JSON.stringify(response));
           let errorAlert = this.alertCtrl.create({title: 'Error',message: "Could not refresh the list. Please try again.",buttons: ['Dismiss']});
           errorAlert.present();
+        }else if (response.statusCode == "EMPTY") {
+          console.log("In refreshList('EMPTY'), response: " + JSON.stringify(response));
+          this.notificationList = this.dailyNotificationsService.loadList();
         }
       }
     )

@@ -1,6 +1,8 @@
 import { Storage } from '@ionic/storage';
 import { Injectable } from '@angular/core';
 
+import { ItemRecord } from '../assets/models/item-record.model';
+import { ItemCollection } from '../assets/models/item-collection.model';
 import { Notification } from '../assets/models/notification.model';
 
 import { AWSCommService } from './AWSComm.service';
@@ -83,20 +85,38 @@ export class DailyNotificationsService {
     );
   }
 
-  public fetchListLocal() : Promise<string> {
+  public fetchListLocal() : Promise<{statusCode: string}> {
     return this.AWSB.AWSFetchTodaysNotifications()
     .then(
       (message) => {
-        if (message == "SUCCESS") {
-          // Store the fetched list.
-          // Set listLoaded to true.
-          console.log("SUCCESS detected in fetchListLocal().");
-          return message;
+        let serverResp = message.json();
+
+        if (serverResp.Items == undefined) {
+          return {statusCode: "UNDEFINED"};
         }
-        else if (message == "ERROR") {
-          // Set the list to [].
-          console.log("ERROR detected in fetchListLocal().");
-          return message;
+        else if (serverResp.Items.length == 0) {
+          this.dailyNotificationsList = [];
+          this.listLoaded = true;
+          return {statusCode: "EMPTY"};
+        }
+        else {
+          this.dailyNotificationsList = [];
+          serverResp.Items.map(
+            (item) => {
+              this.dailyNotificationsList.push(
+                new Notification(
+                  new ItemCollection(new ItemRecord(item.item.upc,item.item.name,item.item.isHighRisk),item.quantity,item.unitPrice),
+                  item.sellByDate,
+                  item.daysPrior,
+                  item.deliveryOption,
+                  item.memo
+                )
+              );
+            }
+          );
+          console.log("dailyNotificationsList: " + JSON.stringify(this.dailyNotificationsList));
+          this.listLoaded = true;
+          return {statusCode: "SUCCESS"};
         }
       }
     )
@@ -104,7 +124,7 @@ export class DailyNotificationsService {
       (err) => {
         // Do not change the existing list.
         console.log("Error from AWSB in fetchListLocal()." + err.json() + " :=> " + JSON.stringify(err));
-        return "ERROR";
+        return {statusCode: "ERROR"};
       }
     );
   }
