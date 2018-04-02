@@ -43,12 +43,19 @@ export class AWSCommBrowserService {
     return this.get(this.access.upcFunction + upc).map((response) => {
       let resJSON = response.json();
       console.log(resJSON);
-      if(resJSON.Items.length > 0) {
+      if (resJSON.Items[0].fromUPCDB == true) {
+        let newItemB = new ItemRecord(upc, resJSON.Items[0].name, false);
+        return newItemB;
+      }
+      else if(resJSON.Items.length > 0) {
         //console.log("Got valid record back!");
-        return new ItemRecord(upc, resJSON.Items[0].name, resJSON.Items[0].highRisk);
-      }else{
+        let newItemA = new ItemRecord(upc, resJSON.Items[0].name, resJSON.Items[0].highRisk);
+        return newItemA;
+      }
+      else{
         //console.log("Got empty record back!");
-        return new ItemRecord(upc, " ");
+        let newItemC = new ItemRecord(upc, " ");
+        return newItemC;
       }
     }).toPromise<ItemRecord>();
   }

@@ -43,7 +43,7 @@ export class DailyNotificationsPage implements OnInit {
         let loader = this.loadingCtrl.create();
         loader.present();
         console.log("Fetch the list here using device service.");
-        loader.dismiss();
+        this.deviceFetch(loader);
       }
       else {
         console.log("Do not fetch the list using device service.");

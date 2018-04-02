@@ -40,9 +40,8 @@ export class ItemRecordPage implements OnInit {
 
   ngOnInit() {
     this.item = this.navParams.get('item');
-    if (this.item.name == "(Add New Item Name Here)" || this.item.name == "EMPTY" || this.item.name == "WRONG_UPC") {
-      this.isCompleteItemRecord = false;
-    }
+    this.isCompleteItemRecord = this.navParams.get('saved');
+    console.log("isCompleteItemRecord: " + this.isCompleteItemRecord + " : " + this.navParams.get('saved'));
     this.shelfHelperService.fetchList();
   }
 

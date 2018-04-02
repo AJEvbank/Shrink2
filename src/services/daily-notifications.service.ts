@@ -73,16 +73,6 @@ export class DailyNotificationsService {
   public removeItem(index: number){
     const itemSave: Notification = this.dailyNotificationsList.slice(index, index+1)[0];
     this.dailyNotificationsList.splice(index, 1);
-    this.storage.set('dailyNotificationsList', this.dailyNotificationsList)
-    .then(
-      //Server logic here...
-    )
-    .catch(
-      (err) => {
-        console.log(err);
-        this.dailyNotificationsList.push(itemSave);
-      }
-    );
   }
 
   public fetchListLocal() : Promise<{statusCode: string}> {
@@ -150,21 +140,6 @@ export class DailyNotificationsService {
       }
     );
     return;
-  }
-
-  public fetchListTemp() {
-    return this.storage.get('dailyNotificationsList')
-    .then(
-      (list: Notification []) => {
-        this.dailyNotificationsList = list != null ? list: [];
-        return this.dailyNotificationsList;
-      }
-    )
-    .catch(
-      (err) => {
-        console.log(err);
-      }
-    );
   }
 
   public loadList() {
