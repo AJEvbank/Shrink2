@@ -12,11 +12,13 @@ import { ShrinkAggregate } from '../../../assets/models/shrink-agreggate.model';
 export class ShrinkListPage implements OnInit {
   private throwawayList : Throwaway[];
   private shrinkList: ShrinkAggregate[];
+  private shrinkListEmpty = false;
 
   constructor(private navParams: NavParams) {}
 
   ngOnInit(){
     this.shrinkList = this.navParams.data as ShrinkAggregate[];
+    console.log(this.shrinkList);
     this.shrinkList.sort((a, b) => {
       if(a.shrink > b.shrink){
         return -1;
@@ -28,10 +30,12 @@ export class ShrinkListPage implements OnInit {
         return 0;
       }
     })
+    this.shrinkListEmpty = this.shrinkList.length == 0;
   }
 
   onToggleHighRisk(index: number){
     console.log("Clicked on " + this.shrinkList[index].upc);
+
   }
 
 }

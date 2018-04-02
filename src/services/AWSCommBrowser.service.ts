@@ -7,11 +7,8 @@ import { Accessor } from '../../../Accessor';
 
 import { ItemRecord } from '../assets/models/item-record.model';
 import { Notification } from '../assets/models/notification.model';
-<<<<<<< HEAD
 import { ShrinkAggregate } from '../assets/models/shrink-agreggate.model';
-=======
 import { Throwaway } from '../assets/models/throwaway.model';
->>>>>>> Austin_Continuing_Notifications
 
 
 //import { uuid } from 'uuid/v1';
@@ -147,7 +144,7 @@ export class AWSCommBrowserService {
       let result: ShrinkAggregate[];
       result = [];
       for(let item of resJSON.Items){
-        result.push(new ShrinkAggregate(item.upcId, "Test Name", item.totalShrink));
+        result.push(new ShrinkAggregate(item.upcId, item.name == undefined || item.name == "" ? "Blank Name": item.name, item.totalShrink));
       }
       if(resJSON == undefined){
         return [];
