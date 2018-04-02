@@ -107,7 +107,6 @@ export class DailyNotificationsService {
         return "ERROR";
       }
     );
-    return;
   }
 
   public fetchListDevice() {

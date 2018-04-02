@@ -115,11 +115,7 @@ export class MainPage {
       loader.dismiss();
       if(item.name == " "){
         console.log("An error occurred in record retrieval!");
-        let errAlert = this.alertCtrl.create({
-          title: 'Error',
-          message: "An error occurred. Please try again.",
-          buttons: ['Dismiss']
-        });
+        let errAlert = this.alertCtrl.create({title: 'Error',message: "An error occurred. Please try again.",buttons: ['Dismiss']});
         errAlert.present();
       } else if(item.name == "EMPTY") {
         let newEmptyItem = new ItemRecord(item.upc,"(Add New Item Name Here)");
@@ -151,13 +147,9 @@ export class MainPage {
             this.AWS.AWSgetupc(data)
             .then((item) => {
               loader.dismiss();
-              if(item.upc.length != 12){
+              if(item.upc.length != 12) {
                 console.log("An error occurred in record retrieval!");
-                let errAlert = this.alertCtrl.create({
-                  title: 'Error',
-                  message: "An error occurred. Please try again.",
-                  buttons: ['Dismiss']
-                });
+                let errAlert = this.alertCtrl.create({title: 'Error',message: "An error occurred. Please try again.",buttons: ['Dismiss']});
                 errAlert.present();
               } else if(item.name == " ") {
                 let newEmptyItem = new ItemRecord(item.upc,"(Add New Item Name Here)");
