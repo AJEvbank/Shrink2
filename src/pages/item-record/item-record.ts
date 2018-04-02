@@ -123,6 +123,7 @@ export class ItemRecordPage implements OnInit {
         loader.dismiss();
       })
       .catch((err) => {
+        console.log(err);
         loader.dismiss();
       });
 

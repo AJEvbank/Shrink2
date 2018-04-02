@@ -59,7 +59,7 @@ export class AWSCommBrowserService {
       }
       else{
         let updateItem = resJSON.upc;
-        console.log("not undefined");
+        //console.log("not undefined");
         return new ItemRecord(updateItem.upcId, updateItem.name, updateItem.highRisk);
       }
     }).toPromise<ItemRecord>();
