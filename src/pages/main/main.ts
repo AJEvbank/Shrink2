@@ -72,26 +72,22 @@ export class MainPage {
           let loader = this.loadingCtrl.create();
           loader.present();
           this.AWSB.AWSgetupc(upc)
-          .then((item) => {
-            loader.dismiss();
-            if(item.upc.length != 12){
-              console.log("An error occurred in record retrieval!");
-              let errAlert = this.alertCtrl.create({title: 'Error',message: "An error occurred. Please try again.",buttons: ['Dismiss']});
-              errAlert.present();
-            } else if(item.name == " ") {
-              let newEmptyItem = new ItemRecord(item.upc,"(Add New Item Name Here)");
-              this.navCtrl.push(ItemRecordPage,{item: newEmptyItem});
-            } else {
-              this.navCtrl.push(ItemRecordPage,{item: item});
-            }
+          .then(
+            (item: ItemRecord) => {
+              loader.dismiss();
+              console.log("item: " + JSON.stringify(item));
+              if(item.name == " ") {
+                console.log("NewRecord Triggered");
+                let newEmptyItem = new ItemRecord(item.upc,"(Add New Item Name Here)");
+                this.navCtrl.push(ItemRecordPage,{item: newEmptyItem, saved: false});
+              } else {
+                console.log("else Triggered");
+                this.navCtrl.push(ItemRecordPage,{item: item, saved: true});
+              }
           })
           .catch((err) => {
             loader.dismiss();
-            let errAlert = this.alertCtrl.create({
-              title: 'Error',
-              message: "An error occurred. Please try again.",
-              buttons: ['Dismiss']
-            });
+            let errAlert = this.alertCtrl.create({title: 'Error',message: "An error occurred. Please try again.",buttons: ['Dismiss']});
             errAlert.present();
             console.log("This is the error: " + err);
           });
