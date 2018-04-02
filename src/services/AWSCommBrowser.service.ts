@@ -39,7 +39,7 @@ export class AWSCommBrowserService {
 
   // Specific requests return a Promise<(desired data type here)>.
 
-  AWSgetupc(upc: string) : Promise<ItemRecord> {
+  public AWSgetupc(upc: string) : Promise<ItemRecord> {
     return this.get(this.access.upcFunction + upc).map((response) => {
       let resJSON = response.json();
       console.log(resJSON);
@@ -53,7 +53,7 @@ export class AWSCommBrowserService {
     }).toPromise<ItemRecord>();
   }
 
-  AWSupdateItemRecord(item: ItemRecord) : Promise<ItemRecord> {
+  public AWSupdateItemRecord(item: ItemRecord) : Promise<ItemRecord> {
     return this.put(this.access.updateItemRecordFunction + item.upc, {"name": item.name, "highRisk": item.isHighRisk})
     .map((response) => {
       let resJSON = response.json();
