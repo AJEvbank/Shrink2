@@ -19,11 +19,11 @@ export class HighRiskListPage implements OnInit {
   }
 
   ngOnInit() {
-    this.highRiskList = this.hrService.getList();
+    // this.highRiskList = this.hrService.getList();
     if(this.highRiskList.length <= 0){
-      this.hrService.addItem(new ItemRecord("021130332021","Beets",true));
-      this.hrService.addItem(new ItemRecord("021130332022","Carrots",true));
-      this.hrService.addItem(new ItemRecord("021130332023","Yams",true));
+      // this.hrService.addItem(new ItemRecord("021130332021","Beets",true));
+      // this.hrService.addItem(new ItemRecord("021130332022","Carrots",true));
+      // this.hrService.addItem(new ItemRecord("021130332023","Yams",true));
     }
     // Fetch high-risk list from server here.
     // this.highRiskList.push(new ItemRecord("021130332021","Beets",true));
@@ -33,7 +33,7 @@ export class HighRiskListPage implements OnInit {
 
   private deleteFromList(index: number) {
     //this.highRiskList.splice(index,1);
-    this.hrService.removeItem(index);
-    this.highRiskList = this.hrService.getList();
+    // this.hrService.removeItem(index);
+    // this.highRiskList = this.hrService.getList();
   }
 }

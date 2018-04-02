@@ -25,11 +25,6 @@ export class AWSCommBrowserService {
   // Generic http request functions return Promise<HTTPResponse>.
 
   private put(functionURL: string, body: any) : Observable<Response> {
-    // let header = new Headers();
-    // header.append('Content-Type', 'application/json');
-    // header.append('Authorization', 'Basic');
-    // let options = new RequestOptions( {headers: header} );
-    // return this.http.put(this.access.base + functionURL, body, options);
     return this.http.put(this.access.base + functionURL, body);
   }
 

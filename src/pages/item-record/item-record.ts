@@ -108,18 +108,27 @@ export class ItemRecordPage implements OnInit {
     }
   }
 
-  addToHighRiskList(status: string) {
-    console.log("addToHighRiskList(" + status + ")");
-    if (this.isCompleteItemRecord == true) {
+  //Nick: This should work no problems, let me know if it breaks.
+  ToggleHighRisk(toggle: boolean){
+    if(this.isCompleteItemRecord == true){
       let loader = this.loadingCtrl.create({
-        content: "Waiting...",
-        duration: 2000
+        content: "Updating...",
+        // duration: 2000,
       });
       loader.present();
-      // Server logic here and pass in the item upc and the status.
-      this.hrService.addItem(this.item);
+      //Update the status
+      this.hrService.ToggleHighRisk(this.item, toggle)
+      .then((itemResponse) => {
+        this.item = itemResponse;
+        loader.dismiss();
+      })
+      .catch((err) => {
+        loader.dismiss();
+      });
+
     }
-    else {
+    else{
+      //Item record not complete. Fix dat shit, user.
       let toast = this.toastCtrl.create({
         message: 'This record is not complete. Please complete all fields.',
         duration: 2000,
