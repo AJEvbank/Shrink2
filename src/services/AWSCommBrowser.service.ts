@@ -7,6 +7,7 @@ import { Accessor } from '../../../Accessor';
 
 import { ItemRecord } from '../assets/models/item-record.model';
 import { Notification } from '../assets/models/notification.model';
+import { ShrinkAggregate } from '../assets/models/shrink-agreggate.model';
 
 
 //import { uuid } from 'uuid/v1';
@@ -119,6 +120,24 @@ export class AWSCommBrowserService {
         }
       }
     ).toPromise<string>();
+  }
+
+  public AWSFetchShrinkList() : Promise<ShrinkAggregate[]> {
+    return this.get(this.access.shrinkFunction)
+    .map((response) => {
+      let resJSON = response.json();
+      let result: ShrinkAggregate[];
+      result = [];
+      for(let item of resJSON.Items){
+        result.push(new ShrinkAggregate(item.upcId, "Test Name", item.totalShrink));
+      }
+      if(resJSON == undefined){
+        return [];
+      }
+      else{
+        return result;
+      }
+    }).toPromise<ShrinkAggregate[]>();
   }
 
 }
