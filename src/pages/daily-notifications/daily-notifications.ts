@@ -25,6 +25,7 @@ export class DailyNotificationsPage implements OnInit {
   private dummyFunction() {
     this.deleteItem(-2);
     this.viewNotes(null,null);
+    this.searchByDate(false);
   }
 
   ngOnInit() {
