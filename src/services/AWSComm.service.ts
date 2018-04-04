@@ -132,10 +132,12 @@ export class AWSCommService {
 
   //Untested
   public AWSFetchTodaysNotifications() : Promise<Notification[]> {
+    console.log("Entered AWSFetchTodaysNotifications() via device service");
     let today = new Date();
-    return this.get(this.access.notificationRetrieval + today.toString())
+    return this.get(this.access.notificationFunction + this.access.notificationRetrieval + today.toString())
     .then((response) => {
-      let resJSON = response.data.json();
+      let resJSON = JSON.parse(response.data);
+      console.log("resJSON: " + JSON.stringify(resJSON));
       if(resJSON == undefined || resJSON.Items == undefined){
         console.log("Request returned undefined! Here's the response: " + JSON.stringify(response));
         return [];
@@ -154,9 +156,11 @@ export class AWSCommService {
         console.log(todaysNotifs);
         return todaysNotifs;
       }
+      //return [];
     })
     .catch((err) => {
-      console.log(err);
+      console.log("Caught error in AWSFetchTodaysNotifications(): " + JSON.stringify(err));
+      console.log("Caught error in AWSFetchTodaysNotifications(): " + err.toString());
       return [];
     })
   }
@@ -200,6 +204,10 @@ export class AWSCommService {
         return result;
       }
     });
+  }
+
+  public shoutBack() {
+    console.log("This is the device service.");
   }
 
 }

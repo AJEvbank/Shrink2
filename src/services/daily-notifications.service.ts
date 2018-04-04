@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 
-import { ItemRecord } from '../assets/models/item-record.model';
-import { ItemCollection } from '../assets/models/item-collection.model';
+// import { ItemRecord } from '../assets/models/item-record.model';
+// import { ItemCollection } from '../assets/models/item-collection.model';
 import { Notification } from '../assets/models/notification.model';
 
 import { AWSCommService } from './AWSComm.service';
@@ -14,9 +14,13 @@ export class DailyNotificationsService {
   private dailyNotificationsList: Notification [] = [];
 
   private listLoaded = false;
+  private AWSComm: AWSCommService | AWSCommBrowserService;
 
   constructor(private AWS: AWSCommService,
-              private AWSB: AWSCommBrowserService) {}
+              private AWSB: AWSCommBrowserService) {
+    this.AWSComm = (window.location.hostname == "localhost") ? this.AWSB : this.AWS;
+    this.AWSComm.shoutBack();
+  }
 
   public isListLoaded() : boolean {
     return this.listLoaded;
@@ -25,8 +29,8 @@ export class DailyNotificationsService {
 
   public addItem(item: Notification) : Promise<string> {
     console.log("Firing addItem(): " + JSON.stringify(item));
-    let AWSComm = (window.location.hostname == "localhost") ? this.AWSB : this.AWS;
-    return AWSComm.AWScreateNotification(item)
+    //let AWSComm = (window.location.hostname == "localhost") ? this.AWSB : this.AWS;
+    return this.AWSComm.AWScreateNotification(item)
     .then(
       (data) => {
         if (data == "SUCCESS") {
@@ -46,18 +50,18 @@ export class DailyNotificationsService {
   }
 
   public removeItem(index: number){
-    const itemSave: Notification = this.dailyNotificationsList.slice(index, index+1)[0];
+    //const itemSave: Notification = this.dailyNotificationsList.slice(index, index+1)[0];
     this.dailyNotificationsList.splice(index, 1);
   }
 
   //Fetch the list from the server, make update service list.
   //Promise is void to act more as an ack
   public FetchList() : Promise<void> {
-    let AWSComm = (window.location.hostname == "localhost") ? this.AWSB : this.AWS;
-    return AWSComm.AWSFetchTodaysNotifications()
+    //let AWSComm = (window.location.hostname == "localhost") ? this.AWSB : this.AWS;
+    return this.AWSComm.AWSFetchTodaysNotifications()
     .then((todaysNotifs) => {
       this.listLoaded = true;
-      this.dailyNotificationsList = todaysNotifs;
+      this.dailyNotificationsList = todaysNotifs.slice();
     })
     .catch((err) => {
       console.log(err);
@@ -66,6 +70,7 @@ export class DailyNotificationsService {
   }
 
   public GetList() {
+    console.log("In GetList():" + JSON.stringify(this.dailyNotificationsList));
     return this.dailyNotificationsList.slice();
   }
 }

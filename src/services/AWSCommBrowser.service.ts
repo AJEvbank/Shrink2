@@ -1,4 +1,4 @@
-import { Http, Response, RequestOptions, Headers } from '@angular/http';
+import { Http, Response } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 import { Injectable } from '@angular/core';
@@ -135,7 +135,6 @@ export class AWSCommBrowserService {
     }).toPromise<Notification[]>();
   }
 
-  // This is for creating a throwaway entry.
   public AWSCreateThrowaway(throwaway: Throwaway) : Promise<string> {
     console.log("Creating throwaway: " + JSON.stringify(throwaway));
     return this.put(this.access.throwawayFunction, {"throwaway": JSON.stringify(throwaway)})
@@ -169,6 +168,10 @@ export class AWSCommBrowserService {
         return result;
       }
     }).toPromise<ShrinkAggregate[]>();
+  }
+
+  public shoutBack() {
+    console.log("This is the browser service.");
   }
 
 }

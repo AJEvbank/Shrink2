@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { NavController, NavParams, ViewController } from 'ionic-angular';
+import { NavParams, ViewController } from 'ionic-angular';
 
 import { Notification } from '../../assets/models/notification.model';
 
@@ -25,8 +25,7 @@ export class NotificationPopoverPage implements OnInit {
 
   notification: Notification;
 
-  constructor(private navCtrl: NavController,
-              private navParams: NavParams,
+  constructor(private navParams: NavParams,
               private viewCtrl: ViewController) {
   }
 

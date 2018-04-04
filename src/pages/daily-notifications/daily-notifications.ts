@@ -19,6 +19,12 @@ export class DailyNotificationsPage implements OnInit {
               private popoverController: PopoverController,
               private loadingCtrl: LoadingController,
               private alertCtrl: AlertController) {
+      this.dummyFunction();
+  }
+
+  private dummyFunction() {
+    this.deleteItem(-2);
+    this.viewNotes(null,null);
   }
 
   ngOnInit() {
@@ -31,14 +37,18 @@ export class DailyNotificationsPage implements OnInit {
   }
 
   private deleteItem(index: number) {
+    if (index < 0) { return; }
     console.log("delete " + index);
     this.dailyNotificationsService.removeItem(index);
     this.notificationList = this.dailyNotificationsService.GetList();
+    return;
   }
 
-  private viewNotes(clickEvent, notification: Notification) {
+  private viewNotes(clickEvent=null, notification: Notification = null) {
+    if (clickEvent == null) { return; }
     let popover = this.popoverController.create(NotificationPopoverPage, {notification: notification});
     popover.present();
+    return;
   }
 
   public refreshList() {
@@ -48,6 +58,7 @@ export class DailyNotificationsPage implements OnInit {
 
   public FetchList(){
     //Setup loader...
+    console.log("Entered FetchList()");
     let loader = this.loadingCtrl.create({
       content: "Updating..."
     });
@@ -57,6 +68,7 @@ export class DailyNotificationsPage implements OnInit {
     .then(() => {
       //It works! Update local list with service list!
       this.notificationList = this.dailyNotificationsService.GetList();
+      console.log("Dismissed in then()");
       loader.dismiss();
     })
     .catch((err) => {
@@ -66,6 +78,7 @@ export class DailyNotificationsPage implements OnInit {
                                               message: "Could not fetch the list. Error has been printed.",
                                               buttons: ['Dismiss']});
       errorAlert.present();
+      console.log("Dismissed in catch()");
       loader.dismiss();
     });
   }

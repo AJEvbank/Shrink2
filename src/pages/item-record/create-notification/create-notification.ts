@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { NavController, NavParams, ViewController } from 'ionic-angular';
-import { FormGroup, FormControl, Validators, FormArray } from '@angular/forms';
+import { NavParams, ViewController } from 'ionic-angular';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 
 
 
@@ -26,8 +26,7 @@ export class CreateNotificationPage implements OnInit {
 
   notificationForm: FormGroup;
 
-  constructor(private navCtrl: NavController,
-              private navParams: NavParams,
+  constructor(private navParams: NavParams,
               private viewCtrl: ViewController,
               private dailyNotificationsService: DailyNotificationsService) {
   }

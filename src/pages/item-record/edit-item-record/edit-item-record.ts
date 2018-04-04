@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { NavController, NavParams, ViewController } from 'ionic-angular';
-import { FormGroup, FormControl, Validators, FormArray } from '@angular/forms';
+import { NavParams, ViewController } from 'ionic-angular';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 
 import { ItemRecord } from '../../../assets/models/item-record.model';
 
@@ -16,8 +16,7 @@ export class EditItemRecordPage implements OnInit {
   item: ItemRecord;
   itemForm: FormGroup;
 
-  constructor(private navCtrl: NavController,
-              private navParams: NavParams,
+  constructor(private navParams: NavParams,
               private viewCtrl: ViewController,
               private AWS: AWSCommService,
               private AWSB: AWSCommBrowserService) {
