@@ -8,14 +8,19 @@ import { Notification } from '../../assets/models/notification.model';
   template: `
     <ion-content padding>
         <ion-list no-lines>
-        <h3>{{ notification.item.item.name }}</h3>
-          <ion-item>
-            <ion-label>Quantity: {{ notification.item.quantity }}</ion-label>
-          </ion-item>
-          <ion-item>
-            <ion-label>Memo:</ion-label>
-          </ion-item>
-          <ion-item text-wrap>{{ notification.memo }}</ion-item>
+          <h3>{{ notification.item.item.name }}</h3>
+            <ion-item>
+              <ion-label>UPC: {{ notification.item.item.upc }}</ion-label>
+            </ion-item>
+            <ion-item>
+              <ion-label>Quantity: {{ notification.item.quantity }}</ion-label>
+            </ion-item>
+            <ion-card>
+              <ion-item>
+                <ion-label>Memo:</ion-label>
+              </ion-item>
+              <ion-item text-wrap>{{ notification.memo }}</ion-item>
+            </ion-card>
         </ion-list>
         <button ion-button block (click)="dismiss()">Ok</button>
     </ion-content>

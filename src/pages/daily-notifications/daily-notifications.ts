@@ -82,4 +82,10 @@ export class DailyNotificationsPage implements OnInit {
       loader.dismiss();
     });
   }
+
+  private searchByDate(clear: boolean) {
+    if (clear == false) { return; }
+    console.log("searchByDate()");
+    return;
+  }
 }
