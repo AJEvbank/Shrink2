@@ -137,12 +137,23 @@ export class AWSCommBrowserService {
 
   public AWSCreateThrowaway(throwaway: Throwaway) : Promise<string> {
     console.log("Creating throwaway: " + JSON.stringify(throwaway));
-    return this.put(this.access.throwawayFunction, {"throwaway": JSON.stringify(throwaway)})
+    let info = {
+      "quantity": throwaway.item.quantity,
+      "disposalDate": throwaway.dateOfDiscard,
+      "unitPrice": throwaway.item.unitPrice,
+      "item": {
+        "name": throwaway.item.item.name,
+        "isHighRisk": throwaway.item.item.isHighRisk,
+        "upc": throwaway.item.item.upc
+      }
+    };
+    console.log("Passing throwaway: " + JSON.stringify(info));
+    return this.put(this.access.throwawayFunction, info)
     .map(
       (response) => {
         let resJSON = response.json();
         console.log("Response from server: " + JSON.stringify(resJSON));
-        if (resJSON == undefined) { // What property is undefined?
+        if (resJSON.notification == undefined) { // What property is undefined?
           return "ERROR";
         }
         else {
