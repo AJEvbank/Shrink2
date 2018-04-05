@@ -9,13 +9,11 @@ import { AWSCommService } from '../services/AWSComm.service';
 @Injectable()
 export class HighRiskListService {
 
-  private highRiskList: ItemRecord [];
+  private highRiskList: ItemRecord [] = [];
   private listLoaded = false;
 
   constructor(private AWSCommBrowser: AWSCommBrowserService,
-              private AWSCommMobile: AWSCommService) {
-    this.highRiskList = [];
-  }
+              private AWSCommMobile: AWSCommService) {}
 
   public ToggleHighRisk(oldItem: ItemRecord, toggle: boolean) : Promise<ItemRecord> {
     //Choose appropriate comm tool.

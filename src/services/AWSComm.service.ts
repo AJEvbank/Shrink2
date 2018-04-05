@@ -4,7 +4,9 @@ import { Injectable } from '@angular/core';
 import { Accessor } from '../../../Accessor';
 
 import { ItemRecord } from '../assets/models/item-record.model';
+import { ItemCollection } from '../assets/models/item-collection.model';
 import { Notification } from '../assets/models/notification.model';
+import { ShrinkAggregate } from '../assets/models/shrink-agreggate.model';
 import { Throwaway } from '../assets/models/throwaway.model';
 
 
@@ -128,27 +130,39 @@ export class AWSCommService {
     );
   }
 
-  // This is for fetching today's deliverable notifications.
-  public AWSFetchTodaysNotifications() : Promise<string> {
-    return this.get(this.access.notificationRetrieval)
-    .then(
-      (response) => {
-        let resJSON = response.data.json();
-        console.log("Response from server: " + JSON.stringify(resJSON));
-        if (resJSON == undefined) {
-          return "ERROR";
-        }
-        else {
-          return "SUCCESS";
-        }
+  //Untested
+  public AWSFetchTodaysNotifications() : Promise<Notification[]> {
+    console.log("Entered AWSFetchTodaysNotifications() via device service");
+    let today = new Date();
+    return this.get(this.access.notificationFunction + this.access.notificationRetrieval + today.toString())
+    .then((response) => {
+      let resJSON = JSON.parse(response.data);
+      console.log("resJSON: " + JSON.stringify(resJSON));
+      if(resJSON == undefined || resJSON.Items == undefined){
+        console.log("Request returned undefined! Here's the response: " + JSON.stringify(response));
+        return [];
       }
-    )
-    .catch(
-      (err) => {
-        console.log("Caught error from get: " + err.json());
-        return "ERROR";
+      else if(resJSON.Items.length == 0){
+        console.log("Request did not find any due notifications. Here's the response: " + JSON.stringify(response));
+        return [];
       }
-    );
+      else{
+        let todaysNotifs: Notification[] = [];
+        for(let res of resJSON.Items){
+          let itemCollection = new ItemCollection(new ItemRecord(res.item.upc, res.item.name, res.item.isHighRisk), res.quantity, res.unitPrice);
+          todaysNotifs.push(new Notification(itemCollection, res.sellByDate, res.daysPrior, res.deliveryOption, res.memo));
+        }
+        console.log("Got back good response! Here it is mapped: ");
+        console.log(todaysNotifs);
+        return todaysNotifs;
+      }
+      //return [];
+    })
+    .catch((err) => {
+      console.log("Caught error in AWSFetchTodaysNotifications(): " + JSON.stringify(err));
+      console.log("Caught error in AWSFetchTodaysNotifications(): " + err.toString());
+      return [];
+    })
   }
 
   public AWSCreateThrowaway(throwaway: Throwaway) : Promise<string>{
@@ -172,6 +186,28 @@ export class AWSCommService {
         return "ERROR";
       }
     );
+  }
+
+  public AWSFetchShrinkList() : Promise<ShrinkAggregate[]> {
+    return this.get(this.access.shrinkFunction)
+    .then((response) => {
+      let resJSON = response.data.json();
+      if(resJSON == undefined){
+        return [];
+      }
+      else{
+        let result: ShrinkAggregate[] = [];
+        for(let item of resJSON.Items){
+          result.push(new ShrinkAggregate(item.upcId, ((item.name == undefined || item.name == "") ? "Blank Name": item.name),
+                                          item.totalShrink, item.highRisk));
+        }
+        return result;
+      }
+    });
+  }
+
+  public shoutBack() {
+    console.log("This is the device service.");
   }
 
 }

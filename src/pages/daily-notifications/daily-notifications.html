@@ -20,10 +20,16 @@
   <ion-list>
   <ion-item-sliding *ngFor="let notification of notificationList; let i = index" (click)="viewNotes($event, notification)" nowrap>
     <ion-item>
-      <h2>Name: {{ notification.item.item.name }}</h2>
-      <p>
-        Quantity: {{ notification.item.quantity }}
-      </p>
+      <ion-label>
+        <h2>Name: {{ notification.item.item.name }}</h2>
+        <p>
+          UPC: {{ notification.item.item.upc }}
+        </p>
+        <p>
+          Quantity: {{ notification.item.quantity }}
+        </p>
+      </ion-label>
+      <!-- <ion-checkbox item-end></ion-checkbox> -->
     </ion-item>
     <ion-item-options side="left">
       <button ion-button color='danger' (click)="deleteItem(i)">
@@ -36,3 +42,14 @@
 
 
 </ion-content>
+
+<ion-footer>
+  <ion-toolbar>
+    <ion-buttons end>
+      <button ion-button icon-only (click)="searchByDate(true)">
+        Search
+        <ion-icon name="search"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-footer>

@@ -1,4 +1,4 @@
-import { Http, Response, RequestOptions, Headers } from '@angular/http';
+import { Http, Response } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 import { Injectable } from '@angular/core';
@@ -6,6 +6,7 @@ import { Injectable } from '@angular/core';
 import { Accessor } from '../../../Accessor';
 
 import { ItemRecord } from '../assets/models/item-record.model';
+import { ItemCollection } from '../assets/models/item-collection.model';
 import { Notification } from '../assets/models/notification.model';
 import { ShrinkAggregate } from '../assets/models/shrink-agreggate.model';
 import { Throwaway } from '../assets/models/throwaway.model';
@@ -38,7 +39,7 @@ export class AWSCommBrowserService {
   public AWSgetupc(upc: string) : Promise<ItemRecord> {
     return this.get(this.access.upcFunction + upc).map((response) => {
       let resJSON = response.json();
-      console.log(resJSON);
+      //console.log(resJSON);
       if (resJSON.Items[0].fromUPCDB == true) {
         let newItemB = new ItemRecord(upc, resJSON.Items[0].name, false);
         return newItemB;
@@ -108,20 +109,32 @@ export class AWSCommBrowserService {
     ).toPromise<string>();
   }
 
-
-  public AWSFetchTodaysNotifications() : Promise<Response> {
-    let current = new Date();
-    return this.get(this.access.notificationFunction + this.access.notificationRetrieval + current.toString())
-    .map(
-      (response) => {
-        let resJSON = response.json();
-        console.log("Response from server: " + JSON.stringify(resJSON));
-        return response;
+  public AWSFetchTodaysNotifications() : Promise<Notification[]> {
+    let today = new Date();
+    return this.get(this.access.notificationFunction + this.access.notificationRetrieval + today.toString())
+    .map((response) => {
+      let resJSON = response.json();
+      if(resJSON.Items == undefined){
+        console.log("Got back an undefined response! Here it is: " + JSON.stringify(resJSON));
+        return[]
       }
-    ).toPromise<Response>();
+      else if(resJSON.Items.length <= 0){
+        console.log("No notifications for given day! Here's the response: " + JSON.stringify(resJSON));
+        return [];
+      }
+      else{
+        let todaysNotifs: Notification[] = [];
+        for(let res of resJSON.Items){
+          let itemCollection = new ItemCollection(new ItemRecord(res.item.upc, res.item.name, res.item.isHighRisk), res.quantity, res.unitPrice);
+          todaysNotifs.push(new Notification(itemCollection, res.sellByDate, res.daysPrior, res.deliveryOption, res.memo));
+        }
+        console.log("Got back good response! Here it is mapped: ");
+        console.log(todaysNotifs);
+        return todaysNotifs;
+      }
+    }).toPromise<Notification[]>();
   }
 
-  // This is for creating a throwaway entry.
   public AWSCreateThrowaway(throwaway: Throwaway) : Promise<string> {
     console.log("Creating throwaway: " + JSON.stringify(throwaway));
     return this.put(this.access.throwawayFunction, {"throwaway": JSON.stringify(throwaway)})
@@ -143,18 +156,22 @@ export class AWSCommBrowserService {
     return this.get(this.access.shrinkFunction)
     .map((response) => {
       let resJSON = response.json();
-      let result: ShrinkAggregate[];
-      result = [];
-      for(let item of resJSON.Items){
-        result.push(new ShrinkAggregate(item.upcId, item.name == undefined || item.name == "" ? "Blank Name": item.name, item.totalShrink));
-      }
       if(resJSON == undefined){
         return [];
       }
       else{
+        let result: ShrinkAggregate[] = [];
+        for(let item of resJSON.Items){
+          result.push(new ShrinkAggregate(item.upcId, ((item.name == undefined || item.name == "") ? "Blank Name": item.name),
+                                          item.totalShrink, item.highRisk));
+        }
         return result;
       }
     }).toPromise<ShrinkAggregate[]>();
+  }
+
+  public shoutBack() {
+    console.log("This is the browser service.");
   }
 
 }

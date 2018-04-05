@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { NavController, NavParams, ViewController, LoadingController } from 'ionic-angular';
-import { FormGroup, FormControl, Validators, AbstractControl } from '@angular/forms';
+import { NavParams, ViewController, LoadingController } from 'ionic-angular';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 
 import { ItemRecord } from '../../assets/models/item-record.model';
 import { ItemCollection } from '../../assets/models/item-collection.model';

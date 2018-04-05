@@ -1,11 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { NavController, NavParams, ViewController } from 'ionic-angular';
-import { FormGroup, FormControl, Validators, FormArray } from '@angular/forms';
+import { NavParams, ViewController } from 'ionic-angular';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 
 import { ToGetItem } from '../../assets/models/to-get-item.model';
-import { ItemRecord } from '../../assets/models/item-record.model';
-
-import { ShelfHelperService } from '../../services/shelf-helper.service';
 
 @Component({
   selector: 'to-get-popover',
@@ -28,10 +25,8 @@ export class ToGetEditPopover implements OnInit {
   toGet: ToGetItem;
   toGetForm: FormGroup;
 
-  constructor(private navCtrl: NavController,
-              private navParams: NavParams,
-              private viewCtrl: ViewController,
-              private shelfHelperService: ShelfHelperService) {
+  constructor(private navParams: NavParams,
+              private viewCtrl: ViewController) {
   }
 
   ngOnInit() {

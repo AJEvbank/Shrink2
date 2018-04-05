@@ -1,12 +1,12 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams, LoadingController, PopoverController, AlertController } from 'ionic-angular';
+import { NavController, LoadingController, PopoverController, AlertController } from 'ionic-angular';
 
 import { ScannerService } from '../../services/scanner.service';
 import { ItemRecord } from '../../assets/models/item-record.model';
 
 import { AWSCommService } from '../../services/AWSComm.service';
 import { AWSCommBrowserService } from '../../services/AWSCommBrowser.service';
-import { HighRiskListService } from '../../services/high-risk-list.service';
+
 
 import { ItemRecordPage } from '../item-record/item-record';
 import { DailyNotificationsPage } from '../daily-notifications/daily-notifications';
@@ -34,25 +34,23 @@ export class MainPage {
 
 
   constructor(private navCtrl: NavController,
-              private navParams: NavParams,
               private scanner: ScannerService,
               private loadingCtrl: LoadingController,
               private AWS: AWSCommService,
               private AWSB: AWSCommBrowserService,
               private popoverController: PopoverController,
-              private alertCtrl: AlertController,
-              private hrService: HighRiskListService) {
+              private alertCtrl: AlertController) {
+      this.dummyFunctionCalls();
   }
 
-  ionViewDidLoad() {
-    // this.access = new Accessor();
-    // if (window.location.hostname != "localhost") {
-    //
-    // }
-    //this.hrService.fetchList()
+  private dummyFunctionCalls() {
+    this.scanItem(false);
+    this.getItemByUPC(false);
   }
 
-  private scanItem() {
+
+  private scanItem(clear: boolean) {
+    if (clear == false) { return; }
     if (window.location.hostname == "localhost") {
       this.scanItemBrowser();
     }
@@ -124,7 +122,8 @@ export class MainPage {
     })
   }
 
-  private getItemByUPC() {
+  private getItemByUPC(clear: boolean) {
+    if (clear == false) { return; }
     if (window.location.hostname == "localhost") {
       this.scanItemBrowser();
     }

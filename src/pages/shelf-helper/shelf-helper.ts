@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { NavController, NavParams, PopoverController } from 'ionic-angular';
+import { PopoverController } from 'ionic-angular';
 
 
 import { ShelfHelperService } from '../../services/shelf-helper.service';
@@ -15,9 +15,7 @@ export class ShelfHelperPage implements OnInit {
 
   shelfHelperList: ToGetItem [] = [];
 
-  constructor(private navCtrl: NavController,
-              private navParams: NavParams,
-              private shelfHelperService: ShelfHelperService,
+  constructor(private shelfHelperService: ShelfHelperService,
               private popoverCtrl: PopoverController) {
   }
 

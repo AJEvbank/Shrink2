@@ -3,8 +3,6 @@ import { NavController, NavParams, ModalController, ToastController, AlertContro
 
 import { ItemRecord } from '../../assets/models/item-record.model';
 import { ToGetItem } from '../../assets/models/to-get-item.model';
-import { Throwaway } from '../../assets/models/throwaway.model';
-import { ItemCollection } from '../../assets/models/item-collection.model';
 
 import { EditItemRecordPage } from './edit-item-record/edit-item-record';
 import { CreateNotificationPage } from './create-notification/create-notification';
@@ -111,8 +109,7 @@ export class ItemRecordPage implements OnInit {
   ToggleHighRisk(toggle: boolean){
     if(this.isCompleteItemRecord == true){
       let loader = this.loadingCtrl.create({
-        content: "Updating...",
-        // duration: 2000,
+        content: "Updating..."
       });
       loader.present();
       //Update the status

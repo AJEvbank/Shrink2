@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { NavController, NavParams, ViewController } from 'ionic-angular';
-import { FormGroup, FormControl, Validators, AbstractControl } from '@angular/forms';
+import { NavParams, ViewController } from 'ionic-angular';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 
 import { ItemRecord } from '../../assets/models/item-record.model';
 
@@ -15,7 +15,7 @@ import { ItemRecord } from '../../assets/models/item-record.model';
       <ion-item>
         <ion-label>Quantity: </ion-label>
         <ion-input type="number" formControlName="quantity"></ion-input>
-      </ion-item>      
+      </ion-item>
       <button ion-button block (click)="submit()" [disabled]="!quantity.valid">Add</button>
     </form>
     <button ion-button block color="danger" (click)="dismiss()">Cancel</button>
