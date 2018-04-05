@@ -12,7 +12,7 @@
   <ion-grid>
     <ion-row padding>
       <ion-col>
-        <button ion-button block large round color="danger" (click)="scanItem(true)">Scan</button>
+        <button ion-button block large round color="danger" (click)="scanItem(true)" [disabled]="this.isLocalHost == true">Scan</button>
       </ion-col>
     </ion-row>
 

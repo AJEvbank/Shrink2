@@ -41,23 +41,22 @@ export class AWSCommService {
     return this.get(this.access.upcFunction + upc)
     .then((response) => {
       let resJSON = JSON.parse(response.data);
-      console.log("resJSON: " + JSON.stringify(resJSON));
-      // if (resJSON.upcnumber != undefined) {
-      //   console.log("Got valid record back from upcdatabase.org! ");
-      //   return new ItemRecord(upc, resJSON.title, false);
-      // }
-      // else
-      if(resJSON.Items.length > 0){
+      console.log("resJSON on device service: " + JSON.stringify(resJSON));
+      if (resJSON.Items == undefined) {
+        console.log("Undefined Items[] from server! ");
+        return new ItemRecord(upc, "ERROR");
+      }
+      else if(resJSON.Items[0].name != undefined){
         console.log("Got valid record back!");
         return new ItemRecord(upc, resJSON.Items[0].name, resJSON.Items[0].highRisk);
       }else{
         console.log("Got empty record back!");
-        return new ItemRecord(upc, "(Add New Item Name Here)");
+        return new ItemRecord(upc, "EMPTY");
       }
     })
     .catch((err) => {
       console.log("Caught error from get: " + JSON.stringify(err));
-      return new ItemRecord(upc, " ");
+      return new ItemRecord(upc, "ERROR");
     });
   }
 
