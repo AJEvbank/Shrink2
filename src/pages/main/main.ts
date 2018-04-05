@@ -111,14 +111,16 @@ export class MainPage {
         errAlert.present();
       } else if(item.name == "EMPTY") {
         let newEmptyItem = new ItemRecord(item.upc,"(Add New Item Name Here)");
-        this.navCtrl.push(ItemRecordPage,{item: newEmptyItem});
+        this.navCtrl.push(ItemRecordPage,{item: newEmptyItem, saved: false});
       } else {
-        this.navCtrl.push(ItemRecordPage,{item: item});
+        this.navCtrl.push(ItemRecordPage,{item: item, saved: true});
       }
     })
     .catch((err) => {
       loader.dismiss();
       console.log(JSON.stringify(err));
+      let errAlert = this.alertCtrl.create({title: 'Error',message: "An error occurred. Please try again.",buttons: ['Dismiss']});
+      errAlert.present();
     })
   }
 

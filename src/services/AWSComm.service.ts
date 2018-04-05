@@ -182,7 +182,7 @@ export class AWSCommService {
     return this.put(this.access.throwawayFunction, info)
     .then(
       (response) => {
-        let resJSON = response.data;
+        let resJSON = JSON.parse(response.data);
         console.log("Response from server: " + JSON.stringify(resJSON) + " :=> " + resJSON);
         if (resJSON.notification == undefined) {
           return "ERROR";
