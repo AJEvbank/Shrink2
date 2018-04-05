@@ -36,13 +36,14 @@ export class ThrowawayQuantityPricePopoverPage implements OnInit {
 
   discard: FormGroup;
   item: ItemRecord;
+  AWSComm: AWSCommService | AWSCommBrowserService;
 
   constructor(private viewCtrl: ViewController,
               private navParams: NavParams,
               private loadingCtrl: LoadingController,
               private AWS: AWSCommService,
               private AWSB: AWSCommBrowserService) {
-
+    this.AWSComm = (window.location.hostname == "localhost") ? this.AWSB : this.AWS;
   }
 
   ngOnInit() {
@@ -72,38 +73,29 @@ export class ThrowawayQuantityPricePopoverPage implements OnInit {
     let loader = this.loadingCtrl.create();
     loader.present();
     console.log("value.quantity = " + value.quantity + " value.unitPrice = " + value.unitPrice);
-    if (window.location.hostname == "localhost") {
-      this.AWSB.AWSCreateThrowaway(new Throwaway(new ItemCollection(this.item,value.quantity,value.unitPrice),new Date()))
-      .then(
-        (response) => {
+    let newThrowaway = new Throwaway(new ItemCollection(this.item,value.quantity,value.unitPrice),new Date());
+    this.AWSComm.AWSCreateThrowaway(newThrowaway)
+    .then(
+      (message: string) => {
+        if (message == "ERROR") {
           loader.dismiss();
-          console.log("response from AWS Service: " + JSON.stringify(response));
-          this.viewCtrl.dismiss({response: response});
+          console.log("response from AWS Service on ERROR: " + JSON.stringify(message));
+          this.viewCtrl.dismiss({response: message});
         }
-      )
-      .catch(
-        (err) => {
+        else if (message == "SUCCESS"){
           loader.dismiss();
-          this.viewCtrl.dismiss({response: "ERROR"});
+          console.log("response from AWS Service on SUCCESS: " + JSON.stringify(message));
+          this.viewCtrl.dismiss({response: message});
         }
-      );
-    }
-    else {
-      this.AWS.AWSCreateThrowaway(new Throwaway(new ItemCollection(this.item,value.quantity,value.unitPrice),new Date()))
-      .then(
-        (response) => {
-          loader.dismiss();
-          console.log("response from AWS Service: " + JSON.stringify(response));
-          this.viewCtrl.dismiss({response: response});
-        }
-      )
-      .catch(
-        (err) => {
-          loader.dismiss();
-          this.viewCtrl.dismiss({response: "ERROR"});
-        }
-      );
-    }
+      }
+    )
+    .catch(
+      (err) => {
+        loader.dismiss();
+        console.log("response from AWS Service caught in AWSCreateThrowaway(): " + JSON.stringify(err) + " :=> " + err.json());
+        this.viewCtrl.dismiss({response: "SUCCESS"});
+      }
+    );
   }
 
 

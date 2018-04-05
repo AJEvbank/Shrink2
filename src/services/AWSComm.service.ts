@@ -131,6 +131,7 @@ export class AWSCommService {
   }
 
   //Untested
+
   public AWSFetchTodaysNotifications() : Promise<Notification[]> {
     console.log("Entered AWSFetchTodaysNotifications() via device service");
     let today = new Date();
@@ -167,12 +168,23 @@ export class AWSCommService {
 
   public AWSCreateThrowaway(throwaway: Throwaway) : Promise<string>{
     console.log("Creating throwaway: " + JSON.stringify(throwaway));
-    return this.put(this.access.throwawayFunction, {"throwaway": JSON.stringify(throwaway)})
+    let info = {
+      "quantity": throwaway.item.quantity,
+      "disposalDate": throwaway.dateOfDiscard,
+      "unitPrice": throwaway.item.unitPrice,
+      "item": {
+        "name": throwaway.item.item.name,
+        "isHighRisk": throwaway.item.item.isHighRisk,
+        "upc": throwaway.item.item.upc
+      }
+    };
+    console.log("Passing throwaway: " + JSON.stringify(info));
+    return this.put(this.access.throwawayFunction, info)
     .then(
       (response) => {
-        let resJSON = response.data.json();
+        let resJSON = JSON.parse(response.data);
         console.log("Response from server: " + JSON.stringify(resJSON) + " :=> " + resJSON);
-        if (resJSON == undefined) {
+        if (resJSON.notification == undefined) {
           return "ERROR";
         }
         else {
@@ -182,7 +194,7 @@ export class AWSCommService {
     )
     .catch(
       (err) => {
-        console.log("Caught error from put: " + err.json());
+        console.log("Caught error from put: " + err.json() + " :=> " + JSON.stringify(err));
         return "ERROR";
       }
     );
