@@ -17,7 +17,7 @@
 <ion-content padding>
 
 
-  <ion-list>
+<ion-list>
   <ion-item-sliding *ngFor="let notification of notificationList; let i = index" (click)="viewNotes($event, notification)" nowrap>
     <ion-item>
       <ion-label>
@@ -36,9 +36,11 @@
         <ion-icon name="md-trash"></ion-icon>
       </button>
     </ion-item-options>
-
   </ion-item-sliding>
 </ion-list>
+
+<!-- Needs to be pretty -->
+<h1 ion-text *ngIf="noNotifications">No notifications for today!</h1>
 
 
 </ion-content>

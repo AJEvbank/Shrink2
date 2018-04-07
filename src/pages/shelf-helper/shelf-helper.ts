@@ -16,8 +16,7 @@ export class ShelfHelperPage implements OnInit {
   shelfHelperList: ToGetItem [] = [];
 
   constructor(private shelfHelperService: ShelfHelperService,
-              private popoverCtrl: PopoverController) {
-  }
+              private popoverCtrl: PopoverController) {}
 
   ngOnInit() {
     this.shelfHelperService.fetchList()
