@@ -6,7 +6,7 @@ import { Notification } from '../../assets/models/notification.model';
 @Component({
   selector: 'notification-popover',
   template: `
-    <ion-content padding>
+    <ion-content padding class="no-scroll">
         <ion-list no-lines>
           <h3>{{ notification.item.item.name }}</h3>
             <ion-item>

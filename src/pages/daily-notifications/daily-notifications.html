@@ -18,8 +18,8 @@
 
 
 <ion-list>
-  <ion-item-sliding *ngFor="let notification of notificationList; let i = index" (click)="viewNotes($event, notification)" nowrap>
-    <ion-item>
+  <ion-item-sliding *ngFor="let notification of notificationList; let i = index" nowrap>
+    <ion-item (click)="viewNotes($event, notification)">
       <ion-label>
         <h2>Name: {{ notification.item.item.name }}</h2>
         <p>
@@ -45,7 +45,7 @@
 
 </ion-content>
 
-<ion-footer>
+<!-- <ion-footer>
   <ion-toolbar>
     <ion-buttons end>
       <button ion-button icon-only (click)="searchByDate(true)">
@@ -54,4 +54,4 @@
       </button>
     </ion-buttons>
   </ion-toolbar>
-</ion-footer>
+</ion-footer> -->

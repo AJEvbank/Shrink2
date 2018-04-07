@@ -7,7 +7,7 @@ import { ToGetItem } from '../../assets/models/to-get-item.model';
 @Component({
   selector: 'to-get-popover',
   template: `
-    <ion-content padding>
+    <ion-content padding class="no-scroll">
         <form [formGroup]="toGetForm" (ngSubmit)="onSubmit()">
             <h3>{{ toGet.item.name }}</h3>
             <ion-item>
