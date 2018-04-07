@@ -78,7 +78,7 @@ export class DailyNotificationsPage implements OnInit {
       //Uh-oh! Print the error!
       console.log(err);
       let errorAlert = this.alertCtrl.create({title: 'Error',
-                                              message: "Could not fetch the list. Error has been printed.",
+                                              message: "Could not fetch the list. Use Refresh.",
                                               buttons: ['Dismiss']});
       errorAlert.present();
       console.log("Dismissed in catch()");
