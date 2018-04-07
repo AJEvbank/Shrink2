@@ -34,9 +34,14 @@ export class ShelfHelperPage implements OnInit {
   }
 
   deleteToGetItem(index: number) {
-    this.shelfHelperService.removeItem(index);
-    this.shelfHelperList = this.shelfHelperService.loadList();
-    console.log(this.shelfHelperList);
+    this.shelfHelperService.removeItem(index)
+    .then(() => {
+      this.shelfHelperList = this.shelfHelperService.loadList();
+      console.log(this.shelfHelperList);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
   }
 
   editQuantity(clickEvent, toGet: ToGetItem) {

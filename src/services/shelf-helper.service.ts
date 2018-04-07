@@ -45,10 +45,10 @@ export class ShelfHelperService {
     );
   }
 
-  public removeItem(index: number) {
+  public removeItem(index: number) : Promise<void> {
     const itemSave: ToGetItem = this.shelfHelperList.slice(index,index + 1)[0];
     this.shelfHelperList.splice(index, 1);
-    this.storage.set('shelfHelperList',this.shelfHelperList)
+    return this.storage.set('shelfHelperList',this.shelfHelperList)
     .then()
     .catch(
       (err) => {
