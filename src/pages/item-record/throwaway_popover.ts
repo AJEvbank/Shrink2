@@ -12,7 +12,7 @@ import { AWSCommBrowserService } from '../../services/AWSCommBrowser.service';
 @Component({
   selector: 'throwaway-popover',
   template: `
-  <ion-content padding>
+  <ion-content padding class="no-scroll">
     <ion-item>
       <h2> {{ item.name }} </h2>
     </ion-item>

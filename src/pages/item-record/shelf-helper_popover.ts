@@ -7,7 +7,7 @@ import { ItemRecord } from '../../assets/models/item-record.model';
 @Component({
   selector: 'shelf-helper-popover',
   template: `
-  <ion-content padding>
+  <ion-content padding class="no-scroll">
     <ion-item>
       <h2>{{ item.name }} </h2>
     </ion-item>

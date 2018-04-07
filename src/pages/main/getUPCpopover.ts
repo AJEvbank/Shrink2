@@ -5,7 +5,7 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 @Component({
   selector: 'get-upc-popover',
   template: `
-  <ion-content padding>
+  <ion-content padding class="no-scroll">
     <form [formGroup]="upc">
       <ion-input type="text" formControlName="upc" (ngSubmit)="submit()"></ion-input>
       <button ion-button block (click)="submit()" [disabled]="!upc.valid">Use UPC</button>
