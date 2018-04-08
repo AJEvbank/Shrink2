@@ -1,18 +1,18 @@
 <ion-header>
 
-  <ion-navbar>
+  <ion-navbar hideBackButton="true">
     <ion-title>Home</ion-title>
   </ion-navbar>
 
 </ion-header>
 
 
-<ion-content padding>
+<ion-content padding class="no-scroll">
 
   <ion-grid>
     <ion-row padding>
       <ion-col>
-        <button ion-button block large round color="danger" (click)="scanItem(true)">Scan</button>
+        <button ion-button block large round color="danger" (click)="scanItem(true)" [disabled]="this.isLocalHost == true">Scan</button>
       </ion-col>
     </ion-row>
 
@@ -29,13 +29,15 @@
     </ion-row>
 
     <ion-row padding>
-      <ion-col col-5>
-        <button ion-button round color="orange" [disabled]="true"
+      <ion-col>
+        <button ion-button block round color="orange" [disabled]="true"
         (click)="prepareHighRiskList()">High-Risk List</button>
       </ion-col>
-      <ion-col col-2></ion-col>
-      <ion-col col-5>
-        <button ion-button round [navPush]="shelfHelperPage">Shelf Helper</button>
+    </ion-row>
+
+    <ion-row padding>
+      <ion-col>
+        <button ion-button block round [navPush]="shelfHelperPage">Shelf Helper</button>
       </ion-col>
     </ion-row>
 

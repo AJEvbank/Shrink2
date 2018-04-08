@@ -14,6 +14,7 @@ import { Notification } from '../../assets/models/notification.model';
 export class DailyNotificationsPage implements OnInit {
 
   notificationList: Notification [] = [];
+  noNotifications: boolean = false;
 
   constructor(private dailyNotificationsService: DailyNotificationsService,
               private popoverController: PopoverController,
@@ -70,13 +71,14 @@ export class DailyNotificationsPage implements OnInit {
       //It works! Update local list with service list!
       this.notificationList = this.dailyNotificationsService.GetList();
       console.log("Dismissed in then()");
+      this.noNotifications = this.notificationList.length == 0;
       loader.dismiss();
     })
     .catch((err) => {
       //Uh-oh! Print the error!
       console.log(err);
       let errorAlert = this.alertCtrl.create({title: 'Error',
-                                              message: "Could not fetch the list. Error has been printed.",
+                                              message: "Could not fetch the list. Use Refresh.",
                                               buttons: ['Dismiss']});
       errorAlert.present();
       console.log("Dismissed in catch()");

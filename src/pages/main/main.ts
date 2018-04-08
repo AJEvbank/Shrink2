@@ -32,6 +32,9 @@ export class MainPage {
 
   testDebug: string;
 
+  AWSComm: AWSCommService | AWSCommBrowserService;
+  isLocalHost: boolean;
+
 
   constructor(private navCtrl: NavController,
               private scanner: ScannerService,
@@ -41,44 +44,42 @@ export class MainPage {
               private popoverController: PopoverController,
               private alertCtrl: AlertController) {
       this.dummyFunctionCalls();
+      this.isLocalHost = (window.location.hostname == "localhost") ? true : false;
+      this.AWSComm = (this.isLocalHost == true) ? this.AWSB : this.AWS;
   }
 
-  private dummyFunctionCalls() {
+  private dummyFunctionCalls() { // This function is stupid, but it gets rid of a stupid warning on transpile.
     this.scanItem(false);
     this.getItemByUPC(false);
   }
 
 
-  private scanItem(clear: boolean) {
+  private getItemByUPC(clear: boolean) {
     if (clear == false) { return; }
-    if (window.location.hostname == "localhost") {
-      this.scanItemBrowser();
-    }
-    else {
-      this.scanItemAndroid();
-    }
-  }
-
-  private scanItemBrowser(){
     let pop = this.popoverController.create(GetUPCPopover, {}, { enableBackdropDismiss: false });
     pop.present();
     pop.onDidDismiss(
       (upc) => {
         console.log(upc);
-        if (upc != "NO_UPC")
-        {
+        if (upc != "NO_UPC") {
           let loader = this.loadingCtrl.create();
           loader.present();
-          this.AWSB.AWSgetupc(upc)
+          this.AWSComm.AWSgetupc(upc)
           .then(
             (item: ItemRecord) => {
               loader.dismiss();
               console.log("item: " + JSON.stringify(item));
-              if(item.name == " ") {
+              if(item.name == "EMPTY") {
                 console.log("NewRecord Triggered");
                 let newEmptyItem = new ItemRecord(item.upc,"(Add New Item Name Here)");
                 this.navCtrl.push(ItemRecordPage,{item: newEmptyItem, saved: false});
-              } else {
+              }
+              else if(item.name == "ERROR") {
+                console.log("Error on response.");
+                let errAlert = this.alertCtrl.create({title: 'Error',message: "An error occurred. Please try again.",buttons: ['Dismiss']});
+                errAlert.present();
+              }
+              else {
                 console.log("else Triggered");
                 this.navCtrl.push(ItemRecordPage,{item: item, saved: true});
               }
@@ -94,18 +95,19 @@ export class MainPage {
     );
   }
 
-  private scanItemAndroid(){
+  private scanItem(clear: boolean) : void {
+    if (clear == false) { return; }
     let loader = this.loadingCtrl.create();
-    loader.present();
     this.scanner.androidScan()
     .then((upc) => {
       console.log("Successfully got a upc: " + upc);
-      return this.AWS.AWSgetupc(upc);
+      loader.present();
+      return this.AWSComm.AWSgetupc(upc);
     })
     .then((item) => {
       console.log("Successfully got an ItemRecord: " + JSON.stringify(item));
       loader.dismiss();
-      if(item.name == " "){
+      if(item.name == "ERROR"){
         console.log("An error occurred in record retrieval!");
         let errAlert = this.alertCtrl.create({title: 'Error',message: "An error occurred. Please try again.",buttons: ['Dismiss']});
         errAlert.present();
@@ -115,55 +117,15 @@ export class MainPage {
       } else {
         this.navCtrl.push(ItemRecordPage,{item: item, saved: true});
       }
+      return;
     })
     .catch((err) => {
       loader.dismiss();
       console.log(JSON.stringify(err));
       let errAlert = this.alertCtrl.create({title: 'Error',message: "An error occurred. Please try again.",buttons: ['Dismiss']});
       errAlert.present();
+      return;
     })
-  }
-
-  private getItemByUPC(clear: boolean) {
-    if (clear == false) { return; }
-    if (window.location.hostname == "localhost") {
-      this.scanItemBrowser();
-    }
-    else {
-      console.log("getItemByUPC()");
-      let pop = this.popoverController.create(GetUPCPopover, {}, { enableBackdropDismiss: false });
-      pop.present();
-      pop.onDidDismiss(
-        (data) => {
-          console.log("onDidDismiss " + JSON.stringify(data));
-          if (data != "NO_UPC") {
-            let loader = this.loadingCtrl.create();
-            loader.present();
-            this.AWS.AWSgetupc(data)
-            .then((item) => {
-              loader.dismiss();
-              if(item.upc.length != 12) {
-                console.log("An error occurred in record retrieval!");
-                let errAlert = this.alertCtrl.create({title: 'Error',message: "An error occurred. Please try again.",buttons: ['Dismiss']});
-                errAlert.present();
-              } else if(item.name == " ") {
-                let newEmptyItem = new ItemRecord(item.upc,"(Add New Item Name Here)");
-                this.navCtrl.push(ItemRecordPage,{item: newEmptyItem});
-              } else {
-                this.navCtrl.push(ItemRecordPage,{item: item});
-              }
-            })
-            .catch((err) => {
-              loader.dismiss();
-              console.log("This is the error caught from AWS.AWSgetupc: " + err);
-            });
-          }
-          else {
-            console.log("Cancelled with: " + data.upc);
-          }
-        }
-      );
-    }
   }
 
 }

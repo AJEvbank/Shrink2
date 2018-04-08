@@ -13,7 +13,7 @@
   <ion-item-sliding *ngFor="let shrink of shrinkList; let i = index" nowrap>
     <ion-item>
       <h2>{{ shrink.name }}</h2>
-      <h3>Loss: <b ion-text color='danger'>${{ shrink.shrink }}</b></h3>
+      <h3>Loss: <b ion-text color='danger'>${{ shrink.shrink.toFixed(2) }}</b></h3>
       <p>UPC: {{ shrink.upc }}</p>
     </ion-item>
     <ion-item-options side="left">

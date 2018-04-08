@@ -1,13 +1,13 @@
 <ion-header>
 
-  <ion-navbar>
+  <ion-navbar hideBackButton="true">
     <ion-title>Item Record</ion-title>
   </ion-navbar>
 
 </ion-header>
 
 
-<ion-content padding>
+<ion-content padding class="no-scroll">
   <ion-card (click)="editItem()">
 
   <ion-card-header>
@@ -29,10 +29,10 @@
     <p *ngIf="item.isHighRisk">
       High Risk Item
     </p>
-    <p>
+    <!-- <p>
       This item has been referenced {{ item.references }} times.
-    </p>
-    <hr/>
+    </p> -->
+    <!-- <hr/> -->
     <p>
       (Tap To Edit)
     </p>
@@ -42,35 +42,35 @@
 
 <ion-row padding>
   <ion-col>
-    <button ion-button block color="yellow" (click)="createNotification()">Create Notification</button>
+    <button ion-button round block color="yellow" (click)="createNotification()">Create Notification</button>
   </ion-col>
 </ion-row>
 
 <ion-row padding>
   <ion-col *ngIf="this.item.isHighRisk == false">
-    <button ion-button block color="danger" (click)="ToggleHighRisk(true)">Add To High-Risk List</button>
+    <button ion-button round block color="danger" (click)="ToggleHighRisk(true)">Add To High-Risk List</button>
   </ion-col>
 
   <ion-col *ngIf="this.item.isHighRisk == true">
-    <button ion-button block color="green" (click)="ToggleHighRisk(false)">Remove From High-Risk List</button>
+    <button ion-button round block color="green" (click)="ToggleHighRisk(false)">Remove From High-Risk List</button>
   </ion-col>
 </ion-row>
 
 <ion-row padding>
   <ion-col>
-    <button ion-button block color="green" (click)="addToShelfHelperList()">Add To Shelf Helper List</button>
+    <button ion-button round block color="green" (click)="addToShelfHelperList()">Add To Shelf Helper List</button>
   </ion-col>
 </ion-row>
 
 <ion-row padding>
   <ion-col>
-    <button ion-button block color="danger" (click)="throwaway()">Throwaway</button>
+    <button ion-button round block color="danger" (click)="throwaway()">Throwaway</button>
   </ion-col>
 </ion-row>
 
 <ion-row padding>
   <ion-col>
-    <button ion-button block (click)="home()">Home</button>
+    <button ion-button round block (click)="home()">Home</button>
   </ion-col>
 </ion-row>
 

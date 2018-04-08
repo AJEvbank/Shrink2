@@ -9,9 +9,7 @@ export class ShelfHelperService {
 
   shelfHelperList: ToGetItem [];
 
-  constructor(private storage: Storage) {
-
-  }
+  constructor(private storage: Storage) {}
 
   public addItem(item: ToGetItem) {
     let found = false, oldQuantity: number, oldIndex: number;
@@ -47,10 +45,10 @@ export class ShelfHelperService {
     );
   }
 
-  public removeItem(index: number) {
+  public removeItem(index: number) : Promise<void> {
     const itemSave: ToGetItem = this.shelfHelperList.slice(index,index + 1)[0];
     this.shelfHelperList.splice(index, 1);
-    this.storage.set('shelfHelperList',this.shelfHelperList)
+    return this.storage.set('shelfHelperList',this.shelfHelperList)
     .then()
     .catch(
       (err) => {
@@ -60,7 +58,7 @@ export class ShelfHelperService {
     )
   };
 
-  public fetchList() {
+  public fetchList() : Promise<ToGetItem[]> {
     return this.storage.get('shelfHelperList')
     .then(
       (list: ToGetItem []) => {
@@ -71,6 +69,7 @@ export class ShelfHelperService {
     .catch(
       (err) => {
         console.log(err);
+        return this.shelfHelperList = [];
       }
     )
   }
@@ -109,5 +108,9 @@ export class ShelfHelperService {
         }
       }
     );
+  }
+
+  public wipeStorage(){
+    this.storage.clear();
   }
 }
