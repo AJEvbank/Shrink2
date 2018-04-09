@@ -29,6 +29,7 @@ import { ThrowawayQuantityPricePopoverPage } from '../pages/item-record/throwawa
 import { EditItemRecordPage } from '../pages/item-record/edit-item-record/edit-item-record';
 import { CreateNotificationPage } from '../pages/item-record/create-notification/create-notification';
 import { ThrowawayPage } from '../pages/item-record/throwaway/throwaway';
+import { EditNotificationPage } from '../pages/daily-notifications/edit-notification/edit-notification';
 
 import { ReportsPage } from '../pages/reports/reports';
 import { CalendarPage } from '../pages/reports/calendar/calendar';
@@ -67,7 +68,8 @@ import { Accessor } from '../../../Accessor';
     GetUPCPopover,
     ShelfHelperAddQuantityPopover,
     ThrowawayQuantityPricePopoverPage,
-    ToGetEditPopover
+    ToGetEditPopover,
+    EditNotificationPage
   ],
   imports: [
     BrowserModule,
@@ -96,7 +98,8 @@ import { Accessor } from '../../../Accessor';
     GetUPCPopover,
     ShelfHelperAddQuantityPopover,
     ThrowawayQuantityPricePopoverPage,
-    ToGetEditPopover
+    ToGetEditPopover,
+    EditNotificationPage
   ],
   providers: [
     StatusBar,
