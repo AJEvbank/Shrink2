@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { PopoverController, LoadingController, AlertController, ToastController } from 'ionic-angular';
+import { PopoverController, LoadingController, AlertController, ToastController, ModalController } from 'ionic-angular';
 
 import { NotificationPopoverPage } from './notification-popover';
 
@@ -20,7 +20,8 @@ export class DailyNotificationsPage implements OnInit {
               private popoverController: PopoverController,
               private loadingCtrl: LoadingController,
               private alertCtrl: AlertController,
-              private toastCtrl: ToastController) {
+              private toastCtrl: ToastController,
+              private modalCtrl: ModalController) {
       this.dummyFunction();
   }
 
@@ -28,6 +29,7 @@ export class DailyNotificationsPage implements OnInit {
     this.deleteItem(-2);
     this.viewNotes(null,null);
     this.searchByDate(false);
+    this.editItem(null, -1);
   }
 
   ngOnInit() {
@@ -121,5 +123,10 @@ export class DailyNotificationsPage implements OnInit {
     return;
   }
 
+  private editItem(notification: Notification, index: number) {
+    if (index < 0) return;
+    console.log("editItem():");
+    console.log("Notification: " + JSON.stringify(notification));
+  }
 
 }
