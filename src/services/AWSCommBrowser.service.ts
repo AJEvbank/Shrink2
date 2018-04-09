@@ -33,6 +33,9 @@ export class AWSCommBrowserService {
     return this.http.get(this.access.base + functionURL);
   }
 
+  private delete(functionURL: string, body: any) : Observable<Response> {
+    return this.http.delete(this.access.base + functionURL,{});
+  }
 
   // Specific requests return a Promise<(desired data type here)>.
 
@@ -125,15 +128,31 @@ export class AWSCommBrowserService {
       }
       else{
         let todaysNotifs: Notification[] = [];
-        for(let res of resJSON.Items){
+        for(let res of resJSON.Items) {
           let itemCollection = new ItemCollection(new ItemRecord(res.item.upc, res.item.name, res.item.isHighRisk), res.quantity, res.unitPrice);
-          todaysNotifs.push(new Notification(itemCollection, res.sellByDate, res.daysPrior, res.deliveryOption, res.memo));
+          todaysNotifs.push(new Notification(itemCollection, res.sellByDate, res.daysPrior, res.deliveryOption, res.memo, res.Id));
         }
         console.log("Got back good response! Here it is mapped: ");
         console.log(todaysNotifs);
         return todaysNotifs;
       }
     }).toPromise<Notification[]>();
+  }
+
+  public AWSPermanentDeleteNotification(Id: string) : Promise<string>{
+    let body = {};
+    return this.delete(this.access.notificationFunction + this.access.notificationId + Id, body)
+    .map(
+      (response) => {
+        let resJSON = response.json();
+        if (resJSON.status == 200) {
+          return "SUCCESS";
+        }
+        else {
+          return "ERROR";
+        }
+      }
+    ).toPromise<string>();
   }
 
   public AWSCreateThrowaway(throwaway: Throwaway) : Promise<string> {
@@ -181,6 +200,7 @@ export class AWSCommBrowserService {
       }
     }).toPromise<ShrinkAggregate[]>();
   }
+
 
   public shoutBack() {
     console.log("This is the browser service.");

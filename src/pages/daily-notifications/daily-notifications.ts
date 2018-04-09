@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { PopoverController, LoadingController, AlertController } from 'ionic-angular';
+import { PopoverController, LoadingController, AlertController, ToastController } from 'ionic-angular';
 
 import { NotificationPopoverPage } from './notification-popover';
 
@@ -19,7 +19,8 @@ export class DailyNotificationsPage implements OnInit {
   constructor(private dailyNotificationsService: DailyNotificationsService,
               private popoverController: PopoverController,
               private loadingCtrl: LoadingController,
-              private alertCtrl: AlertController) {
+              private alertCtrl: AlertController,
+              private toastCtrl: ToastController) {
       this.dummyFunction();
   }
 
@@ -50,6 +51,34 @@ export class DailyNotificationsPage implements OnInit {
     if (clickEvent == null) { return; }
     let popover = this.popoverController.create(NotificationPopoverPage, {notification: notification});
     popover.present();
+    popover.onDidDismiss(
+      (data) => {
+        if (data.Id != null) {
+          console.log("Delete notification with Id: " + data.Id);
+          this.dailyNotificationsService.permanentDeleteNotification(data.Id)
+          .then(
+            (message) => {
+              console.log("message in onDidDismiss(): " + message);
+              if(message == undefined || message == "ERRORS" || message == "ERRORING" || message == "ERRORED") {
+                let errorAlert = this.alertCtrl.create({title: 'Error',message: "An error occurred. Please try again.",buttons: ['Dismiss']});
+                errorAlert.present();
+              }
+              else if (message == "SUCCESS") {
+                let toast = this.toastCtrl.create({message: "Notification has been deleted.",duration: 2000});
+                toast.present();
+              }
+            }
+          )
+          .catch(
+            (err) => {
+              console.log("Error caught in viewNotes() delete function: " + err.json() + " :=> " + JSON.stringify(err));
+              let errorAlert = this.alertCtrl.create({title: 'Error',message: "An error occurred. Please try again.",buttons: ['Dismiss']});
+              errorAlert.present();
+            }
+          );
+        }
+      }
+    );
     return;
   }
 
@@ -91,4 +120,6 @@ export class DailyNotificationsPage implements OnInit {
     console.log("searchByDate()");
     return;
   }
+
+
 }

@@ -34,6 +34,13 @@ export class AWSCommService {
     return this.http.get(this.access.base + functionURL, {}, {});
   }
 
+  private delete(functionURL: string, body: any) : Promise<HTTPResponse> {
+    console.log("Service delete called.");
+    this.http.setDataSerializer("json");
+
+    return this.http.delete(this.access.base + functionURL, body, {});
+  }
+
 
   // Specific requests return a Promise<(desired data type here)>.
 
@@ -129,7 +136,27 @@ export class AWSCommService {
     );
   }
 
-  //Untested
+  public AWSPermanentDeleteNotification(Id: string) : Promise<string>{
+    console.log("In device comm service function.");
+    return this.delete(this.access.notificationFunction + this.access.notificationId + Id, {Id: Id})
+    .then(
+      (response) => {
+        console.log("No error from delete(): " + JSON.stringify(response));
+        if (response.status == 200) {
+          return "SUCCESS";
+        }
+        else {
+          return "ERRORS";
+        }
+      }
+    )
+    .catch(
+      (err) => {
+        console.log("Error caught in AWSPermanentDeleteNotification(): " + err.json() + " :=> " + JSON.stringify(err));
+        return "ERRORED";
+      }
+    );
+  }
 
   public AWSFetchTodaysNotifications() : Promise<Notification[]> {
     console.log("Entered AWSFetchTodaysNotifications() via device service");
@@ -148,9 +175,9 @@ export class AWSCommService {
       }
       else{
         let todaysNotifs: Notification[] = [];
-        for(let res of resJSON.Items){
+        for(let res of resJSON.Items) {
           let itemCollection = new ItemCollection(new ItemRecord(res.item.upc, res.item.name, res.item.isHighRisk), res.quantity, res.unitPrice);
-          todaysNotifs.push(new Notification(itemCollection, res.sellByDate, res.daysPrior, res.deliveryOption, res.memo));
+          todaysNotifs.push(new Notification(itemCollection, res.sellByDate, res.daysPrior, res.deliveryOption, res.memo, res.Id));
         }
         console.log("Got back good response! Here it is mapped: ");
         console.log(todaysNotifs);

@@ -10,14 +10,16 @@ export class Notification {
   public dateOfCreation: Date;
   // MEMO: add memo property (string) for user's notes.
   public memo: string;
+  public Id: string;
 
-  constructor(item: ItemCollection, sellByDate: Date, daysPrior=3, deliveryOption=Notification.Option.NONE, memo: string) {
+  constructor(item: ItemCollection, sellByDate: Date, daysPrior=3, deliveryOption=Notification.Option.NONE, memo: string, id=null) {
     this.item = item;
     this.sellByDate = sellByDate;
     this.daysPrior = daysPrior;
     this.deliveryOption = deliveryOption;
     this.memo = memo;
     this.dateOfCreation = new Date();
+    this.Id = id;
   }
 }
 

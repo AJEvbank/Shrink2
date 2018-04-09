@@ -56,6 +56,7 @@ export class DailyNotificationsService {
 
   //Fetch the list from the server, make update service list.
   //Promise is void to act more as an ack
+
   public FetchList() : Promise<void> {
     //let AWSComm = (window.location.hostname == "localhost") ? this.AWSB : this.AWS;
     return this.AWSComm.AWSFetchTodaysNotifications()
@@ -72,5 +73,22 @@ export class DailyNotificationsService {
   public GetList() {
     console.log("In GetList():" + JSON.stringify(this.dailyNotificationsList));
     return this.dailyNotificationsList.slice();
+  }
+
+  public permanentDeleteNotification(Id: string) : Promise<string> {
+    console.log("In service function.");
+    return this.AWSComm.AWSPermanentDeleteNotification(Id)
+    .then(
+      (message: string) => {
+        console.log("message in service: " + message);
+        return message;
+      }
+    )
+    .catch(
+      (err) => {
+        console.log("Error caught in permanentDeleteNotification(): " + err.json() + " :=> " + JSON.stringify(err));
+        return "ERRORING";
+      }
+    )
   }
 }
