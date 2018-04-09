@@ -38,7 +38,7 @@ export class CreateNotificationPage implements OnInit {
     this.upc = this.item.upc;
     this.itemCollection = new ItemCollection(this.item, 0, 0);
     this.notification = new Notification(this.itemCollection, new Date(), 3, Notification.Option.NONE, "");
-    this.displayDate = this.notification.dateOfCreation.toISOString();
+    this.displayDate = this.notification.dateOfCreation.toLocaleDateString();
     this.initializeForm();
   }
 
