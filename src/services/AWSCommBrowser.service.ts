@@ -95,7 +95,8 @@ export class AWSCommBrowserService {
                                                         "daysPrior" : notification.daysPrior,
                                                         "deliveryOption" : notification.deliveryOption,
                                                         "dateOfCreation" : notification.dateOfCreation.toString(),
-                                                        "memo" : notification.memo
+                                                        "memo" : notification.memo,
+                                                        "Id" : notification.Id
                                                       }
     )
     .map(
@@ -114,8 +115,9 @@ export class AWSCommBrowserService {
   }
 
   public AWSFetchTodaysNotifications() : Promise<Notification[]> {
-    let today = new Date();
-    return this.get(this.access.notificationFunction + this.access.notificationRetrieval + today.toString())
+    let today = (new Date()).toLocaleString();
+    console.log("today: " + today);
+    return this.get(this.access.notificationFunction + this.access.notificationRetrieval + today)
     .map((response) => {
       let resJSON = response.json();
       if(resJSON.Items == undefined){

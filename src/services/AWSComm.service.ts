@@ -113,7 +113,8 @@ export class AWSCommService {
                                                         "daysPrior" : notification.daysPrior,
                                                         "deliveryOption" : notification.deliveryOption,
                                                         "dateOfCreation" : notification.dateOfCreation.toString(),
-                                                        "memo" : notification.memo
+                                                        "memo" : notification.memo,
+                                                        "Id" : notification.Id
                                                       }
     )
     .then(
@@ -160,8 +161,9 @@ export class AWSCommService {
 
   public AWSFetchTodaysNotifications() : Promise<Notification[]> {
     console.log("Entered AWSFetchTodaysNotifications() via device service");
-    let today = new Date();
-    return this.get(this.access.notificationFunction + this.access.notificationRetrieval + today.toString())
+    let today = (new Date()).toLocaleString();
+    console.log("today: " + today);
+    return this.get(this.access.notificationFunction + this.access.notificationRetrieval + today)
     .then((response) => {
       let resJSON = JSON.parse(response.data);
       console.log("resJSON: " + JSON.stringify(resJSON));

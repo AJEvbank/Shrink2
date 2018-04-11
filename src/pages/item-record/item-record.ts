@@ -77,35 +77,24 @@ export class ItemRecordPage implements OnInit {
       createNotificationModal.onDidDismiss(
         (data) => {
           if (data == "SUCCESS") {
-            let toast = this.toastCtrl.create({
-              message: 'Your notification was saved.',
-              duration: 2000,
-              position: 'bottom'
-            });
+            let toast = this.toastCtrl.create({message: 'Your notification was saved.',duration: 2000,position: 'bottom'});
             toast.present();
           }
           else if (data == "ERROR"){
-            let toast = this.toastCtrl.create({
-              message: 'There was a problem. Please try again.',
-              duration: 2000,
-              position: 'bottom'
-            });
+            let toast = this.toastCtrl.create({message: 'There was a problem. Please try again.',duration: 2000,position: 'bottom'});
             toast.present();
           }
         }
       );
     }
     else {
-      let toast = this.toastCtrl.create({
-        message: 'This record is not complete. Please complete all fields.',
-        duration: 2000,
-        position: 'middle'
-      });
+      let toast = this.toastCtrl.create({message: 'This record is not complete. Please complete all fields.',duration: 2000,position: 'middle'});
       toast.present();
     }
   }
 
   //Nick: This should work no problems, let me know if it breaks.
+
   ToggleHighRisk(toggle: boolean){
     if(this.isCompleteItemRecord == true){
       let loader = this.loadingCtrl.create({
