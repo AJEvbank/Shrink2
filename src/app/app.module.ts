@@ -22,6 +22,7 @@ import { DailyNotificationsPage } from '../pages/daily-notifications/daily-notif
 import { NotificationPopoverPage } from '../pages/daily-notifications/notification-popover';
 import { GetUPCPopover } from '../pages/main/getUPCpopover';
 import { ToGetEditPopover } from '../pages/shelf-helper/to-get-popover';
+import { SearchByDateRangePopover } from '../pages/daily-notifications/searchByDateRange';
 
 import { ItemRecordPage } from '../pages/item-record/item-record';
 import { ShelfHelperAddQuantityPopover } from '../pages/item-record/shelf-helper_popover';
@@ -67,7 +68,8 @@ import { Accessor } from '../../../Accessor';
     ShelfHelperAddQuantityPopover,
     ThrowawayQuantityPricePopoverPage,
     ToGetEditPopover,
-    EditNotificationPage
+    EditNotificationPage,
+    SearchByDateRangePopover
   ],
   imports: [
     BrowserModule,
@@ -96,7 +98,8 @@ import { Accessor } from '../../../Accessor';
     ShelfHelperAddQuantityPopover,
     ThrowawayQuantityPricePopoverPage,
     ToGetEditPopover,
-    EditNotificationPage
+    EditNotificationPage,
+    SearchByDateRangePopover
   ],
   providers: [
     StatusBar,

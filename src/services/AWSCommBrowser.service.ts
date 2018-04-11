@@ -203,6 +203,33 @@ export class AWSCommBrowserService {
     }).toPromise<ShrinkAggregate[]>();
   }
 
+  public AWSFetchDateRangeNotifications(from: string, to: string) : Promise<Notification []> {
+    let urlString = this.access.notificationFunction + this.access.fromDate + from + this.access.toDate + to;
+    return this.get(urlString)
+    .map(
+      (response) => {
+        let resJSON = response.json();
+        if(resJSON.Items == undefined){
+          console.log("Got back an undefined response! Here it is: " + JSON.stringify(resJSON));
+          return [];
+        }
+        else if(resJSON.Items.length <= 0){
+          console.log("No notifications for given day! Here's the response: " + JSON.stringify(resJSON));
+          return [];
+        }
+        else{
+          let requestedNotifs: Notification[] = [];
+          for(let res of resJSON.Items) {
+            let itemCollection = new ItemCollection(new ItemRecord(res.item.upc, res.item.name, res.item.isHighRisk), res.quantity, res.unitPrice);
+            requestedNotifs.push(new Notification(itemCollection, res.sellByDate, res.daysPrior, res.deliveryOption, res.memo, res.Id));
+          }
+          console.log("Got back good response! Here it is mapped: ");
+          console.log(requestedNotifs);
+          return requestedNotifs;
+        }
+      }
+    ).toPromise<Notification []>();
+  }
 
   public shoutBack() {
     console.log("This is the browser service.");

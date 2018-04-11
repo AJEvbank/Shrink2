@@ -91,4 +91,25 @@ export class DailyNotificationsService {
       }
     )
   }
+
+  public fetchDateRangeNotifications(from: string, to: string) : Promise<string> {
+    return this.AWSComm.AWSFetchDateRangeNotifications(from,to)
+    .then(
+      (notifications: Notification []) => {
+        this.dailyNotificationsList = (notifications.length > 0) ? notifications.slice() : [];
+        return "SUCCESS";
+      }
+    )
+    .catch(
+      (err) => {
+        console.log("Caught error in fetchDateRangeNotifications(): " + err.json() + " :=> " + JSON.stringify(err));
+        return "ERROR";
+      }
+    )
+  }
+
+  getListLength() : number {
+    return this.dailyNotificationsList.length;
+  }
+
 }

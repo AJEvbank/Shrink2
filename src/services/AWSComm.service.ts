@@ -246,6 +246,39 @@ export class AWSCommService {
     });
   }
 
+  public AWSFetchDateRangeNotifications(from: string, to: string) : Promise<Notification []> {
+    let urlString = this.access.notificationFunction + this.access.fromDate + from + this.access.toDate + to;
+    return this.get(urlString)
+    .then(
+      (response) => {
+        let resJSON = JSON.parse(response.data);
+        if(resJSON.Items == undefined){
+          console.log("Got back an undefined response! Here it is: " + JSON.stringify(resJSON));
+          return [];
+        }
+        else if(resJSON.Items.length <= 0){
+          console.log("No notifications for given day! Here's the response: " + JSON.stringify(resJSON));
+          return [];
+        }
+        else{
+          let requestedNotifs: Notification[] = [];
+          for(let res of resJSON.Items) {
+            let itemCollection = new ItemCollection(new ItemRecord(res.item.upc, res.item.name, res.item.isHighRisk), res.quantity, res.unitPrice);
+            requestedNotifs.push(new Notification(itemCollection, res.sellByDate, res.daysPrior, res.deliveryOption, res.memo, res.Id));
+          }
+          console.log("Got back good response! Here it is mapped: " + JSON.stringify(requestedNotifs));
+          return requestedNotifs;
+        }
+      }
+    )
+    .catch(
+      (err) => {
+        console.log("Caught error in AWSFetchDateRangeNotifications(): " + err.json() + " :=> " + JSON.stringify(err));
+        return [];
+      }
+    )
+  }
+
   public shoutBack() {
     console.log("This is the device service.");
   }

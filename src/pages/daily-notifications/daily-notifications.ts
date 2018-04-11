@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { PopoverController, LoadingController, AlertController, ToastController, ModalController } from 'ionic-angular';
 
 import { NotificationPopoverPage } from './notification-popover';
+import { SearchByDateRangePopover } from './searchByDateRange';
 
 import { DailyNotificationsService } from '../../services/daily-notifications.service';
 
@@ -17,9 +18,10 @@ export class DailyNotificationsPage implements OnInit {
 
   notificationList: Notification [] = [];
   noNotifications: boolean = false;
+  noNotificationsInRequestedRange: boolean = false;
 
   constructor(private dailyNotificationsService: DailyNotificationsService,
-              private popoverController: PopoverController,
+              private popoverCtrl: PopoverController,
               private loadingCtrl: LoadingController,
               private alertCtrl: AlertController,
               private toastCtrl: ToastController,
@@ -53,7 +55,7 @@ export class DailyNotificationsPage implements OnInit {
 
   private viewNotes(clickEvent=null, notification: Notification = null) {
     if (clickEvent == null) { return; }
-    let popover = this.popoverController.create(NotificationPopoverPage, {notification: notification});
+    let popover = this.popoverCtrl.create(NotificationPopoverPage, {notification: notification});
     popover.present();
     popover.onDidDismiss(
       (data) => {
@@ -121,6 +123,42 @@ export class DailyNotificationsPage implements OnInit {
   private searchByDate(clear: boolean) {
     if (clear == false) { return; }
     console.log("searchByDate()");
+    let search = this.popoverCtrl.create(SearchByDateRangePopover);
+    search.present();
+    let loader = this.loadingCtrl.create();
+    search.onDidDismiss(
+      (data) => {
+        console.log("data: " + JSON.stringify(data));
+        loader.dismiss();
+        if (data.cancelled == false) {
+          console.log("Firing transaction with from = " + JSON.stringify(data.from) + " and to = " + JSON.stringify(data.to));
+          this.dailyNotificationsService.fetchDateRangeNotifications(data.from,data.to)
+          .then(
+            (data) => {
+              if(data == "ERROR") {
+                let error = this.alertCtrl.create({title: 'Error',message: "Could not fetch the list. Please try again.",buttons: ['Dismiss']});
+                error.present();
+              }
+              else {
+                this.notificationList = this.dailyNotificationsService.GetList();
+                this.noNotificationsInRequestedRange = this.dailyNotificationsService.getListLength() == 0;
+              }
+            }
+          )
+          .catch(
+            (err) => {
+              console.log("Caught error in searchByDate(): " + err.json() + " :=> " + JSON.stringify(err));
+              let error = this.alertCtrl.create({title: 'Error',message: "Could not fetch the list. Please try again.",buttons: ['Dismiss']});
+              error.present();
+            }
+          );
+        }
+        else {
+          console.log("Cancelled.");
+          loader.dismiss();
+        }
+      }
+    );
     return;
   }
 
@@ -132,7 +170,7 @@ export class DailyNotificationsPage implements OnInit {
     editPage.present();
     editPage.onDidDismiss(
       (data) => {
-        
+
       }
     );
   }

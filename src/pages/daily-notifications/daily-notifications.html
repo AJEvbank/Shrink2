@@ -29,7 +29,6 @@
           Quantity: {{ notification.item.quantity }}
         </p>
       </ion-label>
-      <!-- <ion-checkbox item-end></ion-checkbox> -->
     </ion-item>
     <ion-item-options side="left">
       <button ion-button color='danger' (click)="deleteItem(i)">
@@ -46,7 +45,7 @@
 
 <!-- Needs to be pretty -->
 <h1 ion-text *ngIf="noNotifications">No notifications for today!</h1>
-
+<h1 ion-text *ngIf="noNotificationsInRequestedRange">No notifications for the requested period!</h1>
 
 </ion-content>
 
