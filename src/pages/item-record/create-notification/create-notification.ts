@@ -10,6 +10,8 @@ import { Notification } from '../../../assets/models/notification.model';
 
 import { DailyNotificationsService } from '../../../services/daily-notifications.service';
 
+import moment from 'moment';
+
 @Component({
   selector: 'page-create-notification',
   templateUrl: 'create-notification.html',
@@ -26,6 +28,7 @@ export class CreateNotificationPage implements OnInit {
 
   notificationForm: FormGroup;
 
+
   constructor(private navParams: NavParams,
               private viewCtrl: ViewController,
               private dailyNotificationsService: DailyNotificationsService) {
@@ -38,8 +41,11 @@ export class CreateNotificationPage implements OnInit {
     this.upc = this.item.upc;
     this.itemCollection = new ItemCollection(this.item, 0, 0);
     this.notification = new Notification(this.itemCollection, new Date(), 3, Notification.Option.NONE, "");
-    this.displayDate = this.notification.dateOfCreation.toLocaleDateString();
+    this.displayDate = this.notification.dateOfCreation.toLocaleString();
     this.initializeForm();
+    console.log("sellByDate: " + this.displayDate);
+    let testMomentDateTime = moment().format('MMDDYYYY HH:mm:ss a');
+    console.log("testMomentDateTime: " + testMomentDateTime);
   }
 
   private initializeForm() {

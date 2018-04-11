@@ -28,7 +28,6 @@ import { ShelfHelperAddQuantityPopover } from '../pages/item-record/shelf-helper
 import { ThrowawayQuantityPricePopoverPage } from '../pages/item-record/throwaway_popover';
 import { EditItemRecordPage } from '../pages/item-record/edit-item-record/edit-item-record';
 import { CreateNotificationPage } from '../pages/item-record/create-notification/create-notification';
-import { ThrowawayPage } from '../pages/item-record/throwaway/throwaway';
 import { EditNotificationPage } from '../pages/daily-notifications/edit-notification/edit-notification';
 
 import { ReportsPage } from '../pages/reports/reports';
@@ -58,7 +57,6 @@ import { Accessor } from '../../../Accessor';
     ReportsPage,
     EditItemRecordPage,
     CreateNotificationPage,
-    ThrowawayPage,
     CalendarPage,
     LossOverTimeReportPage,
     ReportSpecificationsPage,
@@ -89,7 +87,6 @@ import { Accessor } from '../../../Accessor';
     ReportsPage,
     EditItemRecordPage,
     CreateNotificationPage,
-    ThrowawayPage,
     CalendarPage,
     LossOverTimeReportPage,
     ReportSpecificationsPage,
