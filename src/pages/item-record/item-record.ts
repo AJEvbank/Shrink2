@@ -104,22 +104,27 @@ export class ItemRecordPage implements OnInit {
       //Update the status
       this.hrService.ToggleHighRisk(this.item, toggle)
       .then((itemResponse) => {
-        this.item = itemResponse;
-        loader.dismiss();
+        if (itemResponse.message == "SUCCESS") {
+          this.item = itemResponse.item;
+          loader.dismiss();
+        }
+        else if (itemResponse.message == "ERROR") {
+          loader.dismiss();
+          let error = this.alertCtrl.create({title: "Error",message: "An error occurred. Please try again.",buttons:['Dismiss']});
+          error.present();
+        }
       })
       .catch((err) => {
         console.log(err);
         loader.dismiss();
+        let error = this.alertCtrl.create({title: "Error",message: "An error occurred. Please try again.",buttons:['Dismiss']});
+        error.present();
       });
 
     }
     else{
       //Item record not complete. Fix dat shit, user.
-      let toast = this.toastCtrl.create({
-        message: 'This record is not complete. Please complete all fields.',
-        duration: 2000,
-        position: 'middle'
-      });
+      let toast = this.toastCtrl.create({message: 'This record is not complete. Please complete all fields.',duration: 2000,position: 'middle'});
       toast.present();
     }
   }

@@ -49,15 +49,13 @@ export class ShrinkListPage implements OnInit {
     let item = this.shrinkList[index];
     this.hrService.ToggleHighRisk(new ItemRecord(item.upc, item.name, item.highRisk), toggle)
     .then((newItem) => {
-      item.highRisk = newItem.isHighRisk;
+      item.highRisk = newItem.item.isHighRisk;
       //this.shrinkList[index] = item;
       loader.dismiss();
     })
     .catch((err) => {
       console.log(err);
-      let errorAlert = this.alertCtrl.create({title: 'Error',
-                                              message: "Could not set to high risk. Error has been printed.",
-                                              buttons: ['Dismiss']});
+      let errorAlert = this.alertCtrl.create({title: 'Error',message: "Could not set to high risk. Error has been printed.",buttons: ['Dismiss']});
       errorAlert.present();
       loader.dismiss();
     })

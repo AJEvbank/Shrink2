@@ -12,33 +12,39 @@ export class HighRiskListService {
   private highRiskList: ItemRecord [] = [];
   private listLoaded = false;
 
-  constructor(private AWSCommBrowser: AWSCommBrowserService,
-              private AWSCommMobile: AWSCommService) {}
+  private AWSComm: AWSCommBrowserService | AWSCommService;
 
-  public ToggleHighRisk(oldItem: ItemRecord, toggle: boolean) : Promise<ItemRecord> {
+  constructor(private AWSCommBrowser: AWSCommBrowserService,
+              private AWSCommMobile: AWSCommService) {
     //Choose appropriate comm tool.
-    let AWSComm = (window.location.hostname == "localhost") ? this.AWSCommBrowser : this.AWSCommMobile;
+    this.AWSComm = (window.location.hostname == "localhost") ? this.AWSCommBrowser : this.AWSCommMobile;
+  }
+
+  public ToggleHighRisk(oldItem: ItemRecord, toggle: boolean) : Promise<{item: ItemRecord, message: string}> {
     //Make server request.
-    return AWSComm.AWSupdateItemRecord(new ItemRecord(oldItem.upc, oldItem.name, toggle))
-    .then((itemResponse) => {
-      let index = this.highRiskList.indexOf(itemResponse);
-      if(itemResponse.isHighRisk){
-        //Only add the item if it isn't already there.\
-        if(index == -1){
-          this.highRiskList.push(itemResponse);
+    return this.AWSComm.AWSupdateItemRecord(new ItemRecord(oldItem.upc, oldItem.name, toggle))
+    .then(
+      (itemResponse) => {
+      if (itemResponse.message == "SUCCESS") {
+        let index = this.highRiskList.indexOf(itemResponse.item);
+        if(itemResponse.item.isHighRisk){
+          //Only add the item if it isn't already there.\
+          if(index == -1){
+            this.highRiskList.push(itemResponse.item);
+          }
         }
-      }
-      else{
-        //Same principle here.
-        if(index > -1){
-          this.highRiskList.splice(index, 1);
+        else{
+          //Same principle here.
+          if(index > -1){
+            this.highRiskList.splice(index, 1);
+          }
         }
+        return {item: itemResponse.item, message: itemResponse.message};
       }
-      return itemResponse;
     })
     .catch((err) => {
       console.log(err);
-      return oldItem;
+      return {item: oldItem, message: "ERROR"};
     });
   }
 
