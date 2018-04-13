@@ -67,7 +67,7 @@ export class AWSCommService {
     });
   }
 
-  public AWSupdateItemRecord(item: ItemRecord) : Promise<ItemRecord> {
+  public AWSupdateItemRecord(item: ItemRecord) : Promise<{item: ItemRecord, message: string}> {
     return this.put(this.access.updateItemRecordFunction + item.upc, {"name": item.name, "highRisk": item.isHighRisk})
     .then(
       (response) => {
@@ -76,21 +76,21 @@ export class AWSCommService {
         console.log("resJSON.upc.upcId = " + JSON.stringify(resJSON.upc.upcId));
         if (resJSON.upc.upcId == undefined) {
           console.log("Backend shenanigans happened!");
-          return new ItemRecord(item.upc, "EMPTY");
+          return {item: null, message: "ERROR"};
         }
         let updateItem = resJSON;
         if (item.upc != updateItem.upc.upcId) {
           console.log(item.upc + " != " + updateItem.upc.upcId + ": Something went horribly wrong!");
-          return new ItemRecord(item.upc, "WRONG_UPC");
+          return {item: null, message: "ERROR"};
         } else {
-          return new ItemRecord(updateItem.upc.upcId, updateItem.upc.name, updateItem.upc.highRisk);
+          return {item: new ItemRecord(updateItem.upc.upcId, updateItem.upc.name, updateItem.upc.highRisk), message: "SUCCESS"};
         }
       }
     )
     .catch(
       (err) => {
         console.log("Error on http request: " + JSON.stringify(err));
-        return new ItemRecord(item.upc, " ");
+        return {item: null, message: "ERROR"};
       }
     )
   }

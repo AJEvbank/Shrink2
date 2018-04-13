@@ -93,24 +93,6 @@ export class CreateNotificationPage implements OnInit {
     );
   }
 
-  // getDate() {
-  //   this.datePicker.show({
-  //     date: new Date(),
-  //     mode: 'date'
-  //     //androidTheme: this.datePicker.ANDROID_THEMES.THEME_HOLO_DARK
-  //   }).then(
-  //     (date) => {
-  //       console.log('Got date: ', date);
-  //       this.notification.sellByDate = date;
-  //     }
-  //   )
-  //   .catch(
-  //     (err) => {
-  //       console.log('Error occurred while getting date: ', err)
-  //     }
-  //   );
-  // }
-
   leavePage() {
     this.viewCtrl.dismiss();
   }

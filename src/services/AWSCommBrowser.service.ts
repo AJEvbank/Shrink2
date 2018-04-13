@@ -61,20 +61,20 @@ export class AWSCommBrowserService {
     }).toPromise<ItemRecord>();
   }
 
-  public AWSupdateItemRecord(item: ItemRecord) : Promise<ItemRecord> {
+  public AWSupdateItemRecord(item: ItemRecord) : Promise<{item: ItemRecord, message: string}> {
     return this.put(this.access.updateItemRecordFunction + item.upc, {"name": item.name, "highRisk": item.isHighRisk})
     .map((response) => {
       let resJSON = response.json();
       if(resJSON.upc == undefined){
         console.log("Something is REALLY wrong!\n" + resJSON);
-        return new ItemRecord(item.upc, "ERROR");
+        return {item: new ItemRecord(item.upc, "ERROR"), message: "ERROR"};
       }
       else{
         let updateItem = resJSON.upc;
         //console.log("not undefined");
-        return new ItemRecord(updateItem.upcId, updateItem.name, updateItem.highRisk);
+        return {item: new ItemRecord(updateItem.upcId, updateItem.name, updateItem.highRisk), message: "SUCCESS"};
       }
-    }).toPromise<ItemRecord>();
+    }).toPromise<{item: ItemRecord, message: string}>();
   }
 
   public AWScreateNotification(notification: Notification) : Promise<string> {
