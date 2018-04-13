@@ -110,7 +110,19 @@ export class ShelfHelperService {
     );
   }
 
-  public wipeStorage(){
-    this.storage.clear();
+  public wipeStorage() : Promise<string> {
+    return this.storage.remove('shelfHelperList')
+    .then(
+      () => {
+        return "SUCCESS";
+      }
+    )
+    .catch(
+      (err) => {
+        console.log("Error when clearing storage: " + JSON.stringify(err) + " :=> " + err.json());
+        return "ERROR";
+      }
+    );
   }
+
 }

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { PopoverController } from 'ionic-angular';
+import { PopoverController, AlertController } from 'ionic-angular';
 
 
 import { ShelfHelperService } from '../../services/shelf-helper.service';
@@ -16,7 +16,8 @@ export class ShelfHelperPage implements OnInit {
   shelfHelperList: ToGetItem [] = [];
 
   constructor(private shelfHelperService: ShelfHelperService,
-              private popoverCtrl: PopoverController) {}
+              private popoverCtrl: PopoverController,
+              private alertCtrl: AlertController) {}
 
   ngOnInit() {
     this.shelfHelperService.fetchList()
@@ -52,6 +53,39 @@ export class ShelfHelperPage implements OnInit {
 
         this.shelfHelperService.updateItem(toGet);
         this.shelfHelperList = this.shelfHelperService.loadList();
+      }
+    );
+  }
+
+  clearList() {
+    this.shelfHelperService.wipeStorage()
+    .then(
+      (message) => {
+        if (message == "SUCCESS") {
+          this.shelfHelperService.fetchList()
+          .then(
+            (list: ToGetItem []) => {
+              this.shelfHelperList = list;
+            }
+          )
+          .catch(
+            (err) => {
+              console.log(err);
+              this.shelfHelperList = [];
+            }
+          );
+        }
+        else if (message == "ERROR") {
+          let error = this.alertCtrl.create({title: 'Error',message:'An error occurred. Please try again.',buttons:['Dismiss']});
+          error.present();
+        }
+      }
+    )
+    .catch(
+      (err) => {
+        console.log("Error when clearing storage: " + JSON.stringify(err) + " :=> " + err.json());
+        let error = this.alertCtrl.create({title: 'Error',message:'An error occurred. Please try again.',buttons:['Dismiss']});
+        error.present();
       }
     );
   }

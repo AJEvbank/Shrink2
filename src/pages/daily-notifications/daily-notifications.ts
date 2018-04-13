@@ -18,7 +18,6 @@ export class DailyNotificationsPage implements OnInit {
 
   notificationList: Notification [] = [];
   noNotifications: boolean = false;
-  noNotificationsInRequestedRange: boolean = false;
 
   constructor(private dailyNotificationsService: DailyNotificationsService,
               private popoverCtrl: PopoverController,
@@ -34,6 +33,7 @@ export class DailyNotificationsPage implements OnInit {
     this.viewNotes(null,null);
     this.searchByDate(false);
     this.editItem(null, -1);
+    this.clearList(false);
   }
 
   ngOnInit() {
@@ -140,8 +140,11 @@ export class DailyNotificationsPage implements OnInit {
                 error.present();
               }
               else {
+                if (this.dailyNotificationsService.getListLength() == 0) {
+                  let alert = this.alertCtrl.create({message:"No notifications in the specified time period.",buttons:['Dismiss']});
+                  alert.present();
+                }
                 this.notificationList = this.dailyNotificationsService.GetList();
-                this.noNotificationsInRequestedRange = this.dailyNotificationsService.getListLength() == 0;
               }
             }
           )
@@ -173,6 +176,11 @@ export class DailyNotificationsPage implements OnInit {
 
       }
     );
+  }
+
+  private clearList(clear: boolean) {
+    if (clear == false) return;
+    this.notificationList = [];
   }
 
 }
