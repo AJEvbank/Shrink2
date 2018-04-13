@@ -65,6 +65,10 @@ export class CreateNotificationPage implements OnInit {
 
   onSubmit() {
     let value = this.notificationForm.value;
+    let sellByDate = new Date(value.sellByDate);
+    console.log("sellByDate var: " + sellByDate.toUTCString());
+    console.log("value.sellByDate var: " + value.sellByDate);
+
     this.notification.item.quantity = value.quantity;
     this.notification.item.unitPrice = value.unitPrice;
     this.notification.sellByDate = value.sellByDate;

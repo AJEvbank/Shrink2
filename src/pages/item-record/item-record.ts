@@ -81,8 +81,8 @@ export class ItemRecordPage implements OnInit {
             toast.present();
           }
           else if (data == "ERROR"){
-            let toast = this.toastCtrl.create({message: 'There was a problem. Please try again.',duration: 2000,position: 'bottom'});
-            toast.present();
+            let error = this.alertCtrl.create({title: 'Error',message: 'There was a problem. Please try again.',buttons: ['Dismiss']});
+            error.present();
           }
         }
       );
