@@ -9,7 +9,7 @@ import { FormGroup, FormControl, Validators, ValidatorFn } from '@angular/forms'
     <form [formGroup]="upc">
       <ion-input type="text" formControlName="upc" (ngSubmit)="submit()"></ion-input>
       <ion-item *ngIf="upc.controls['upc'].hasError('CheckDigit') == true && !upc.controls['upc'].hasError('pattern') && upc.controls['upc'].value.length == 12" text-wrap>
-        <ion-label>The last digit is incorrect.</ion-label>
+        <ion-label>The last digit should be {{ this.getCheckDigit() }}.</ion-label>
       </ion-item>
       <ion-item *ngIf="upc.controls['upc'].value.length < 12" text-wrap>
         <ion-label>The code has too few digits.</ion-label>
@@ -29,10 +29,6 @@ import { FormGroup, FormControl, Validators, ValidatorFn } from '@angular/forms'
   `
 })
 
-// <ion-item *ngIf="upc.controls['upc'].minLength">
-//   <ion-label> There is an error.</ion-label>
-// </ion-item>
-
 export class GetUPCPopover implements OnInit {
 
   upc: FormGroup;
@@ -44,6 +40,7 @@ export class GetUPCPopover implements OnInit {
 
   ngOnInit() {
     this.initializeForm();
+    console.log("Error testing: " + this.upc.controls['upc'].getError('CheckDigit'));
   }
 
   private initializeForm() {
@@ -64,7 +61,6 @@ export class GetUPCPopover implements OnInit {
     let value = this.upc.value;
     console.log("value = " + value);
     this.viewCtrl.dismiss(value.upc);
-    console.log("Error testing: " + this.upc.controls['upc'].hasError('CheckDigit'));
   }
 
   dismiss() {
@@ -96,26 +92,8 @@ export class GetUPCPopover implements OnInit {
     return isCorrectCheckDigit ? null : { 'CheckDigit': correctCheckDigit };
   }
 
-  // getCheckDigit(code: string) : Number {
-  //   let oddSum: Number  = 0;
-  //   let evenSum: Number = 0;
-  //   let finalSum: Number = 0;
-  //   let higherMultipleOfTen: Number;
-  //   let correctCheckDigit: Number;
-  //   let checkDigit: number = Number(code[code.length - 1]);
-  //   for (let i = code.length - 2; i >= 0; i--) {
-  //     if (Number(i % 2) == 0) { // These are really the odd numbered digits.
-  //       evenSum = Number(evenSum) + Number(code[i]);
-  //     }
-  //     else if (Number(i % 2) == 1) { // These are really the even numbered digits.
-  //       oddSum = Number(oddSum) + Number(code[i]);
-  //     }
-  //   }
-  //   finalSum = Number(3 * Number(evenSum)) + Number(oddSum);
-  //   higherMultipleOfTen = Math.ceil(Number(finalSum) / 10) * 10;
-  //   correctCheckDigit = Number(higherMultipleOfTen) - Number(finalSum);
-  //   this.checkDigit = correctCheckDigit;
-  //   return correctCheckDigit;
-  // }
+  getCheckDigit() : Number {
+    return this.upc.controls['upc'].getError('CheckDigit');
+  }
 
 }
