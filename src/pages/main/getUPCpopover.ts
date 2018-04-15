@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ViewController } from 'ionic-angular';
-import { FormGroup, FormControl, Validators, ValidatorFn } from '@angular/forms';
+import { FormGroup, FormControl, Validators, ValidatorFn, AbstractControl } from '@angular/forms';
 
 @Component({
   selector: 'get-upc-popover',
@@ -45,13 +45,13 @@ export class GetUPCPopover implements OnInit {
 
   private initializeForm() {
     this.upc = new FormGroup({
-      'upc': new FormControl("718103101776",
+      'upc': new FormControl("718103101777",
                               [
                                 Validators.required,
                                 Validators.minLength(12),
                                 Validators.maxLength(12),
                                 Validators.pattern(/^[0-9]*$/),
-                                this.CheckDigitValidator
+                                this.CheckDigitValidator()
                               ]
                              )
     });
@@ -68,32 +68,58 @@ export class GetUPCPopover implements OnInit {
     this.viewCtrl.dismiss(dismissString);
   }
 
-  private CheckDigitValidator(ctrl: FormControl) {
-    if (ctrl.value.length < 12) return null;
-    let isCorrectCheckDigit: boolean;
-    let oddSum: Number  = 0;
-    let evenSum: Number = 0;
-    let finalSum: Number = 0;
-    let higherMultipleOfTen: Number;
-    let correctCheckDigit: Number;
-    let checkDigit: number = Number(ctrl.value[ctrl.value.length - 1]);
-    for (let i = ctrl.value.length - 2; i >= 0; i--) {
-      if (Number(i % 2) == 0) { // These are really the odd numbered digits.
-        evenSum = Number(evenSum) + Number(ctrl.value[i]);
+  private CheckDigitValidator() : ValidatorFn {
+    return (control: AbstractControl): {[key: string]: any} => {
+      if (control.value.length < 12) return null;
+      let isCorrectCheckDigit: boolean;
+      let oddSum: Number  = 0;
+      let evenSum: Number = 0;
+      let finalSum: Number = 0;
+      let higherMultipleOfTen: Number;
+      let correctCheckDigit: Number;
+      let checkDigit: number = Number(control.value[control.value.length - 1]);
+      for (let i = control.value.length - 2; i >= 0; i--) {
+        if (Number(i % 2) == 0) { // These are really the odd numbered digits.
+          evenSum = Number(evenSum) + Number(control.value[i]);
+        }
+        else if (Number(i % 2) == 1) { // These are really the even numbered digits.
+          oddSum = Number(oddSum) + Number(control.value[i]);
+        }
       }
-      else if (Number(i % 2) == 1) { // These are really the even numbered digits.
-        oddSum = Number(oddSum) + Number(ctrl.value[i]);
-      }
+      finalSum = Number(3 * Number(evenSum)) + Number(oddSum);
+      higherMultipleOfTen = Math.ceil(Number(finalSum) / 10) * 10;
+      correctCheckDigit = Number(higherMultipleOfTen) - Number(finalSum);
+      isCorrectCheckDigit = (correctCheckDigit == checkDigit);
+      return isCorrectCheckDigit ? null : { 'CheckDigit': correctCheckDigit };
     }
-    finalSum = Number(3 * Number(evenSum)) + Number(oddSum);
-    higherMultipleOfTen = Math.ceil(Number(finalSum) / 10) * 10;
-    correctCheckDigit = Number(higherMultipleOfTen) - Number(finalSum);
-    isCorrectCheckDigit = (correctCheckDigit == checkDigit);
-    return isCorrectCheckDigit ? null : { 'CheckDigit': correctCheckDigit };
   }
 
   getCheckDigit() : Number {
     return this.upc.controls['upc'].getError('CheckDigit');
   }
+
+  // private CheckDigitValidator(ctrl: FormControl) {
+  //   if (ctrl.value.length < 12) return null;
+  //   let isCorrectCheckDigit: boolean;
+  //   let oddSum: Number  = 0;
+  //   let evenSum: Number = 0;
+  //   let finalSum: Number = 0;
+  //   let higherMultipleOfTen: Number;
+  //   let correctCheckDigit: Number;
+  //   let checkDigit: number = Number(ctrl.value[ctrl.value.length - 1]);
+  //   for (let i = ctrl.value.length - 2; i >= 0; i--) {
+  //     if (Number(i % 2) == 0) { // These are really the odd numbered digits.
+  //       evenSum = Number(evenSum) + Number(ctrl.value[i]);
+  //     }
+  //     else if (Number(i % 2) == 1) { // These are really the even numbered digits.
+  //       oddSum = Number(oddSum) + Number(ctrl.value[i]);
+  //     }
+  //   }
+  //   finalSum = Number(3 * Number(evenSum)) + Number(oddSum);
+  //   higherMultipleOfTen = Math.ceil(Number(finalSum) / 10) * 10;
+  //   correctCheckDigit = Number(higherMultipleOfTen) - Number(finalSum);
+  //   isCorrectCheckDigit = (correctCheckDigit == checkDigit);
+  //   return isCorrectCheckDigit ? null : { 'CheckDigit': correctCheckDigit };
+  // }
 
 }
