@@ -149,7 +149,7 @@ export class AWSCommBrowserService {
         let resJSON = response.json();
         console.log("Service response: " + JSON.stringify(response));
         console.log("Service resJSON: " + JSON.stringify(resJSON));
-        if (resJSON == "DELETE reached in Lambda Function -Caleb") {
+        if (resJSON.notification.Id == Id) {
           return "SUCCESS";
         }
         else {

@@ -70,7 +70,7 @@ export class DailyNotificationsPage implements OnInit {
                 errorAlert.present();
               }
               else if (message == "SUCCESS") {
-                let toast = this.toastCtrl.create({message: "Notification has been deleted.",duration: 2000});
+                let toast = this.toastCtrl.create({message: "Notification has been deleted. Refresh list to view changes.",duration: 4000});
                 toast.present();
               }
             }

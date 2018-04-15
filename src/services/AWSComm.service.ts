@@ -145,7 +145,7 @@ export class AWSCommService {
         let resJSON = JSON.parse(response.data);
         console.log("No error from delete(): " + JSON.stringify(response));
         console.log("resJSON: " + JSON.stringify(resJSON));
-        if (resJSON == "DELETE reached in Lambda Function -Caleb") {
+        if (resJSON.notification.Id == Id) {
           return "SUCCESS";
         }
         else {
