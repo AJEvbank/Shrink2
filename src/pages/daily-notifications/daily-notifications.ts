@@ -170,12 +170,29 @@ export class DailyNotificationsPage implements OnInit {
     console.log("editItem():");
     console.log("Notification: " + JSON.stringify(notification));
     let editPage = this.modalCtrl.create(EditNotificationPage, { notification: notification });
-    editPage.present();
-    editPage.onDidDismiss(
-      (data) => {
-
+    editPage.present()
+    .then(
+      () => {
+        console.log("Successfully loaded editPage in daily-notifications.");
+      }
+    )
+    .catch(
+      (err) => {
+        console.log("Caught error in present() in daily-notifications: " + JSON.stringify(err) + " :=> " + err.json());
       }
     );
+    editPage.onDidDismiss(
+      (data) => {
+        if(data == "ERROR") {
+          let error = this.alertCtrl.create({title:"Error",message:"There was an error. Please try again.",buttons:['Dismiss']});
+          error.present();
+        }
+        else {
+          let toast = this.toastCtrl.create({message:"Record successfully save.",duration:3000});
+          toast.present();
+        }
+      }
+    )
   }
 
   private clearList(clear: boolean) {

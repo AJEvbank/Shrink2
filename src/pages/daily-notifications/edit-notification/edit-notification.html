@@ -9,7 +9,7 @@
 
 <ion-content padding>
 
-  <form [formGroup]="notificationForm" (ngSubmit)="onSubmit()">
+  <form [formGroup]="notificationForm">
 
     <ion-item>
       <ion-label floating>UPC:</ion-label>
@@ -49,7 +49,8 @@
     <ion-item>
       <ion-input placeholder="Enter a memo" formControlName="memo"></ion-input>
     </ion-item>
-    <button type="submit" ion-button block [disabled]="!notificationForm.valid">Update Notification</button>
+    <button type="submit" ion-button block [disabled]="!notificationForm.valid" (click)="onSubmit('update')">Update Notification</button>
+    <button type="submit" ion-button block color="green" [disabled]="!notificationForm.valid" (click)="onSubmit('create')">Create New Notification</button>
 
   </form>
   <button ion-button block color="danger" (click)="leavePage()">Cancel</button>

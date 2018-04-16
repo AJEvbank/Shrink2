@@ -34,13 +34,13 @@ export class EditNotificationPage {
 
   ngOnInit() {
     this.notification = this.navParams.get('notification');
-    console.log("Notification: " + this.notification);
+    console.log("Notification in ngOnInit(): " + JSON.stringify(this.notification));
+    console.log("\n\n\n");
     this.name = this.notification.item.item.name;
     this.upc = this.notification.item.item.upc;
     this.itemCollection = new ItemCollection(this.notification.item.item, this.notification.item.quantity, this.notification.item.unitPrice);
     this.displayDate = this.notification.sellByDate.toLocaleString();
     console.log("displayDate: " + this.displayDate);
-    console.log("notification: " + JSON.stringify(this.notification));
     this.tempDate = new Date(this.notification.sellByDate);
     this.initializeForm();
   }
@@ -60,7 +60,8 @@ export class EditNotificationPage {
     });
   }
 
-  onSubmit() {
+  onSubmit(message: string) {
+    console.log("message on onSubmit(): " + message);
     let value = this.notificationForm.value;
     this.notification.item.quantity = value.quantity;
     this.notification.item.unitPrice = value.unitPrice;
@@ -68,8 +69,13 @@ export class EditNotificationPage {
     this.notification.daysPrior = value.daysPrior;
     this.notification.deliveryOption = value.deliveryOption;
     this.notification.memo = value.memo;
+    if(message == 'create') {
+      this.notification.Id = null;
+      console.log("message == " + message);
+      console.log("this.notification.Id == " + this.notification.Id);
+    }
 
-    console.log("notification: " + JSON.stringify(this.notification));
+    console.log("notification in onSubmit(): " + JSON.stringify(this.notification));
     this.dailyNotificationsService.addItem(this.notification)
     .then(
       (data) => {

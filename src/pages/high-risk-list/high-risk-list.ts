@@ -14,7 +14,7 @@ import { ItemRecordPage } from '../item-record/item-record';
 export class HighRiskListPage implements OnInit {
 
   highRiskList: ItemRecord [] = [];
-  emptyList: boolean = true;
+  emptyList: boolean = false;
 
   constructor(private navCtrl: NavController,
               private navParams: NavParams,
