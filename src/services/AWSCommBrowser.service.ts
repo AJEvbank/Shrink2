@@ -237,4 +237,29 @@ export class AWSCommBrowserService {
     console.log("This is the browser service.");
   }
 
+  public AWSFetchHighRiskList() : Promise<{list: ItemRecord[], message: string}> {
+    return this.get(this.access.highRiskListFunction)
+    .map(
+      (response) => {
+        let resJSON = response.json();
+        console.log("response: " + JSON.stringify(response) + " :=> " + "resJSON: " + JSON.stringify(resJSON));
+        let highRiskList: ItemRecord[] = [];
+        let message: string = "";
+        if(resJSON.Items == undefined) {
+          message = "UNDEFINED";
+        }
+        else if (resJSON.Items.length == 0) {
+          message = "EMPTY";
+        }
+        else {
+          for(let item of resJSON.Items) {
+            let newItem = new ItemRecord(item.upc,item.name,item.isHighRisk);
+            highRiskList.push(newItem);
+          }
+          message = "SUCCESS";
+        }
+        return {list: highRiskList, message: message};
+      }
+    ).toPromise<{list: ItemRecord[], message: string}>();
+  }
 }

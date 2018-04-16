@@ -285,4 +285,37 @@ export class AWSCommService {
     console.log("This is the device service.");
   }
 
+  public AWSFetchHighRiskList() : Promise<{list: ItemRecord[], message: string}> {
+    console.log("Entered AWSFetchHighRiskList() via device service");
+    return this.get(this.access.highRiskListFunction)
+    .then((response) => {
+      let resJSON = JSON.parse(response.data);
+      console.log("resJSON: " + JSON.stringify(resJSON));
+      let highRiskList: ItemRecord[] = [];
+      let message: string = "";
+      if(resJSON == undefined || resJSON.Items == undefined){
+        console.log("Request returned undefined! Here's the response: " + JSON.stringify(response));
+        message = "ERROR";
+      }
+      else if(resJSON.Items.length == 0){
+        console.log("Request did not find any due notifications. Here's the response: " + JSON.stringify(response));
+        message = "EMPTY";
+      }
+      else{
+        for(let item of resJSON.Items) {
+          let newItem = new ItemRecord(item.upc,item.name,item.isHighRisk);
+          highRiskList.push(newItem);
+        }
+        console.log("Got back good response! Here it is mapped: ");
+        console.log(highRiskList);
+      }
+      return {list: highRiskList, message: message};
+    })
+    .catch((err) => {
+      console.log("Caught error in AWSFetchHighRiskList(): " + JSON.stringify(err));
+      console.log("Caught error in AWSFetchHighRiskList(): " + err.toString());
+      return {list: [], message: "ERROR"};
+    })
+  }
+
 }

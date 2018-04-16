@@ -24,7 +24,7 @@ export class MainPage {
 
   itemRecordPage = ItemRecordPage;
   dailyNotificationsPage = DailyNotificationsPage;
-  highRiskList = HighRiskListPage;
+  highRiskListPage = HighRiskListPage;
   shelfHelperPage = ShelfHelperPage;
   reportsPage = ReportsPage;
 
@@ -51,6 +51,7 @@ export class MainPage {
   private dummyFunctionCalls() { // This function is stupid, but it gets rid of a stupid warning on transpile.
     this.scanItem(false);
     this.getItemByUPC(false);
+    this.prepareHighRiskList(false);
   }
 
 
@@ -128,4 +129,8 @@ export class MainPage {
     })
   }
 
+  private prepareHighRiskList(clear: boolean) {
+    if (clear == true)
+    this.navCtrl.push(this.highRiskListPage);
+  }
 }

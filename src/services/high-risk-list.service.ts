@@ -48,17 +48,39 @@ export class HighRiskListService {
     });
   }
 
-  // public FetchList() : Promise<any>{
-  //
-  // }
+  public FetchList() : Promise<string>{
+    return this.AWSComm.AWSFetchHighRiskList()
+    .then(
+      (data) => {
+        if(data.message == "UNDEFINED") {
+          return "ERROR";
+        }
+        else if (data.message == "EMPTY") {
+          this.listLoaded == true;
+          return "EMPTY";
+        }
+        else if (data.message == "SUCCESS") {
+          this.listLoaded == true;
+          this.highRiskList = data.list.slice();
+          return "SUCCESS";
+        }
+      }
+    )
+    .catch(
+      (err) => {
+        console.log("Error caught in FetchList: " + JSON.stringify(err) + " :=> " + err.json());
+        return "ERROR";
+      }
+    )
+  }
 
   public GetList() : ItemRecord[] {
     return this.highRiskList.slice();
   }
 
-  // public isListLoaded() : boolean {
-  //   return this.listLoaded;
-  // }
+  public isListLoaded() : boolean {
+    return this.listLoaded;
+  }
 
 
 }

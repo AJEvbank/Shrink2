@@ -184,7 +184,7 @@ export class ItemRecordPage implements OnInit {
 
   home() {
     //this.navCtrl.push(MainPage);
-    this.navCtrl.popTo(MainPage);
+    this.navCtrl.pop();
   }
 
 }

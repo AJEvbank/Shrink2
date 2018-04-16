@@ -45,7 +45,7 @@ export class GetUPCPopover implements OnInit {
 
   private initializeForm() {
     this.upc = new FormGroup({
-      'upc': new FormControl("718103101777",
+      'upc': new FormControl("718103101776",
                               [
                                 Validators.required,
                                 Validators.minLength(12),
