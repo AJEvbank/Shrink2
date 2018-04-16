@@ -313,7 +313,7 @@ export class AWSCommService {
     })
     .catch((err) => {
       console.log("Caught error in AWSFetchHighRiskList(): " + JSON.stringify(err));
-      console.log("Caught error in AWSFetchHighRiskList(): " + err.toString());
+      console.log("Caught error in AWSFetchHighRiskList(): " + err.json());
       return {list: [], message: "ERROR"};
     })
   }

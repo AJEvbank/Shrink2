@@ -52,7 +52,7 @@ export class HighRiskListService {
     return this.AWSComm.AWSFetchHighRiskList()
     .then(
       (data) => {
-        if(data.message == "UNDEFINED") {
+        if(data.message == "UNDEFINED" || data.message == "ERROR") {
           return "ERROR";
         }
         else if (data.message == "EMPTY") {
