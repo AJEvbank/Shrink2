@@ -11,14 +11,8 @@ import { FormGroup, FormControl, Validators, ValidatorFn, AbstractControl } from
       <ion-item *ngIf="upc.controls['upc'].hasError('CheckDigit') == true && !upc.controls['upc'].hasError('pattern') && upc.controls['upc'].value.length == 12" text-wrap>
         <ion-label>The last digit should be {{ this.getCheckDigit() }}.</ion-label>
       </ion-item>
-      <ion-item *ngIf="upc.controls['upc'].value.length < 12" text-wrap>
-        <ion-label>The code has too few digits.</ion-label>
-      </ion-item>
-      <ion-item *ngIf="upc.controls['upc'].value.length > 12" text-wrap>
-        <ion-label>The code has too many digits.</ion-label>
-      </ion-item>
       <ion-item *ngIf="upc.controls['upc'].hasError('pattern') == true" text-wrap>
-        <ion-label>The code must contain only digits.</ion-label>
+        <ion-label>The code must have exactly twelve digits.</ion-label>
       </ion-item>
       <button ion-button block (click)="submit()" [disabled]="!upc.valid">Use UPC</button>
     </form>
@@ -48,14 +42,16 @@ export class GetUPCPopover implements OnInit {
       'upc': new FormControl("718103101776",
                               [
                                 Validators.required,
-                                Validators.minLength(12),
-                                Validators.maxLength(12),
-                                Validators.pattern(/^[0-9]*$/),
+                                Validators.pattern(/^[0-9]{12}$/),
                                 this.CheckDigitValidator()
                               ]
                              )
     });
   }
+
+
+  // Validators.minLength(12),
+  // Validators.maxLength(12),
 
   submit() {
     let value = this.upc.value;
