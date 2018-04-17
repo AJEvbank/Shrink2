@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { NavController, LoadingController } from 'ionic-angular';
 
 import { AWSCommBrowserService } from '../../services/AWSCommBrowser.service';
+import { AWSCommService } from '../../services/AWSComm.service';
 
 import { ReportSpecificationsPage } from './report-specifications/report-specifications';
 import { ShrinkListPage } from './shrink-list/shrink-list';
@@ -17,30 +18,30 @@ export class ReportsPage {
   RT_lossOverTime = 'Loss Over Time';
   RT_calendarView = 'Calendar View';
   RT_excelSpreadsheet = 'Excel Spreadsheet';
+  private AWS : AWSCommService | AWSCommBrowserService;
 
   constructor(private navCtrl: NavController,
               private loadingCtrl: LoadingController,
-              private AWSCommBrowser: AWSCommBrowserService){}
+              private AWSCommBrowser: AWSCommBrowserService,
+              private AWSComm: AWSCommService){
+    this.AWS = (window.location.hostname == "localhost") ? this.AWSCommBrowser : this.AWSComm;
+  }
 
   onClickShrinkList(){
+
     let loader = this.loadingCtrl.create({
       content: "Waiting...",
     });
     loader.present();
-    if (window.location.hostname == "localhost") {
-      this.AWSCommBrowser.AWSFetchShrinkList()
-      .then((ret) => {
-        this.navCtrl.push(ShrinkListPage, ret);
-        loader.dismiss();
-      })
-      .catch((err) => {
-        console.log(err);
-        loader.dismiss();
-      });
-    }
-    else {
-      //this.scanItemAndroid();
-    }
+    this.AWS.AWSFetchShrinkList()
+    .then((ret) => {
+      this.navCtrl.push(ShrinkListPage, ret);
+      loader.dismiss();
+    })
+    .catch((err) => {
+      console.log(err);
+      loader.dismiss();
+    });
 
 
 

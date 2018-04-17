@@ -45,6 +45,8 @@ import { HighRiskListService } from '../services/high-risk-list.service';
 
 import { Accessor } from '../../../Accessor';
 
+import { ChartsModule } from 'ng2-charts';
+
 @NgModule({
   declarations: [
     MyApp,
@@ -73,7 +75,8 @@ import { Accessor } from '../../../Accessor';
     BrowserModule,
     IonicModule.forRoot(MyApp),
     IonicStorageModule.forRoot(),
-    HttpModule
+    HttpModule,
+    ChartsModule
   ],
   bootstrap: [IonicApp],
   entryComponents: [
