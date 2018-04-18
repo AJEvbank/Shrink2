@@ -33,6 +33,8 @@ export class SearchByDateRangePopover implements OnInit {
   dateRange: FormGroup;
   from: Date;
   to: Date;
+  fromMoment: string;
+  toMoment: string;
 
   constructor(private viewCtrl: ViewController,
               private alertCtrl: AlertController) {
@@ -44,15 +46,19 @@ export class SearchByDateRangePopover implements OnInit {
     console.log("from: " + this.from);
     this.to = new Date();
     console.log("from: " + this.to);
+    this.fromMoment = moment().format();
+    console.log("fromMoment: " + this.fromMoment);
+    this.toMoment = moment().format();
+    console.log("toMoment: " + this.toMoment);
     this.initializeForm();
   }
 
   private initializeForm() {
     this.dateRange = new FormGroup({
-      'from': new FormControl(this.from.toISOString(),
+      'from': new FormControl(this.fromMoment,
                               [ Validators.required ]
                             ),
-      'to': new FormControl(this.to.toISOString(),
+      'to': new FormControl(this.toMoment,
                               [ Validators.required ]
                             ),
     });
