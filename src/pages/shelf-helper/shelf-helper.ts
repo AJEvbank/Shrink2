@@ -1,11 +1,14 @@
 import { Component, OnInit } from '@angular/core';
-import { PopoverController, AlertController } from 'ionic-angular';
+import { NavController, PopoverController, AlertController } from 'ionic-angular';
 
 
 import { ShelfHelperService } from '../../services/shelf-helper.service';
 import { ToGetItem } from '../../assets/models/to-get-item.model';
+import { ItemRecord } from '../../assets/models/item-record.model';
 
 import { ToGetEditPopover } from './to-get-popover';
+
+import { ItemRecordPage } from '../item-record/item-record';
 
 @Component({
   selector: 'page-shelf-helper',
@@ -15,7 +18,8 @@ export class ShelfHelperPage implements OnInit {
 
   shelfHelperList: ToGetItem [] = [];
 
-  constructor(private shelfHelperService: ShelfHelperService,
+  constructor(private navCtrl: NavController,
+              private shelfHelperService: ShelfHelperService,
               private popoverCtrl: PopoverController,
               private alertCtrl: AlertController) {}
 
@@ -88,6 +92,15 @@ export class ShelfHelperPage implements OnInit {
         error.present();
       }
     );
+  }
+
+  viewItem(item: ItemRecord, i) {
+    console.log("viewItem(" + JSON.stringify(item) + ", " + i + ")");
+    this.navCtrl.push(ItemRecordPage,{item: item, saved: true, fromMain: false});
+  }
+
+  refreshList() {
+    this.shelfHelperList = this.shelfHelperService.loadList();
   }
 
 }

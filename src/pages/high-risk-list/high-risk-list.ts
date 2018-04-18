@@ -88,6 +88,6 @@ export class HighRiskListPage implements OnInit {
 
   private viewItem(item, i) {
     console.log("viewItem(" + JSON.stringify(item) + ", " + i + ")");
-    this.navCtrl.push(ItemRecordPage,{item: item, saved: true});
+    this.navCtrl.push(ItemRecordPage,{item: item, saved: true, fromMain: false});
   }
 }

@@ -1,6 +1,12 @@
 <ion-header>
 
   <ion-navbar>
+    <ion-buttons right>
+      <button ion-button icon-only (click)="refreshList()">
+        Refresh
+        <ion-icon name="cloud-download"></ion-icon>
+      </button>
+    </ion-buttons>
     <ion-title>Shelf Helper</ion-title>
   </ion-navbar>
 
@@ -26,6 +32,11 @@
     <ion-item-options side="left">
       <button ion-button color='danger' (click)="deleteToGetItem(i)">
         <ion-icon name="md-trash"></ion-icon>
+      </button>
+    </ion-item-options>
+    <ion-item-options side="right">
+      <button ion-button color='primary' (click)="viewItem(toGet.item, i)">
+        <ion-icon name="create"></ion-icon>
       </button>
     </ion-item-options>
 

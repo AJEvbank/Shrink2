@@ -25,6 +25,7 @@ export class ItemRecordPage implements OnInit {
   isCompleteItemRecord: boolean = true;
   mainPage: MainPage;
   createNotificationPage: CreateNotificationPage;
+  homeButtonText: string;
 
   constructor(private navCtrl: NavController,
               private navParams: NavParams,
@@ -43,6 +44,12 @@ export class ItemRecordPage implements OnInit {
     this.isCompleteItemRecord = this.navParams.get('saved');
     console.log("isCompleteItemRecord: " + this.isCompleteItemRecord + " : " + this.navParams.get('saved'));
     this.shelfHelperService.fetchList();
+    if (this.navParams.get('fromMain') == true) {
+      this.homeButtonText = "Home";
+    }
+    else {
+      this.homeButtonText = "Back";
+    }
   }
 
   editItem() {
