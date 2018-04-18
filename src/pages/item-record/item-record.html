@@ -10,29 +10,24 @@
 <ion-content padding>
   <ion-card (click)="editItem()">
 
-  <ion-card-header>
+  <!-- <ion-card-header>
     <ion-item>
+      <h1>{{ item.name }}</h1>
       <ion-label>
         {{ item.name }}
       </ion-label>
     </ion-item>
-  </ion-card-header>
+  </ion-card-header> -->
 
   <ion-card-content>
     <!-- Add card content here! -->
+    <h1>{{ item.name }}</h1>
     <p>
-      {{ item.upc }}
-    </p>
-    <p>
-      {{ item.weight }}
+      UPC: {{ item.upc }}
     </p>
     <p *ngIf="item.isHighRisk">
       High Risk Item
     </p>
-    <!-- <p>
-      This item has been referenced {{ item.references }} times.
-    </p> -->
-    <!-- <hr/> -->
     <p>
       (Tap To Edit)
     </p>
