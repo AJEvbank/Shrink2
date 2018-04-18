@@ -51,7 +51,7 @@ export class EditNotificationPage {
       'quantity': new FormControl(this.notification.item.quantity, Validators.required),
       'unitPrice': new FormControl(this.notification.item.unitPrice, Validators.required),
       'sellByDate': new FormControl(this.displayDate.toISOString(), Validators.required),
-      'daysPrior': new FormControl(this.notification.daysPrior, Validators.required),
+      'daysPrior': new FormControl(this.notification.daysPrior, [ Validators.required, Validators.min(0) ]),
       'deliveryOption': new FormControl(this.notification.deliveryOption, Validators.required),
       'memo': new FormControl(this.notification.memo, Validators.required),
       'dateOfCreation': new FormControl(this.notification.dateOfCreation, Validators.required),

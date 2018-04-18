@@ -249,7 +249,17 @@ export class AWSCommService {
   }
 
   public AWSFetchDateRangeNotifications(from: string, to: string) : Promise<Notification []> {
-    let urlString = this.access.notificationFunction + this.access.fromDate + from + this.access.toDate + to;
+    let urlString: string;
+    console.log("(new Date(from)).toDateString(): " + (new Date(from)).toDateString());
+    console.log("(new Date(to)).toDateString(): " + (new Date(to)).toDateString());
+    if ((new Date(from)).toDateString() == (new Date(to)).toDateString()) {
+      console.log("==");
+      urlString = this.access.notificationFunction + this.access.notificationRetrieval + from;
+    }
+    else {
+      console.log("!=");
+      urlString = this.access.notificationFunction + this.access.fromDate + from + this.access.toDate + to;
+    }
     return this.get(urlString)
     .then(
       (response) => {

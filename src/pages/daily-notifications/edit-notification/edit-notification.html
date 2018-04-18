@@ -37,6 +37,9 @@
       <ion-label floating>Days Advance Warning</ion-label>
       <ion-input type="number" formControlName="daysPrior"></ion-input>
     </ion-item>
+    <ion-item *ngIf="notificationForm.controls['daysPrior'].hasError('min')">
+      <ion-label>Cannot have value less than zero.</ion-label>
+    </ion-item>
     <ion-item>
       <ion-label>Delivery Options</ion-label>
       <ion-select formControlName="deliveryOption" [placeholder]="notification.deliveryOption">
