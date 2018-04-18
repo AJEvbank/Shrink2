@@ -43,9 +43,12 @@ export class CreateNotificationPage implements OnInit {
     this.notification = new Notification(this.itemCollection, new Date(), 3, Notification.Option.NONE, "");
     this.displayDate = this.notification.dateOfCreation.toLocaleString();
     this.initializeForm();
-    console.log("sellByDate: " + this.displayDate);
-    let testMomentDateTime = moment().format('MMDDYYYY HH:mm:ss a');
+    let offset = (new Date()).getTimezoneOffset();
+    console.log("sellByDate: " + this.displayDate + " offset: " + offset);
+    let testMomentDateTime = moment().add(-2 * offset,'minutes').format('MM/DD/YYYY, HH:mm:ss a');
     console.log("testMomentDateTime: " + testMomentDateTime);
+    this.displayDate = (new Date(testMomentDateTime)).toString();
+    console.log("sellByDate: " + this.displayDate + " offset: " + offset);
   }
 
   private initializeForm() {
