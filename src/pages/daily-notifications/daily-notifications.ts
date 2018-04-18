@@ -137,14 +137,12 @@ export class DailyNotificationsPage implements OnInit {
           this.dailyNotificationsService.fetchDateRangeNotifications(data.from,data.to)
           .then(
             (data) => {
-              if (this.dailyNotificationsService.getListLength() == 0) {
-                this.noNotifications == true;
-              }
               if(data == "ERROR") {
                 let error = this.alertCtrl.create({title: 'Error',message: "Could not fetch the list. Please try again.",buttons: ['Dismiss']});
                 error.present();
               }
               else {
+                this.noNotifications = (this.dailyNotificationsService.getListLength() == 0) ? true : false;
                 if (this.dailyNotificationsService.getListLength() == 0) {
                   let alert = this.alertCtrl.create({message:"No notifications in the specified time period.",buttons:['Dismiss']});
                   alert.present();
