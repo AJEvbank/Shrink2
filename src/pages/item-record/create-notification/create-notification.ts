@@ -28,6 +28,8 @@ export class CreateNotificationPage implements OnInit {
 
   notificationForm: FormGroup;
 
+  localISOTime: string;
+
 
   constructor(private navParams: NavParams,
               private viewCtrl: ViewController,
@@ -41,25 +43,22 @@ export class CreateNotificationPage implements OnInit {
     this.upc = this.item.upc;
     let offset = (new Date()).getTimezoneOffset();
     let temp = new Date();
+    let tzoffset = (new Date()).getTimezoneOffset() * 60000; //offset in milliseconds
+    this.localISOTime = (new Date(Date.now() - tzoffset)).toISOString().slice(0, -1);
     this.displayDate = new Date(temp.getFullYear(),temp.getMonth(),temp.getDate(),temp.getHours(),temp.getMinutes() - (1 * offset));
     console.log("displayDate: " + this.displayDate.toISOString() + " offset: " + offset);
     this.itemCollection = new ItemCollection(this.item, 0, 0);
     this.notification = new Notification(this.itemCollection, this.displayDate, 3, Notification.Option.NONE, "");
     this.initializeForm();
-    // let offset = (new Date()).getTimezoneOffset();
-    // console.log("sellByDate: " + this.displayDate + " offset: " + offset);
-    // let testMomentDateTime = moment().add(-2 * offset,'minutes').format('MM/DD/YYYY, HH:mm:ss a');
-    // console.log("testMomentDateTime: " + testMomentDateTime);
-    // this.displayDate = (new Date(testMomentDateTime)).toString();
-    // console.log("sellByDate: " + this.displayDate + " offset: " + offset);
   }
+  //this.notification.sellByDate.toISOString()
 
   private initializeForm() {
     this.notificationForm = new FormGroup({
       'itemCollection': new FormControl(this.notification.item, Validators.required),
       'quantity': new FormControl(this.notification.item.quantity, Validators.required),
       'unitPrice': new FormControl(this.notification.item.unitPrice, Validators.required),
-      'sellByDate': new FormControl(this.notification.sellByDate.toISOString(), Validators.required),
+      'sellByDate': new FormControl(this.localISOTime, Validators.required),
       'daysPrior': new FormControl(this.notification.daysPrior, Validators.required),
       'deliveryOption': new FormControl(this.notification.deliveryOption, Validators.required),
       'memo': new FormControl(this.notification.memo, Validators.required),
