@@ -24,7 +24,7 @@ export class CreateNotificationPage implements OnInit {
   private itemCollection: ItemCollection;
   private notification: Notification;
 
-  private displayDate: string;
+  private displayDate: Date;
 
   notificationForm: FormGroup;
 
@@ -39,16 +39,16 @@ export class CreateNotificationPage implements OnInit {
     console.log(this.item);
     this.name = this.item.name;
     this.upc = this.item.upc;
+    this.displayDate = new Date();
     this.itemCollection = new ItemCollection(this.item, 0, 0);
     this.notification = new Notification(this.itemCollection, new Date(), 3, Notification.Option.NONE, "");
-    this.displayDate = this.notification.dateOfCreation.toLocaleString();
     this.initializeForm();
-    let offset = (new Date()).getTimezoneOffset();
-    console.log("sellByDate: " + this.displayDate + " offset: " + offset);
-    let testMomentDateTime = moment().add(-2 * offset,'minutes').format('MM/DD/YYYY, HH:mm:ss a');
-    console.log("testMomentDateTime: " + testMomentDateTime);
-    this.displayDate = (new Date(testMomentDateTime)).toString();
-    console.log("sellByDate: " + this.displayDate + " offset: " + offset);
+    // let offset = (new Date()).getTimezoneOffset();
+    // console.log("sellByDate: " + this.displayDate + " offset: " + offset);
+    // let testMomentDateTime = moment().add(-2 * offset,'minutes').format('MM/DD/YYYY, HH:mm:ss a');
+    // console.log("testMomentDateTime: " + testMomentDateTime);
+    // this.displayDate = (new Date(testMomentDateTime)).toString();
+    // console.log("sellByDate: " + this.displayDate + " offset: " + offset);
   }
 
   private initializeForm() {
