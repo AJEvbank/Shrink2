@@ -1,7 +1,7 @@
 <ion-header>
 
   <ion-navbar>
-    <ion-title>Create A Notification For:</ion-title>
+    <ion-title>Edit Notification</ion-title>
   </ion-navbar>
 
 </ion-header>
@@ -9,9 +9,7 @@
 
 <ion-content padding>
 
-
-
-  <form [formGroup]="notificationForm" (ngSubmit)="onSubmit()">
+  <form [formGroup]="notificationForm">
 
     <ion-item>
       <ion-label floating>UPC:</ion-label>
@@ -33,8 +31,7 @@
     <ion-item>
       <ion-label>Sell-By Date:</ion-label>
       <ion-datetime displayFormat="MM/DD/YYYY" pickerFormat="MM DD YYYY" formControlName="sellByDate"
-                    placeholder="select sell-by date"></ion-datetime>
-                    <!-- placeholder="{{ displayDate.slice(0,displayDate.indexOf('-')) }}" -->
+                    ></ion-datetime>
     </ion-item>
     <ion-item>
       <ion-label floating>Days Advance Warning</ion-label>
@@ -45,7 +42,7 @@
     </ion-item>
     <ion-item>
       <ion-label>Delivery Options</ion-label>
-      <ion-select formControlName="deliveryOption">
+      <ion-select formControlName="deliveryOption" [placeholder]="notification.deliveryOption">
         <ion-option value="Notification.Option.NONE">None</ion-option>
         <ion-option value="Notification.Option.EMAIL">Email</ion-option>
         <ion-option value="Notification.Option.PUSH">Push</ion-option>
@@ -55,7 +52,8 @@
     <ion-item>
       <ion-input placeholder="Enter a memo" formControlName="memo"></ion-input>
     </ion-item>
-    <button type="submit" ion-button block [disabled]="!notificationForm.valid">Create Notification</button>
+    <button type="submit" ion-button block [disabled]="!notificationForm.valid" (click)="onSubmit('update')">Update Notification</button>
+    <button type="submit" ion-button block color="green" [disabled]="!notificationForm.valid" (click)="onSubmit('create')">Create New Notification</button>
 
   </form>
   <button ion-button block color="danger" (click)="leavePage()">Cancel</button>

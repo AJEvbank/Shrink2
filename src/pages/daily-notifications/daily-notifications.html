@@ -1,7 +1,7 @@
 <ion-header>
 
   <ion-navbar>
-    <ion-buttons end>
+    <ion-buttons right>
       <button ion-button icon-only (click)="refreshList()">
         Refresh
         <ion-icon name="cloud-download"></ion-icon>
@@ -14,44 +14,54 @@
 </ion-header>
 
 
-<ion-content padding class="no-scroll">
+<ion-content padding>
 
 
-<ion-list>
-  <ion-item-sliding *ngFor="let notification of notificationList; let i = index" nowrap>
-    <ion-item (click)="viewNotes($event, notification)">
-      <ion-label>
-        <h2>Name: {{ notification.item.item.name }}</h2>
-        <p>
-          UPC: {{ notification.item.item.upc }}
-        </p>
-        <p>
-          Quantity: {{ notification.item.quantity }}
-        </p>
-      </ion-label>
-      <!-- <ion-checkbox item-end></ion-checkbox> -->
-    </ion-item>
-    <ion-item-options side="left">
-      <button ion-button color='danger' (click)="deleteItem(i)">
-        <ion-icon name="md-trash"></ion-icon>
-      </button>
-    </ion-item-options>
-  </ion-item-sliding>
-</ion-list>
+  <ion-list>
+    <ion-item-sliding *ngFor="let notification of notificationList; let i = index" nowrap>
+      <ion-item (click)="viewNotes($event, notification)">
+        <ion-label>
+          <h2>Name: {{ notification.item.item.name }}</h2>
+          <p>
+            UPC: {{ notification.item.item.upc }}
+          </p>
+          <p>
+            Quantity: {{ notification.item.quantity }}
+          </p>
+        </ion-label>
+      </ion-item>
+      <ion-item-options side="left">
+        <button ion-button color='danger' (click)="deleteItem(i)">
+          <ion-icon name="md-trash"></ion-icon>
+        </button>
+      </ion-item-options>
+      <ion-item-options side="right">
+        <button ion-button color='primary' (click)="editItem(notification, i)">
+          <ion-icon name="create"></ion-icon>
+        </button>
+      </ion-item-options>
+    </ion-item-sliding>
+  </ion-list>
 
 <!-- Needs to be pretty -->
-<h1 ion-text *ngIf="noNotifications">No notifications for today!</h1>
-
+  <h1 ion-text *ngIf="noNotifications && !searchedByRange">No notifications for today!</h1>
+  <h2 ion-text *ngIf="noNotifications && searchedByRange">No notifications for the requested date(s)!</h2>
 
 </ion-content>
 
-<!-- <ion-footer>
+<ion-footer>
   <ion-toolbar>
-    <ion-buttons end>
+    <ion-buttons left>
+      <button ion-button icon-only color="danger" (click)="clearList(true)">
+        <ion-icon name="trash"></ion-icon>
+        Clear List
+      </button>
+    </ion-buttons>
+    <ion-buttons right>
       <button ion-button icon-only (click)="searchByDate(true)">
         Search
         <ion-icon name="search"></ion-icon>
       </button>
     </ion-buttons>
   </ion-toolbar>
-</ion-footer> -->
+</ion-footer>

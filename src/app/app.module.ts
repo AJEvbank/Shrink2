@@ -22,13 +22,14 @@ import { DailyNotificationsPage } from '../pages/daily-notifications/daily-notif
 import { NotificationPopoverPage } from '../pages/daily-notifications/notification-popover';
 import { GetUPCPopover } from '../pages/main/getUPCpopover';
 import { ToGetEditPopover } from '../pages/shelf-helper/to-get-popover';
+import { SearchByDateRangePopover } from '../pages/daily-notifications/searchByDateRange';
 
 import { ItemRecordPage } from '../pages/item-record/item-record';
 import { ShelfHelperAddQuantityPopover } from '../pages/item-record/shelf-helper_popover';
 import { ThrowawayQuantityPricePopoverPage } from '../pages/item-record/throwaway_popover';
 import { EditItemRecordPage } from '../pages/item-record/edit-item-record/edit-item-record';
 import { CreateNotificationPage } from '../pages/item-record/create-notification/create-notification';
-import { ThrowawayPage } from '../pages/item-record/throwaway/throwaway';
+import { EditNotificationPage } from '../pages/daily-notifications/edit-notification/edit-notification';
 
 import { ReportsPage } from '../pages/reports/reports';
 import { CalendarPage } from '../pages/reports/calendar/calendar';
@@ -57,7 +58,6 @@ import { Accessor } from '../../../Accessor';
     ReportsPage,
     EditItemRecordPage,
     CreateNotificationPage,
-    ThrowawayPage,
     CalendarPage,
     LossOverTimeReportPage,
     ReportSpecificationsPage,
@@ -67,7 +67,9 @@ import { Accessor } from '../../../Accessor';
     GetUPCPopover,
     ShelfHelperAddQuantityPopover,
     ThrowawayQuantityPricePopoverPage,
-    ToGetEditPopover
+    ToGetEditPopover,
+    EditNotificationPage,
+    SearchByDateRangePopover
   ],
   imports: [
     BrowserModule,
@@ -87,7 +89,6 @@ import { Accessor } from '../../../Accessor';
     ReportsPage,
     EditItemRecordPage,
     CreateNotificationPage,
-    ThrowawayPage,
     CalendarPage,
     LossOverTimeReportPage,
     ReportSpecificationsPage,
@@ -96,7 +97,9 @@ import { Accessor } from '../../../Accessor';
     GetUPCPopover,
     ShelfHelperAddQuantityPopover,
     ThrowawayQuantityPricePopoverPage,
-    ToGetEditPopover
+    ToGetEditPopover,
+    EditNotificationPage,
+    SearchByDateRangePopover
   ],
   providers: [
     StatusBar,

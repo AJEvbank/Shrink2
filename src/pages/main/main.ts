@@ -24,7 +24,7 @@ export class MainPage {
 
   itemRecordPage = ItemRecordPage;
   dailyNotificationsPage = DailyNotificationsPage;
-  highRiskList = HighRiskListPage;
+  highRiskListPage = HighRiskListPage;
   shelfHelperPage = ShelfHelperPage;
   reportsPage = ReportsPage;
 
@@ -51,6 +51,7 @@ export class MainPage {
   private dummyFunctionCalls() { // This function is stupid, but it gets rid of a stupid warning on transpile.
     this.scanItem(false);
     this.getItemByUPC(false);
+    this.prepareHighRiskList(false);
   }
 
 
@@ -72,7 +73,7 @@ export class MainPage {
               if(item.name == "EMPTY") {
                 console.log("NewRecord Triggered");
                 let newEmptyItem = new ItemRecord(item.upc,"(Add New Item Name Here)");
-                this.navCtrl.push(ItemRecordPage,{item: newEmptyItem, saved: false});
+                this.navCtrl.push(ItemRecordPage,{item: newEmptyItem, saved: false, fromMain: true});
               }
               else if(item.name == "ERROR") {
                 console.log("Error on response.");
@@ -81,7 +82,7 @@ export class MainPage {
               }
               else {
                 console.log("else Triggered");
-                this.navCtrl.push(ItemRecordPage,{item: item, saved: true});
+                this.navCtrl.push(ItemRecordPage,{item: item, saved: true, fromMain: true});
               }
           })
           .catch((err) => {
@@ -128,4 +129,8 @@ export class MainPage {
     })
   }
 
+  private prepareHighRiskList(clear: boolean) {
+    if (clear == true)
+    this.navCtrl.push(this.highRiskListPage);
+  }
 }

@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { NavParams, ViewController } from 'ionic-angular';
+import { NavController, NavParams, ViewController } from 'ionic-angular';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-
 
 
 import { ItemRecord } from '../../../assets/models/item-record.model';
@@ -13,10 +12,10 @@ import { DailyNotificationsService } from '../../../services/daily-notifications
 import moment from 'moment';
 
 @Component({
-  selector: 'page-create-notification',
-  templateUrl: 'create-notification.html',
+  selector: 'page-edit-notification',
+  templateUrl: 'edit-notification.html',
 })
-export class CreateNotificationPage implements OnInit {
+export class EditNotificationPage {
 
   private item: ItemRecord;
   private name: string;
@@ -24,35 +23,34 @@ export class CreateNotificationPage implements OnInit {
   private itemCollection: ItemCollection;
   private notification: Notification;
 
-  private displayDate: string;
+  private displayDate: Date;
 
   notificationForm: FormGroup;
 
-
-  constructor(private navParams: NavParams,
+  constructor(private navCtrl: NavController,
+              private navParams: NavParams,
               private viewCtrl: ViewController,
               private dailyNotificationsService: DailyNotificationsService) {
   }
 
   ngOnInit() {
-    this.item = this.navParams.get('item');
-    console.log(this.item);
-    this.name = this.item.name;
-    this.upc = this.item.upc;
-    this.displayDate = moment().format("MM/DD/YYYY-HH:mm a");
+    this.notification = this.navParams.get('notification');
+    console.log("Notification in ngOnInit(): " + JSON.stringify(this.notification));
+    console.log("\n\n\n");
+    this.name = this.notification.item.item.name;
+    this.upc = this.notification.item.item.upc;
+    this.displayDate = new Date(this.notification.sellByDate);
     console.log("displayDate: " + this.displayDate);
-    this.itemCollection = new ItemCollection(this.item, 0, 0);
-    this.notification = new Notification(this.itemCollection, new Date(), 3, Notification.Option.NONE, "");
+    this.itemCollection = new ItemCollection(this.notification.item.item, this.notification.item.quantity, this.notification.item.unitPrice);
     this.initializeForm();
   }
-  //this.notification.sellByDate.toISOString()
 
   private initializeForm() {
     this.notificationForm = new FormGroup({
       'itemCollection': new FormControl(this.notification.item, Validators.required),
       'quantity': new FormControl(this.notification.item.quantity, Validators.required),
       'unitPrice': new FormControl(this.notification.item.unitPrice, Validators.required),
-      'sellByDate': new FormControl("", Validators.required),
+      'sellByDate': new FormControl(this.displayDate.toISOString(), Validators.required),
       'daysPrior': new FormControl(this.notification.daysPrior, [ Validators.required, Validators.min(0) ]),
       'deliveryOption': new FormControl(this.notification.deliveryOption, Validators.required),
       'memo': new FormControl(this.notification.memo, Validators.required),
@@ -62,7 +60,9 @@ export class CreateNotificationPage implements OnInit {
     });
   }
 
-  onSubmit() {
+  onSubmit(message: string) {
+    console.log("message in onSubmit(): " + message);
+
     let value = this.notificationForm.value;
 
     console.log("value.sellByDate var: " + value.sellByDate);
@@ -73,10 +73,13 @@ export class CreateNotificationPage implements OnInit {
     this.notification.daysPrior = value.daysPrior;
     this.notification.deliveryOption = value.deliveryOption;
     this.notification.memo = value.memo;
+    if(message == 'create') {
+      this.notification.Id = null;
+      console.log("message == " + message);
+      console.log("this.notification.Id == " + this.notification.Id);
+    }
 
-    console.log(this.notification);
-    // Server logic here.
-    // For now.
+    console.log("notification in onSubmit(): " + JSON.stringify(this.notification));
     this.dailyNotificationsService.addItem(this.notification)
     .then(
       (data) => {
@@ -94,5 +97,6 @@ export class CreateNotificationPage implements OnInit {
   leavePage() {
     this.viewCtrl.dismiss();
   }
+
 
 }

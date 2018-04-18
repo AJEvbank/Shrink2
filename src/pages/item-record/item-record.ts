@@ -25,6 +25,7 @@ export class ItemRecordPage implements OnInit {
   isCompleteItemRecord: boolean = true;
   mainPage: MainPage;
   createNotificationPage: CreateNotificationPage;
+  homeButtonText: string;
 
   constructor(private navCtrl: NavController,
               private navParams: NavParams,
@@ -43,6 +44,12 @@ export class ItemRecordPage implements OnInit {
     this.isCompleteItemRecord = this.navParams.get('saved');
     console.log("isCompleteItemRecord: " + this.isCompleteItemRecord + " : " + this.navParams.get('saved'));
     this.shelfHelperService.fetchList();
+    if (this.navParams.get('fromMain') == true) {
+      this.homeButtonText = "Home";
+    }
+    else {
+      this.homeButtonText = "Back";
+    }
   }
 
   editItem() {
@@ -77,35 +84,24 @@ export class ItemRecordPage implements OnInit {
       createNotificationModal.onDidDismiss(
         (data) => {
           if (data == "SUCCESS") {
-            let toast = this.toastCtrl.create({
-              message: 'Your notification was saved.',
-              duration: 2000,
-              position: 'bottom'
-            });
+            let toast = this.toastCtrl.create({message: 'Your notification was saved.',duration: 2000,position: 'bottom'});
             toast.present();
           }
           else if (data == "ERROR"){
-            let toast = this.toastCtrl.create({
-              message: 'There was a problem. Please try again.',
-              duration: 2000,
-              position: 'bottom'
-            });
-            toast.present();
+            let error = this.alertCtrl.create({title: 'Error',message: 'There was a problem. Please try again.',buttons: ['Dismiss']});
+            error.present();
           }
         }
       );
     }
     else {
-      let toast = this.toastCtrl.create({
-        message: 'This record is not complete. Please complete all fields.',
-        duration: 2000,
-        position: 'middle'
-      });
+      let toast = this.toastCtrl.create({message: 'This record is not complete. Please complete all fields.',duration: 2000,position: 'middle'});
       toast.present();
     }
   }
 
   //Nick: This should work no problems, let me know if it breaks.
+
   ToggleHighRisk(toggle: boolean){
     if(this.isCompleteItemRecord == true){
       let loader = this.loadingCtrl.create({
@@ -115,22 +111,27 @@ export class ItemRecordPage implements OnInit {
       //Update the status
       this.hrService.ToggleHighRisk(this.item, toggle)
       .then((itemResponse) => {
-        this.item = itemResponse;
-        loader.dismiss();
+        if (itemResponse.message == "SUCCESS") {
+          this.item = itemResponse.item;
+          loader.dismiss();
+        }
+        else if (itemResponse.message == "ERROR") {
+          loader.dismiss();
+          let error = this.alertCtrl.create({title: "Error",message: "An error occurred. Please try again.",buttons:['Dismiss']});
+          error.present();
+        }
       })
       .catch((err) => {
         console.log(err);
         loader.dismiss();
+        let error = this.alertCtrl.create({title: "Error",message: "An error occurred. Please try again.",buttons:['Dismiss']});
+        error.present();
       });
 
     }
     else{
       //Item record not complete. Fix dat shit, user.
-      let toast = this.toastCtrl.create({
-        message: 'This record is not complete. Please complete all fields.',
-        duration: 2000,
-        position: 'middle'
-      });
+      let toast = this.toastCtrl.create({message: 'This record is not complete. Please complete all fields.',duration: 2000,position: 'middle'});
       toast.present();
     }
   }
