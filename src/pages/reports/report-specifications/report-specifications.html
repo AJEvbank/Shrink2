@@ -5,21 +5,87 @@
 </ion-header>
 
 <ion-content padding *ngIf='reportType == "Loss Over Time"'>
-  <p>
-    This is the Loss Over Time stuff...
-  </p>
+  <form [formGroup]="reportForm" (ngSubmit)="onSubmit()">
+    <ion-item>
+      <ion-label>Report Subject</ion-label>
+      <ion-select [(ngModel)]='subjectSelection' formControlName='subjectSelection' (ionChange)='onSubjectSelectionChanged()'>
+        <ion-option value='SingleItem'>Single Item</ion-option>
+        <ion-option value='HighRiskList'>High Risk Items</ion-option>
+        <ion-option value='AllItems'>All Items</ion-option>
+      </ion-select>
+    </ion-item>
+
+    <!-- Go ahead and show upc options for single. -->
+    <ion-item *ngIf='subjectSelection=="SingleItem"'>
+      <ion-label>UPC:</ion-label>
+      <ion-input type='number' formControlName="subjectUPC"></ion-input>
+    </ion-item>
+    <ion-item *ngIf='subjectSelection=="SingleItem"'>
+      <button type='button' ion-button large block round color='danger'
+      (click)='onScanUPC()' [disabled]="this.isLocalHost == true">Scan for UPC</button>
+    </ion-item>
+
+    <!-- Date pickers -->
+    <ion-item>
+      <ion-label>Start Date</ion-label>
+      <ion-datetime displayFormat="MM/DD/YYYY" pickerFormat="MM DD YYYY" formControlName="dateRangeStart"
+                    placeholder="{{ dateRangeStart }}"></ion-datetime>
+    </ion-item>
+    <ion-item>
+      <ion-label>End Date</ion-label>
+      <ion-datetime displayFormat="MM/DD/YYYY" pickerFormat="MM DD YYYY" formControlName="dateRangeEnd"
+                    placeholder="{{ dateRangeEnd }}"></ion-datetime>
+    </ion-item>
+    <button type="submit" ion-button round block [disabled]="!reportForm.valid">View Report</button>
+    <p>
+      {{ errorMessage }}
+    </p>
+  </form>
 </ion-content>
 
 <ion-content padding *ngIf='reportType == "Calendar View"'>
-  <p>
-    This is the calendar stuff... Uses the notifications.
-    Input for maximum allowable Loss
-    Date range: starting month and year..
-  </p>
-  <ion-item>
-    <ion-label>Chosen Date: {{ dateTime }}</ion-label>
-    <ion-datetime displayFormat='MM/YYYY' [(ngModel)]='dateTime'></ion-datetime>
-  </ion-item>
+  <form [formGroup]="reportForm" (ngSubmit)="onSubmit()">
+    <ion-item>
+      <ion-label>Report Subject</ion-label>
+      <ion-select [(ngModel)]='subjectSelection' formControlName='subjectSelection' (ionChange)='onSubjectSelectionChanged()'>
+        <ion-option value='SingleItem'>Single Item</ion-option>
+        <ion-option value='HighRiskList'>High Risk Items</ion-option>
+        <ion-option value='AllItems'>All Items</ion-option>
+      </ion-select>
+    </ion-item>
+
+    <!-- Go ahead and show upc options for single. -->
+    <ion-item *ngIf='subjectSelection=="SingleItem"'>
+      <ion-label>UPC:</ion-label>
+      <ion-input type='number' formControlName="subjectUPC"></ion-input>
+    </ion-item>
+    <ion-item *ngIf='subjectSelection=="SingleItem"'>
+      <button type='button' ion-button large block round color='danger'
+      (click)='onScanUPC()' [disabled]="this.isLocalHost == true">Scan for UPC</button>
+    </ion-item>
+
+    <!-- Date pickers -->
+    <ion-item>
+      <ion-label>Start Date</ion-label>
+      <ion-datetime displayFormat="MM/DD/YYYY" pickerFormat="MM DD YYYY" formControlName="dateRangeStart"
+                    placeholder="{{ dateRangeStart }}"></ion-datetime>
+    </ion-item>
+    <ion-item>
+      <ion-label>End Date</ion-label>
+      <ion-datetime displayFormat="MM/DD/YYYY" pickerFormat="MM DD YYYY" formControlName="dateRangeEnd"
+                    placeholder="{{ dateRangeEnd }}"></ion-datetime>
+    </ion-item>
+
+    <!-- Choose max allowed shrink -->
+    <ion-item>
+      <ion-label>Shrink Threshold:</ion-label>
+      <ion-input type='number' formControlName='maxAllowedShrink'></ion-input>
+    </ion-item>
+    <button type="submit" ion-button round block [disabled]="!reportForm.valid">View Report</button>
+    <p>
+      {{ errorMessage }}
+    </p>
+  </form>
 </ion-content>
 
 <ion-content padding *ngIf='reportType == "Excel Spreadsheet"'>

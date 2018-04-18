@@ -1,25 +1,28 @@
-import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { Component, OnInit } from '@angular/core';
+import { NavParams } from 'ionic-angular';
 
-/**
- * Generated class for the LossOverTimeReportPage page.
- *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
- */
+import { Throwaway } from '../../../assets/models/throwaway.model';
 
-@IonicPage()
 @Component({
   selector: 'page-loss-over-time-report',
   templateUrl: 'loss-over-time-report.html',
 })
-export class LossOverTimeReportPage {
+export class LossOverTimeReportPage implements OnInit {
+  graphData : Throwaway[];
 
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
+  testData = [65, 59, 80, 81, 56, 55, 40];
+  testLabels = ['1', '2', '3', '4', '5', '6', '7'];
+  chartType = 'line';
+  lineChartOptions = { responsive: true };
+
+  constructor(private navParams: NavParams) {}
+
+  ngOnInit(){
+    this.graphData = this.navParams.data;
+    console.log(this.graphData);
+
+    /*
+      Need the sum of all the throwaways on each day of the date range for each upc
+    */
   }
-
-  ionViewDidLoad() {
-    console.log('ionViewDidLoad LossOverTimeReportPage');
-  }
-
 }
