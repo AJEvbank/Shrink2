@@ -9,6 +9,8 @@ import { Notification } from '../../../assets/models/notification.model';
 
 import { DailyNotificationsService } from '../../../services/daily-notifications.service';
 
+import moment from 'moment';
+
 @Component({
   selector: 'page-edit-notification',
   templateUrl: 'edit-notification.html',
@@ -21,8 +23,7 @@ export class EditNotificationPage {
   private itemCollection: ItemCollection;
   private notification: Notification;
 
-  private displayDate: string;
-  private tempDate: Date;
+  private displayDate: Date;
 
   notificationForm: FormGroup;
 
@@ -38,10 +39,9 @@ export class EditNotificationPage {
     console.log("\n\n\n");
     this.name = this.notification.item.item.name;
     this.upc = this.notification.item.item.upc;
-    this.itemCollection = new ItemCollection(this.notification.item.item, this.notification.item.quantity, this.notification.item.unitPrice);
-    this.displayDate = this.notification.sellByDate.toLocaleString();
+    this.displayDate = new Date(this.notification.sellByDate);
     console.log("displayDate: " + this.displayDate);
-    this.tempDate = new Date(this.notification.sellByDate);
+    this.itemCollection = new ItemCollection(this.notification.item.item, this.notification.item.quantity, this.notification.item.unitPrice);
     this.initializeForm();
   }
 
@@ -50,7 +50,7 @@ export class EditNotificationPage {
       'itemCollection': new FormControl(this.notification.item, Validators.required),
       'quantity': new FormControl(this.notification.item.quantity, Validators.required),
       'unitPrice': new FormControl(this.notification.item.unitPrice, Validators.required),
-      'sellByDate': new FormControl(this.tempDate.toISOString(), Validators.required),
+      'sellByDate': new FormControl(this.displayDate.toISOString(), Validators.required),
       'daysPrior': new FormControl(this.notification.daysPrior, Validators.required),
       'deliveryOption': new FormControl(this.notification.deliveryOption, Validators.required),
       'memo': new FormControl(this.notification.memo, Validators.required),
@@ -61,8 +61,12 @@ export class EditNotificationPage {
   }
 
   onSubmit(message: string) {
-    console.log("message on onSubmit(): " + message);
+    console.log("message in onSubmit(): " + message);
+
     let value = this.notificationForm.value;
+
+    console.log("value.sellByDate var: " + value.sellByDate);
+
     this.notification.item.quantity = value.quantity;
     this.notification.item.unitPrice = value.unitPrice;
     this.notification.sellByDate = value.sellByDate;

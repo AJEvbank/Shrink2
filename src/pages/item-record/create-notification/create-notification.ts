@@ -24,11 +24,9 @@ export class CreateNotificationPage implements OnInit {
   private itemCollection: ItemCollection;
   private notification: Notification;
 
-  private displayDate: Date;
+  private displayDate: string;
 
   notificationForm: FormGroup;
-
-  localISOTime: string;
 
 
   constructor(private navParams: NavParams,
@@ -41,14 +39,10 @@ export class CreateNotificationPage implements OnInit {
     console.log(this.item);
     this.name = this.item.name;
     this.upc = this.item.upc;
-    let offset = (new Date()).getTimezoneOffset();
-    let temp = new Date();
-    let tzoffset = (new Date()).getTimezoneOffset() * 60000; //offset in milliseconds
-    this.localISOTime = (new Date(Date.now() - tzoffset)).toISOString().slice(0, -1);
-    this.displayDate = new Date(temp.getFullYear(),temp.getMonth(),temp.getDate(),temp.getHours(),temp.getMinutes() - (1 * offset));
-    console.log("displayDate: " + this.displayDate.toISOString() + " offset: " + offset);
+    this.displayDate = moment().format("MM/DD/YYYY-HH:mm a");
+    console.log("displayDate: " + this.displayDate);
     this.itemCollection = new ItemCollection(this.item, 0, 0);
-    this.notification = new Notification(this.itemCollection, this.displayDate, 3, Notification.Option.NONE, "");
+    this.notification = new Notification(this.itemCollection, new Date(), 3, Notification.Option.NONE, "");
     this.initializeForm();
   }
   //this.notification.sellByDate.toISOString()
@@ -58,7 +52,7 @@ export class CreateNotificationPage implements OnInit {
       'itemCollection': new FormControl(this.notification.item, Validators.required),
       'quantity': new FormControl(this.notification.item.quantity, Validators.required),
       'unitPrice': new FormControl(this.notification.item.unitPrice, Validators.required),
-      'sellByDate': new FormControl(this.localISOTime, Validators.required),
+      'sellByDate': new FormControl("", Validators.required),
       'daysPrior': new FormControl(this.notification.daysPrior, Validators.required),
       'deliveryOption': new FormControl(this.notification.deliveryOption, Validators.required),
       'memo': new FormControl(this.notification.memo, Validators.required),
@@ -70,8 +64,7 @@ export class CreateNotificationPage implements OnInit {
 
   onSubmit() {
     let value = this.notificationForm.value;
-    let sellByDate = new Date(value.sellByDate);
-    console.log("sellByDate var: " + sellByDate.toUTCString());
+    
     console.log("value.sellByDate var: " + value.sellByDate);
 
     this.notification.item.quantity = value.quantity;
