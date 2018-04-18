@@ -39,9 +39,12 @@ export class CreateNotificationPage implements OnInit {
     console.log(this.item);
     this.name = this.item.name;
     this.upc = this.item.upc;
-    this.displayDate = new Date();
+    let offset = (new Date()).getTimezoneOffset();
+    let temp = new Date();
+    this.displayDate = new Date(temp.getFullYear(),temp.getMonth(),temp.getDate(),temp.getHours(),temp.getMinutes() - (1 * offset));
+    console.log("displayDate: " + this.displayDate.toISOString() + " offset: " + offset);
     this.itemCollection = new ItemCollection(this.item, 0, 0);
-    this.notification = new Notification(this.itemCollection, new Date(), 3, Notification.Option.NONE, "");
+    this.notification = new Notification(this.itemCollection, this.displayDate, 3, Notification.Option.NONE, "");
     this.initializeForm();
     // let offset = (new Date()).getTimezoneOffset();
     // console.log("sellByDate: " + this.displayDate + " offset: " + offset);
