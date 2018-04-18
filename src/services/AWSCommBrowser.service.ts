@@ -33,6 +33,9 @@ export class AWSCommBrowserService {
     return this.http.get(this.access.base + functionURL);
   }
 
+  private delete(functionURL: string, body: any) : Observable<Response> {
+    return this.http.delete(this.access.base + functionURL,{});
+  }
 
   // Specific requests return a Promise<(desired data type here)>.
 
@@ -58,20 +61,20 @@ export class AWSCommBrowserService {
     }).toPromise<ItemRecord>();
   }
 
-  public AWSupdateItemRecord(item: ItemRecord) : Promise<ItemRecord> {
+  public AWSupdateItemRecord(item: ItemRecord) : Promise<{item: ItemRecord, message: string}> {
     return this.put(this.access.updateItemRecordFunction + item.upc, {"name": item.name, "highRisk": item.isHighRisk})
     .map((response) => {
       let resJSON = response.json();
       if(resJSON.upc == undefined){
         console.log("Something is REALLY wrong!\n" + resJSON);
-        return new ItemRecord(item.upc, "ERROR");
+        return {item: new ItemRecord(item.upc, "ERROR"), message: "ERROR"};
       }
       else{
         let updateItem = resJSON.upc;
         //console.log("not undefined");
-        return new ItemRecord(updateItem.upcId, updateItem.name, updateItem.highRisk);
+        return {item: new ItemRecord(updateItem.upcId, updateItem.name, updateItem.highRisk), message: "SUCCESS"};
       }
-    }).toPromise<ItemRecord>();
+    }).toPromise<{item: ItemRecord, message: string}>();
   }
 
   public AWScreateNotification(notification: Notification) : Promise<string> {
@@ -92,7 +95,8 @@ export class AWSCommBrowserService {
                                                         "daysPrior" : notification.daysPrior,
                                                         "deliveryOption" : notification.deliveryOption,
                                                         "dateOfCreation" : notification.dateOfCreation.toString(),
-                                                        "memo" : notification.memo
+                                                        "memo" : notification.memo,
+                                                        "Id" : notification.Id
                                                       }
     )
     .map(
@@ -111,8 +115,9 @@ export class AWSCommBrowserService {
   }
 
   public AWSFetchTodaysNotifications() : Promise<Notification[]> {
-    let today = new Date();
-    return this.get(this.access.notificationFunction + this.access.notificationRetrieval + today.toString())
+    let today = (new Date()).toLocaleString();
+    console.log("today: " + today);
+    return this.get(this.access.notificationFunction + this.access.notificationRetrieval + today)
     .map((response) => {
       let resJSON = response.json();
       if(resJSON.Items == undefined){
@@ -125,15 +130,33 @@ export class AWSCommBrowserService {
       }
       else{
         let todaysNotifs: Notification[] = [];
-        for(let res of resJSON.Items){
+        for(let res of resJSON.Items) {
           let itemCollection = new ItemCollection(new ItemRecord(res.item.upc, res.item.name, res.item.isHighRisk), res.quantity, res.unitPrice);
-          todaysNotifs.push(new Notification(itemCollection, res.sellByDate, res.daysPrior, res.deliveryOption, res.memo));
+          todaysNotifs.push(new Notification(itemCollection, res.sellByDate, res.daysPrior, res.deliveryOption, res.memo, res.Id));
         }
         console.log("Got back good response! Here it is mapped: ");
         console.log(todaysNotifs);
         return todaysNotifs;
       }
     }).toPromise<Notification[]>();
+  }
+
+  public AWSPermanentDeleteNotification(Id: string) : Promise<string>{
+    let body = {};
+    return this.delete(this.access.notificationFunction + this.access.notificationId + Id, body)
+    .map(
+      (response) => {
+        let resJSON = response.json();
+        console.log("Service response: " + JSON.stringify(response));
+        console.log("Service resJSON: " + JSON.stringify(resJSON));
+        if (resJSON.notification.Id == Id) {
+          return "SUCCESS";
+        }
+        else {
+          return "ERROR";
+        }
+      }
+    ).toPromise<string>();
   }
 
   public AWSCreateThrowaway(throwaway: Throwaway) : Promise<string> {
@@ -182,8 +205,71 @@ export class AWSCommBrowserService {
     }).toPromise<ShrinkAggregate[]>();
   }
 
+  public AWSFetchDateRangeNotifications(from: string, to: string) : Promise<Notification []> {
+    let urlString: string;
+    console.log("(new Date(from)).toDateString(): " + (new Date(from)).toDateString());
+    console.log("(new Date(to)).toDateString(): " + (new Date(to)).toDateString());
+    if ((new Date(from)).toDateString() == (new Date(to)).toDateString()) {
+      console.log("==");
+      urlString = this.access.notificationFunction + this.access.notificationRetrieval + from;
+    }
+    else {
+      console.log("!=");
+      urlString = this.access.notificationFunction + this.access.fromDate + from + this.access.toDate + to;
+    }
+    return this.get(urlString)
+    .map(
+      (response) => {
+        let resJSON = response.json();
+        if(resJSON.Items == undefined){
+          console.log("Got back an undefined response! Here it is: " + JSON.stringify(resJSON));
+          return [];
+        }
+        else if(resJSON.Items.length <= 0){
+          console.log("No notifications for given day! Here's the response: " + JSON.stringify(resJSON));
+          return [];
+        }
+        else{
+          let requestedNotifs: Notification[] = [];
+          for(let res of resJSON.Items) {
+            let itemCollection = new ItemCollection(new ItemRecord(res.item.upc, res.item.name, res.item.isHighRisk), res.quantity, res.unitPrice);
+            requestedNotifs.push(new Notification(itemCollection, res.sellByDate, res.daysPrior, res.deliveryOption, res.memo, res.Id));
+          }
+          console.log("Got back good response! Here it is mapped: ");
+          console.log(requestedNotifs);
+          return requestedNotifs;
+        }
+      }
+    ).toPromise<Notification []>();
+  }
+
   public shoutBack() {
     console.log("This is the browser service.");
   }
 
+  public AWSFetchHighRiskList() : Promise<{list: ItemRecord[], message: string}> {
+    return this.get(this.access.highRiskListFunction)
+    .map(
+      (response) => {
+        let resJSON = response.json();
+        console.log("response: " + JSON.stringify(response) + " :=> " + "resJSON: " + JSON.stringify(resJSON));
+        let highRiskList: ItemRecord[] = [];
+        let message: string = "";
+        if(resJSON.Items == undefined) {
+          message = "UNDEFINED";
+        }
+        else if (resJSON.Items.length == 0) {
+          message = "EMPTY";
+        }
+        else {
+          for(let item of resJSON.Items) {
+            let newItem = new ItemRecord(item.upc,item.name,item.isHighRisk);
+            highRiskList.push(newItem);
+          }
+          message = "SUCCESS";
+        }
+        return {list: highRiskList, message: message};
+      }
+    ).toPromise<{list: ItemRecord[], message: string}>();
+  }
 }

@@ -13,6 +13,9 @@ import { Notification } from '../../assets/models/notification.model';
               <ion-label>UPC: {{ notification.item.item.upc }}</ion-label>
             </ion-item>
             <ion-item>
+              <ion-label>Sell-By: {{ notification.sellByDate }}</ion-label>
+            </ion-item>
+            <ion-item>
               <ion-label>Quantity: {{ notification.item.quantity }}</ion-label>
             </ion-item>
             <ion-card>
@@ -23,6 +26,7 @@ import { Notification } from '../../assets/models/notification.model';
             </ion-card>
         </ion-list>
         <button ion-button block (click)="dismiss()">Ok</button>
+        <button ion-button color="danger" block (click)="deleteNotification(notification.Id)">Delete Permanently</button>
     </ion-content>
   `
 })
@@ -39,9 +43,13 @@ export class NotificationPopoverPage implements OnInit {
   }
 
   dismiss() {
-    this.viewCtrl.dismiss();
+    this.viewCtrl.dismiss({Id: null});
   }
 
+  private deleteNotification(Id: string) {
+    this.viewCtrl.dismiss({Id: Id});
+    return;
+  }
 
 
 }

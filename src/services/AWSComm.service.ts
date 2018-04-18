@@ -34,6 +34,13 @@ export class AWSCommService {
     return this.http.get(this.access.base + functionURL, {}, {});
   }
 
+  private delete(functionURL: string, body: any) : Promise<HTTPResponse> {
+    console.log("Service delete called.");
+    this.http.setDataSerializer("json");
+
+    return this.http.delete(this.access.base + functionURL, body, {});
+  }
+
 
   // Specific requests return a Promise<(desired data type here)>.
 
@@ -60,7 +67,7 @@ export class AWSCommService {
     });
   }
 
-  public AWSupdateItemRecord(item: ItemRecord) : Promise<ItemRecord> {
+  public AWSupdateItemRecord(item: ItemRecord) : Promise<{item: ItemRecord, message: string}> {
     return this.put(this.access.updateItemRecordFunction + item.upc, {"name": item.name, "highRisk": item.isHighRisk})
     .then(
       (response) => {
@@ -69,21 +76,21 @@ export class AWSCommService {
         console.log("resJSON.upc.upcId = " + JSON.stringify(resJSON.upc.upcId));
         if (resJSON.upc.upcId == undefined) {
           console.log("Backend shenanigans happened!");
-          return new ItemRecord(item.upc, "EMPTY");
+          return {item: null, message: "ERROR"};
         }
         let updateItem = resJSON;
         if (item.upc != updateItem.upc.upcId) {
           console.log(item.upc + " != " + updateItem.upc.upcId + ": Something went horribly wrong!");
-          return new ItemRecord(item.upc, "WRONG_UPC");
+          return {item: null, message: "ERROR"};
         } else {
-          return new ItemRecord(updateItem.upc.upcId, updateItem.upc.name, updateItem.upc.highRisk);
+          return {item: new ItemRecord(updateItem.upc.upcId, updateItem.upc.name, updateItem.upc.highRisk), message: "SUCCESS"};
         }
       }
     )
     .catch(
       (err) => {
         console.log("Error on http request: " + JSON.stringify(err));
-        return new ItemRecord(item.upc, " ");
+        return {item: null, message: "ERROR"};
       }
     )
   }
@@ -106,7 +113,8 @@ export class AWSCommService {
                                                         "daysPrior" : notification.daysPrior,
                                                         "deliveryOption" : notification.deliveryOption,
                                                         "dateOfCreation" : notification.dateOfCreation.toString(),
-                                                        "memo" : notification.memo
+                                                        "memo" : notification.memo,
+                                                        "Id" : notification.Id
                                                       }
     )
     .then(
@@ -129,12 +137,35 @@ export class AWSCommService {
     );
   }
 
-  //Untested
+  public AWSPermanentDeleteNotification(Id: string) : Promise<string>{
+    console.log("In device comm service function.");
+    return this.delete(this.access.notificationFunction + this.access.notificationId + Id, {Id: Id})
+    .then(
+      (response) => {
+        let resJSON = JSON.parse(response.data);
+        console.log("No error from delete(): " + JSON.stringify(response));
+        console.log("resJSON: " + JSON.stringify(resJSON));
+        if (resJSON.notification.Id == Id) {
+          return "SUCCESS";
+        }
+        else {
+          return "ERRORS";
+        }
+      }
+    )
+    .catch(
+      (err) => {
+        console.log("Error caught in AWSPermanentDeleteNotification(): " + err.json() + " :=> " + JSON.stringify(err));
+        return "ERRORED";
+      }
+    );
+  }
 
   public AWSFetchTodaysNotifications() : Promise<Notification[]> {
     console.log("Entered AWSFetchTodaysNotifications() via device service");
-    let today = new Date();
-    return this.get(this.access.notificationFunction + this.access.notificationRetrieval + today.toString())
+    let today = (new Date()).toLocaleString();
+    console.log("today: " + today);
+    return this.get(this.access.notificationFunction + this.access.notificationRetrieval + today)
     .then((response) => {
       let resJSON = JSON.parse(response.data);
       console.log("resJSON: " + JSON.stringify(resJSON));
@@ -148,9 +179,9 @@ export class AWSCommService {
       }
       else{
         let todaysNotifs: Notification[] = [];
-        for(let res of resJSON.Items){
+        for(let res of resJSON.Items) {
           let itemCollection = new ItemCollection(new ItemRecord(res.item.upc, res.item.name, res.item.isHighRisk), res.quantity, res.unitPrice);
-          todaysNotifs.push(new Notification(itemCollection, res.sellByDate, res.daysPrior, res.deliveryOption, res.memo));
+          todaysNotifs.push(new Notification(itemCollection, res.sellByDate, res.daysPrior, res.deliveryOption, res.memo, res.Id));
         }
         console.log("Got back good response! Here it is mapped: ");
         console.log(todaysNotifs);
@@ -217,8 +248,84 @@ export class AWSCommService {
     });
   }
 
+  public AWSFetchDateRangeNotifications(from: string, to: string) : Promise<Notification []> {
+    let urlString: string;
+    console.log("(new Date(from)).toDateString(): " + (new Date(from)).toDateString());
+    console.log("(new Date(to)).toDateString(): " + (new Date(to)).toDateString());
+    if ((new Date(from)).toDateString() == (new Date(to)).toDateString()) {
+      console.log("==");
+      urlString = this.access.notificationFunction + this.access.notificationRetrieval + from;
+    }
+    else {
+      console.log("!=");
+      urlString = this.access.notificationFunction + this.access.fromDate + from + this.access.toDate + to;
+    }
+    return this.get(urlString)
+    .then(
+      (response) => {
+        let resJSON = JSON.parse(response.data);
+        if(resJSON.Items == undefined){
+          console.log("Got back an undefined response! Here it is: " + JSON.stringify(resJSON));
+          return [];
+        }
+        else if(resJSON.Items.length <= 0){
+          console.log("No notifications for given day! Here's the response: " + JSON.stringify(resJSON));
+          return [];
+        }
+        else{
+          let requestedNotifs: Notification[] = [];
+          for(let res of resJSON.Items) {
+            let itemCollection = new ItemCollection(new ItemRecord(res.item.upc, res.item.name, res.item.isHighRisk), res.quantity, res.unitPrice);
+            requestedNotifs.push(new Notification(itemCollection, res.sellByDate, res.daysPrior, res.deliveryOption, res.memo, res.Id));
+          }
+          console.log("Got back good response! Here it is mapped: " + JSON.stringify(requestedNotifs));
+          return requestedNotifs;
+        }
+      }
+    )
+    .catch(
+      (err) => {
+        console.log("Caught error in AWSFetchDateRangeNotifications(): " + err.json() + " :=> " + JSON.stringify(err));
+        return [];
+      }
+    )
+  }
+
   public shoutBack() {
     console.log("This is the device service.");
+  }
+
+  public AWSFetchHighRiskList() : Promise<{list: ItemRecord[], message: string}> {
+    console.log("Entered AWSFetchHighRiskList() via device service");
+    return this.get(this.access.highRiskListFunction)
+    .then((response) => {
+      let resJSON = JSON.parse(response.data);
+      console.log("resJSON: " + JSON.stringify(resJSON));
+      let highRiskList: ItemRecord[] = [];
+      let message: string = "";
+      if(resJSON == undefined || resJSON.Items == undefined){
+        console.log("Request returned undefined! Here's the response: " + JSON.stringify(response));
+        message = "ERROR";
+      }
+      else if(resJSON.Items.length == 0){
+        console.log("Request did not find any due notifications. Here's the response: " + JSON.stringify(response));
+        message = "EMPTY";
+      }
+      else{
+        for(let item of resJSON.Items) {
+          let newItem = new ItemRecord(item.upc,item.name,item.isHighRisk);
+          highRiskList.push(newItem);
+        }
+        console.log("Got back good response! Here it is mapped: ");
+        console.log(highRiskList);
+      }
+      return {list: highRiskList, message: message};
+    })
+    .catch((err) => {
+      console.log("Caught error in AWSFetchHighRiskList(): " + JSON.stringify(err));
+      console.log("Caught error in AWSFetchHighRiskList(): " + err.json());
+      return {list: [], message: "ERROR"};
+    })
   }
 
 }
