@@ -18,6 +18,7 @@ export class DailyNotificationsPage implements OnInit {
 
   notificationList: Notification [] = [];
   noNotifications: boolean = false;
+  searchedByRange: boolean = false;
 
   constructor(private dailyNotificationsService: DailyNotificationsService,
               private popoverCtrl: PopoverController,
@@ -95,10 +96,9 @@ export class DailyNotificationsPage implements OnInit {
 
   public FetchList(){
     //Setup loader...
-    console.log("Entered FetchList()");
-    let loader = this.loadingCtrl.create({
-      content: "Updating..."
-    });
+
+    console.log("Entered FetchList()");    
+    let loader = this.loadingCtrl.create({content: "Updating..."});
     loader.present();
     //Make async request to AWS
     this.dailyNotificationsService.FetchList()
@@ -108,6 +108,7 @@ export class DailyNotificationsPage implements OnInit {
         this.notificationList = this.dailyNotificationsService.GetList();
         console.log("Dismissed in then()");
         this.noNotifications = this.notificationList.length == 0;
+        this.searchedByRange = false;
         loader.dismiss();
     })
     .catch((err) => {
@@ -131,6 +132,7 @@ export class DailyNotificationsPage implements OnInit {
         console.log("data: " + JSON.stringify(data));
         loader.dismiss();
         if (data.cancelled == false) {
+          this.searchedByRange = true;
           console.log("Firing transaction with from = " + JSON.stringify(data.from) + " and to = " + JSON.stringify(data.to));
           this.dailyNotificationsService.fetchDateRangeNotifications(data.from,data.to)
           .then(

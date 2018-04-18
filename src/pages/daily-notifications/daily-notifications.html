@@ -44,7 +44,7 @@
   </ion-list>
 
 <!-- Needs to be pretty -->
-  <h1 ion-text *ngIf="noNotifications">No notifications for today!</h1>
+  <h1 ion-text *ngIf="noNotifications && !searchedByRange">No notifications for today!</h1>
 
 </ion-content>
 
