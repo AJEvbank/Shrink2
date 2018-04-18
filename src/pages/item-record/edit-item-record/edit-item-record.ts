@@ -16,6 +16,8 @@ export class EditItemRecordPage implements OnInit {
   item: ItemRecord;
   itemForm: FormGroup;
 
+  AWSComm: AWSCommBrowserService | AWSCommService;
+
   constructor(private navParams: NavParams,
               private viewCtrl: ViewController,
               private AWS: AWSCommService,
@@ -26,6 +28,7 @@ export class EditItemRecordPage implements OnInit {
   ngOnInit() {
     this.item = this.navParams.get('item');
     this.initializeForm();
+    this.AWSComm = (window.location.hostname == "localhost") ? this.AWSB : this.AWS;
   }
 
   private initializeForm() {
@@ -43,57 +46,26 @@ export class EditItemRecordPage implements OnInit {
     this.item.name = value.name;
 
     // REMINDER: Server logic here.
-    if (window.location.hostname == "localhost") {
-      this.editItemBrowser(oldValue);
-    }
-    else {
-      this.editItemAndroid(oldValue);
-    }
+    this.AWSComm.AWSupdateItemRecord(this.item)
+    .then(
+      (resItem) => {
+        if (resItem.message == "ERROR") {
+          this.viewCtrl.dismiss({item: oldValue, ErrorCode: "http error"});
+        } else {
+          this.viewCtrl.dismiss({item: resItem.item, ErrorCode: "none"});
+        }
+      }
+    )
+    .catch(
+      (err) => {
+        console.log("Error caught in onSubmit: " + JSON.stringify(err));
+        this.viewCtrl.dismiss({item: oldValue, ErrorCode: "http error"});
+      }
+    );
   }
 
   cancel() {
     this.viewCtrl.dismiss({item: this.item});
-  }
-
-  editItemBrowser(oldValue: ItemRecord) {
-    console.log("editItemBrowser: " + JSON.stringify(oldValue));
-    this.AWSB.AWSupdateItemRecord(this.item)
-    .then(
-      (resItem) => {
-        if (resItem.name == "ERROR") {
-          this.viewCtrl.dismiss({item: oldValue, ErrorCode: "http error"});
-        } else {
-          this.viewCtrl.dismiss({item: resItem, ErrorCode: "none"});
-        }
-      }
-    )
-    .catch(
-      (err) => {
-        console.log("Error caught in onSubmit: " + JSON.stringify(err));
-        this.viewCtrl.dismiss({item: oldValue, ErrorCode: "http error"});
-      }
-    );
-  }
-
-  editItemAndroid(oldValue: ItemRecord) {
-    this.AWS.AWSupdateItemRecord(this.item)
-    .then(
-      (resItem) => {
-        if (resItem.name == "EMPTY" || resItem.name == "WRONG_UPC") {
-          this.viewCtrl.dismiss({item: oldValue, ErrorCode: "empty/wrong"});
-        } else if (resItem.name == " ") {
-          this.viewCtrl.dismiss({item: oldValue, ErrorCode: "http error"});
-        } else {
-          this.viewCtrl.dismiss({item: resItem, ErrorCode: "none"});
-        }
-      }
-    )
-    .catch(
-      (err) => {
-        console.log("Error caught in onSubmit: " + JSON.stringify(err));
-        this.viewCtrl.dismiss({item: oldValue, ErrorCode: "http error"});
-      }
-    );
   }
 
 }

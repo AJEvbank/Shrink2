@@ -1,13 +1,19 @@
 <ion-header>
 
   <ion-navbar>
+    <ion-buttons right>
+      <button ion-button icon-only (click)="refreshList()">
+        Refresh
+        <ion-icon name="cloud-download"></ion-icon>
+      </button>
+    </ion-buttons>
     <ion-title>Shelf Helper</ion-title>
   </ion-navbar>
 
 </ion-header>
 
 
-<ion-content padding class="no-scroll">
+<ion-content padding>
 
   <ion-list>
   <ion-item-sliding *ngFor="let toGet of shelfHelperList; let i = index" nowrap>
@@ -28,10 +34,24 @@
         <ion-icon name="md-trash"></ion-icon>
       </button>
     </ion-item-options>
+    <ion-item-options side="right">
+      <button ion-button color='primary' (click)="viewItem(toGet.item, i)">
+        <ion-icon name="create"></ion-icon>
+      </button>
+    </ion-item-options>
 
   </ion-item-sliding>
 </ion-list>
 
-
+<ion-footer>
+  <ion-toolbar>
+    <ion-buttons end>
+      <button ion-button icon-only color="danger" (click)="clearList()">
+        Clear List
+        <ion-icon name="trash"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-footer>
 
 </ion-content>

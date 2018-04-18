@@ -1,14 +1,19 @@
 <ion-header>
-
   <ion-navbar>
+    <ion-buttons right>
+      <button ion-button icon-only (click)="refreshList()">
+        Refresh
+        <ion-icon name="cloud-download"></ion-icon>
+      </button>
+    </ion-buttons>
     <ion-title>High-Risk Items</ion-title>
   </ion-navbar>
 
 </ion-header>
 
 
-<ion-content padding class="no-scroll">
-
+<ion-content padding>
+  <h1 ion-text *ngIf="this.emptyList == true">The High-Risk List is empty!</h1>
   <ion-list>
   <ion-item-sliding *ngFor="let item of highRiskList; let i = index" nowrap>
     <ion-item>
@@ -17,6 +22,11 @@
     <ion-item-options side="left">
       <button ion-button color='danger' (click)="deleteFromList(i)">
         <ion-icon name="md-trash"></ion-icon>
+      </button>
+    </ion-item-options>
+    <ion-item-options side="right">
+      <button ion-button color='primary' (click)="viewItem(item, i)">
+        <ion-icon name="create"></ion-icon>
       </button>
     </ion-item-options>
   </ion-item-sliding>
