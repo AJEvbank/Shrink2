@@ -26,7 +26,6 @@ export class DailyNotificationsService {
     return this.listLoaded;
   }
 
-
   public addItem(item: Notification) : Promise<string> {
     console.log("Firing addItem(): " + JSON.stringify(item));
     //let AWSComm = (window.location.hostname == "localhost") ? this.AWSB : this.AWS;

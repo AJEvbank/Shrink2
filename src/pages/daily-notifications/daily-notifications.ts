@@ -97,7 +97,7 @@ export class DailyNotificationsPage implements OnInit {
   public FetchList(){
     //Setup loader...
 
-    console.log("Entered FetchList()");    
+    console.log("Entered FetchList()");
     let loader = this.loadingCtrl.create({content: "Updating..."});
     loader.present();
     //Make async request to AWS
@@ -137,6 +137,9 @@ export class DailyNotificationsPage implements OnInit {
           this.dailyNotificationsService.fetchDateRangeNotifications(data.from,data.to)
           .then(
             (data) => {
+              if (this.dailyNotificationsService.getListLength() == 0) {
+                this.noNotifications == true;
+              }
               if(data == "ERROR") {
                 let error = this.alertCtrl.create({title: 'Error',message: "Could not fetch the list. Please try again.",buttons: ['Dismiss']});
                 error.present();
