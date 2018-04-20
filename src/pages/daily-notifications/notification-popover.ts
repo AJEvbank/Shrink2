@@ -40,6 +40,7 @@ export class NotificationPopoverPage implements OnInit {
 
   ngOnInit() {
     this.notification = this.navParams.get('notification');
+    this.deleteNotification(null);
   }
 
   dismiss() {
@@ -47,6 +48,7 @@ export class NotificationPopoverPage implements OnInit {
   }
 
   private deleteNotification(Id: string) {
+    if (Id == null) return;
     this.viewCtrl.dismiss({Id: Id});
     return;
   }

@@ -114,9 +114,9 @@ export class MainPage {
         errAlert.present();
       } else if(item.name == "EMPTY") {
         let newEmptyItem = new ItemRecord(item.upc,"(Add New Item Name Here)");
-        this.navCtrl.push(ItemRecordPage,{item: newEmptyItem, saved: false});
+        this.navCtrl.push(ItemRecordPage,{item: newEmptyItem, saved: false, fromMain: true});
       } else {
-        this.navCtrl.push(ItemRecordPage,{item: item, saved: true});
+        this.navCtrl.push(ItemRecordPage,{item: item, saved: true, fromMain: true});
       }
       return;
     })

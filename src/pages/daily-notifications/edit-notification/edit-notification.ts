@@ -1,15 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { NavController, NavParams, ViewController } from 'ionic-angular';
+import { NavParams, ViewController } from 'ionic-angular';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 
-
-import { ItemRecord } from '../../../assets/models/item-record.model';
 import { ItemCollection } from '../../../assets/models/item-collection.model';
 import { Notification } from '../../../assets/models/notification.model';
 
 import { DailyNotificationsService } from '../../../services/daily-notifications.service';
 
-import moment from 'moment';
+//import moment from 'moment';
 
 @Component({
   selector: 'page-edit-notification',
@@ -17,7 +15,6 @@ import moment from 'moment';
 })
 export class EditNotificationPage {
 
-  private item: ItemRecord;
   private name: string;
   private upc: string;
   private itemCollection: ItemCollection;
@@ -27,8 +24,7 @@ export class EditNotificationPage {
 
   notificationForm: FormGroup;
 
-  constructor(private navCtrl: NavController,
-              private navParams: NavParams,
+  constructor(private navParams: NavParams,
               private viewCtrl: ViewController,
               private dailyNotificationsService: DailyNotificationsService) {
   }
