@@ -190,8 +190,8 @@ export class DailyNotificationsPage implements OnInit {
           let error = this.alertCtrl.create({title:"Error",message:"There was an error. Please try again.",buttons:['Dismiss']});
           error.present();
         }
-        else {
-          let toast = this.toastCtrl.create({message:"Record successfully save.",duration:3000});
+        else if (data != "CANCELLED"){
+          let toast = this.toastCtrl.create({message:"Record successfully saved.",duration:3000});
           toast.present();
         }
       }

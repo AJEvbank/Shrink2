@@ -41,7 +41,7 @@
       <ion-label>{{ notificationForm.controls['sellByDate'].getError('isPriorToToday') }} is prior to today</ion-label>
     </ion-item>
 
-    <ion-item *ngIf="notificationForm.hasError('isDeliveredPriorToToday')" text-wrap>
+    <ion-item *ngIf="notificationForm.hasError('isDeliveredPriorToToday')  && !notificationForm.controls['sellByDate'].hasError('isPriorToToday')" text-wrap>
       <ion-label>Delivery date of {{ notificationForm.getError('isDeliveredPriorToToday') }} is prior to today</ion-label>
     </ion-item>
 
