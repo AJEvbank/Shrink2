@@ -8,7 +8,6 @@ import { Throwaway } from '../../../assets/models/throwaway.model';
   templateUrl: 'loss-over-time-report.html',
 })
 export class LossOverTimeReportPage implements OnInit {
-  graphData : Throwaway[];
 
   testData = [65, 59, 80, 81, 56, 55, 40];
   testLabels = ['1', '2', '3', '4', '5', '6', '7'];
@@ -18,11 +17,16 @@ export class LossOverTimeReportPage implements OnInit {
   constructor(private navParams: NavParams) {}
 
   ngOnInit(){
-    this.graphData = this.navParams.data;
-    console.log(this.graphData);
+    let specs = this.navParams.data;
+    let dayShrinkValues = specs.dayShrinkValues;
+    let dateRangeStart = new Date(specs.dateRangeStart);
+    this.testData = [];
+    this.testLabels = [];
 
-    /*
-      Need the sum of all the throwaways on each day of the date range for each upc
-    */
+    for(let i = 0; i < dayShrinkValues.length; i++){
+      let date = new Date(dateRangeStart.getFullYear(), dateRangeStart.getMonth(), dateRangeStart.getDay() + i);
+      this.testLabels.push(date.getFullYear() + "/" + date.getMonth() + "/" + date.getDay());
+      this.testData.push(dayShrinkValues[i]);
+    }
   }
 }

@@ -29,7 +29,7 @@ export class ReportSpecificationsPage implements OnInit {
   errorMessage = "";
 
   //Calendar specific
-  maxAllowedShrink = "";
+  shrinkThreshold = "";
 
   //Shared by all
   reportForm : FormGroup;
@@ -72,7 +72,7 @@ export class ReportSpecificationsPage implements OnInit {
         "subjectSelection": new FormControl(this.subjectSelection, Validators.required),
         "dateRangeStart": new FormControl(this.dateRangeStart.toISOString(), Validators.required),
         "dateRangeEnd": new FormControl(this.dateRangeEnd.toISOString(), Validators.required),
-        "maxAllowedShrink": new FormControl(this.maxAllowedShrink, Validators.pattern(/^\d{0,9}(?:\.(?:\d{0,2}))?$/))
+        "shrinkThreshold": new FormControl(this.shrinkThreshold, Validators.pattern(/^\d{0,9}(?:\.(?:\d{0,2}))?$/))
       });
     }
   }
@@ -83,10 +83,10 @@ export class ReportSpecificationsPage implements OnInit {
     if(this.subjectSelection == "SingleItem"){
       this.subjectUPC = value.subjectUPC;
     }
-    this.dateRangeStart = value.dateRangeStart;
-    this.dateRangeEnd = value.dateRangeEnd;
-    if(this.reportType == ""){
-      this.maxAllowedShrink = value.maxAllowedShrink;
+    this.dateRangeStart = new Date(value.dateRangeStart);
+    this.dateRangeEnd = new Date(value.dateRangeEnd);
+    if(this.reportType == "Calendar View"){
+      this.shrinkThreshold = value.shrinkThreshold;
     }
 
 
@@ -97,8 +97,13 @@ export class ReportSpecificationsPage implements OnInit {
     }
 
     //Server stuff.
-    let data = this.generateDummyData();
-    this.navCtrl.push(this.LOTPage, data);
+    let data = this.generateDummyData(this.reportType == "Calendar View");
+    if(this.reportType == "Loss Over Time"){
+      this.navCtrl.push(this.LOTPage, data);
+    }
+    else if(this.reportType == "Calendar View"){
+      this.navCtrl.push(this.calendarPage, data);
+    }
   }
 
   private onScanUPC(){
@@ -127,17 +132,25 @@ export class ReportSpecificationsPage implements OnInit {
     }
   }
 
-  private generateDummyData(){
-    let throwaways : Throwaway[] = [];
-    let testIR = new ItemRecord("Test Name", "123456789012", false);
-    let testIC = new ItemCollection(testIR, 10, 4);
-    throwaways.push(new Throwaway(testIC, new Date("4/1/18")))
-    testIR = new ItemRecord("Test Name 2", "123456789012", false);
-    testIC = new ItemCollection(testIR, 10, 4);
-    throwaways.push(new Throwaway(testIC, new Date("4/2/18")))
-    testIR = new ItemRecord("Test Name 3", "123456789012", false);
-    testIC = new ItemCollection(testIR, 10, 4);
-    throwaways.push(new Throwaway(testIC, new Date("4/3/18")))
-    return throwaways;
+  private generateDummyData(calendar){
+    //Calculate how many data points we need.
+    let dayInMilliseconds = 1000 * 60 * 60 * 24;
+    let count = Math.round(Math.abs(this.dateRangeStart.getTime() - this.dateRangeEnd.getTime())/dayInMilliseconds);
+    if(calendar){
+      let data = { dayShrinkValues: [], shrinkThreshold: this.shrinkThreshold, dateRangeStart: this.dateRangeStart.toISOString() };
+      // <= count so that it is inclusive both ways.
+      for(let i = 0; i <= count; i++){
+        data.dayShrinkValues.push(Math.random() * 1000);
+      }
+      return data;
+    }
+    else{
+      let data = { dayShrinkValues: [], dateRangeStart: this.dateRangeStart.toISOString() };
+      for(let i = 0; i <= count; i++){
+        data.dayShrinkValues.push(Math.random() * 1000);
+      }
+      return data;
+    }
   }
+
 }

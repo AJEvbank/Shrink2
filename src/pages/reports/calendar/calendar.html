@@ -1,12 +1,37 @@
 <ion-header>
 
   <ion-navbar>
-    <ion-title>Calendar View</ion-title>
+    <ion-title>{{ viewTitle }}</ion-title>
   </ion-navbar>
 
 </ion-header>
 
+<ng-template #template let-view="view" let-row="row" let-col="col">
+  <div [ngClass]='getColor(view.dates[row*7+col].events)'>
+    {{view.dates[row*7+col].label}}
+    <div *ngIf='view.dates[row*7+col].events.length > 0' class='shrinkText'>
+      ${{view.dates[row*7+col].events[0].loss}}
+    </div>
+  </div>
+</ng-template>
+
+<!-- <ng-template #template2 let-showEventDetail="showEventDetail" let-selectedDate="selectedDate" let-noEventsLabel="noEventsLabel">
+  {{selectedDate}}
+  [monthviewEventDetailTemplate]="template2" Put this inside calendar attributes
+</ng-template> -->
+
 
 <ion-content padding>
+  <calendar [eventSource]='eventSource'
+            [calendarMode]='calendar.mode'
+            [currentDate]='calendar.currentDate'
 
+            [monthviewDisplayEventTemplate]="template"
+            
+            (onTitleChanged)='onViewTitleChanged($event)'
+            (onTimeSelected)='onTimeSelected($event)'
+            step='30'
+            class='calendar'
+            spaceBetween='10'>
+  </calendar>
 </ion-content>

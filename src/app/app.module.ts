@@ -47,6 +47,7 @@ import { HighRiskListService } from '../services/high-risk-list.service';
 import { Accessor } from '../../../Accessor';
 
 import { ChartsModule } from 'ng2-charts';
+import { NgCalendarModule } from 'ionic2-calendar';
 
 @NgModule({
   declarations: [
@@ -78,7 +79,8 @@ import { ChartsModule } from 'ng2-charts';
     IonicModule.forRoot(MyApp),
     IonicStorageModule.forRoot(),
     HttpModule,
-    ChartsModule
+    ChartsModule,
+    NgCalendarModule
   ],
   bootstrap: [IonicApp],
   entryComponents: [
