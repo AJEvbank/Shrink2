@@ -1,3 +1,40 @@
 page-calendar {
 
+  .monthview-selected {
+    background-color: gray !important; //Important to override base.
+  }
+
+  .monthview-current {
+    color: black;
+  }
+
+  .overShrinkLimit {
+    color: black;
+    background-color: #AA000088;
+  }
+
+  .shrinkText{
+    font-size: 13px;
+    font-weight: bold;
+  }
+
+  .monthview-primary-with-event{
+    background-color: transparent !important;
+    color: black !important;
+  }
+
+  .monthview-datetable {
+    td, th {
+      padding: 2px !important;
+      height: 50px !important;
+    }
+    //min-height: 400px;
+  }
+
+  .table {
+    //min-height: 450px !important;
+  }
+
+
+
 }
