@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { NavController, NavParams, ModalController, ToastController, AlertController, PopoverController, LoadingController } from 'ionic-angular';
+import { NavController, NavParams, ModalController, ToastController, AlertController, PopoverController, LoadingController, ViewController } from 'ionic-angular';
 
 import { ItemRecord } from '../../assets/models/item-record.model';
 import { ToGetItem } from '../../assets/models/to-get-item.model';
@@ -25,7 +25,6 @@ export class ItemRecordPage implements OnInit {
   isCompleteItemRecord: boolean = true;
   mainPage: MainPage;
   createNotificationPage: CreateNotificationPage;
-  homeButtonText: string;
 
   constructor(private navCtrl: NavController,
               private navParams: NavParams,
@@ -35,7 +34,8 @@ export class ItemRecordPage implements OnInit {
               private shelfHelperService: ShelfHelperService,
               private hrService: HighRiskListService,
               private popoverCtrl: PopoverController,
-              private loadingCtrl: LoadingController
+              private loadingCtrl: LoadingController,
+              private viewCtrl: ViewController
               ) {
   }
 
@@ -191,7 +191,11 @@ export class ItemRecordPage implements OnInit {
 
   home() {
     //this.navCtrl.push(MainPage);
-    let this.navCtrl.first();
+    let lastIndex = this.navCtrl.indexOf(this.navCtrl.last());
+    let difference = lastIndex - 2;
+    console.log("lastIndex = " + lastIndex + " difference = " + difference);
+    this.navCtrl.remove(2,difference);
+    this.navCtrl.pop();
   }
 
 }
