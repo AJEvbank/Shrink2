@@ -60,6 +60,7 @@ export class DailyNotificationsService {
     //let AWSComm = (window.location.hostname == "localhost") ? this.AWSB : this.AWS;
     return this.AWSComm.AWSFetchTodaysNotifications()
     .then((todaysNotifs) => {
+      console.log("todaysNotifs: " + JSON.stringify(todaysNotifs));
       this.listLoaded = true;
       this.dailyNotificationsList = todaysNotifs.slice();
     })
