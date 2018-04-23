@@ -29,6 +29,7 @@ export class DailyNotificationsService {
   public addItem(item: Notification) : Promise<string> {
     console.log("Firing addItem(): " + JSON.stringify(item));
     //let AWSComm = (window.location.hostname == "localhost") ? this.AWSB : this.AWS;
+
     return this.AWSComm.AWScreateNotification(item)
     .then(
       (data) => {
@@ -110,7 +111,7 @@ export class DailyNotificationsService {
     )
   }
 
-  getListLength() : number {
+  public getListLength() : number {
     return this.dailyNotificationsList.length;
   }
 
