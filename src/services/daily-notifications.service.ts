@@ -56,17 +56,19 @@ export class DailyNotificationsService {
   //Fetch the list from the server, make update service list.
   //Promise is void to act more as an ack
 
-  public FetchList() : Promise<void> {
+  public FetchList() : Promise<string> {
     //let AWSComm = (window.location.hostname == "localhost") ? this.AWSB : this.AWS;
     return this.AWSComm.AWSFetchTodaysNotifications()
     .then((todaysNotifs) => {
       console.log("todaysNotifs: " + JSON.stringify(todaysNotifs));
       this.listLoaded = true;
       this.dailyNotificationsList = todaysNotifs.slice();
+      return "SUCCESS";
     })
     .catch((err) => {
-      console.log(err);
+      console.log("Error in FetchList() of dailyNotificationsService: " + JSON.stringify(err));
       this.listLoaded = true;
+      return "ERROR";
     })
   }
 
