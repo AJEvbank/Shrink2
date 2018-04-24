@@ -161,7 +161,7 @@ export class DailyNotificationsPage implements OnInit {
           )
           .catch(
             (err) => {
-              console.log("Caught error in searchByDate(): " + err.json() + " :=> " + JSON.stringify(err));
+              console.log("Caught error in searchByDate(): " + JSON.stringify(err));
               let error = this.alertCtrl.create({title: 'Error',message: "Could not fetch the list. Please try again.",buttons: ['Dismiss']});
               error.present();
             }
