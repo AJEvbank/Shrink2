@@ -103,17 +103,25 @@ export class DailyNotificationsPage implements OnInit {
     //Make async request to AWS
     this.dailyNotificationsService.FetchList()
     .then(
-      () => {
+      (message: string) => {
         //It works! Update local list with service list!
-        this.notificationList = this.dailyNotificationsService.GetList();
-        console.log("Dismissed in then()");
-        this.noNotifications = this.notificationList.length == 0;
-        this.searchedByRange = false;
-        loader.dismiss();
+        console.log("Message in FetchList() of daily-notifications then(): " + message);
+        if (message == "SUCCESS") {
+          this.notificationList = this.dailyNotificationsService.GetList();
+          this.noNotifications = this.notificationList.length == 0;
+          this.searchedByRange = false;
+          loader.dismiss();
+        }
+        else if (message == "ERROR") {
+          loader.dismiss();
+          let errorAlert = this.alertCtrl.create({title: 'Error',message: "Could not fetch the list. Use Refresh button to retry.",buttons: ['Dismiss']});
+          errorAlert.present();
+        }
+
     })
     .catch((err) => {
       //Uh-oh! Print the error!
-      console.log(err);
+      console.log("Error in FetchList(): " + JSON.stringify(err));
       let errorAlert = this.alertCtrl.create({title: 'Error',message: "Could not fetch the list. Use Refresh.",buttons: ['Dismiss']});
       errorAlert.present();
       console.log("Dismissed in catch()");
@@ -153,7 +161,7 @@ export class DailyNotificationsPage implements OnInit {
           )
           .catch(
             (err) => {
-              console.log("Caught error in searchByDate(): " + err.json() + " :=> " + JSON.stringify(err));
+              console.log("Caught error in searchByDate(): " + JSON.stringify(err));
               let error = this.alertCtrl.create({title: 'Error',message: "Could not fetch the list. Please try again.",buttons: ['Dismiss']});
               error.present();
             }
@@ -190,8 +198,8 @@ export class DailyNotificationsPage implements OnInit {
           let error = this.alertCtrl.create({title:"Error",message:"There was an error. Please try again.",buttons:['Dismiss']});
           error.present();
         }
-        else {
-          let toast = this.toastCtrl.create({message:"Record successfully save.",duration:3000});
+        else if (data != "CANCELLED"){
+          let toast = this.toastCtrl.create({message:"Record successfully saved.",duration:3000});
           toast.present();
         }
       }
