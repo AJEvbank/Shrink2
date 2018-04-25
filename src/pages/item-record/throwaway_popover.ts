@@ -25,6 +25,11 @@ import { AWSCommBrowserService } from '../../services/AWSCommBrowser.service';
         <ion-label>Unit Price: </ion-label>
         <ion-input type="number" formControlName="unitPrice"></ion-input>
       </ion-item>
+      <ion-item>
+        <ion-label>Date: </ion-label>
+        <ion-datetime displayFormat="MM/DD/YYYY" pickerFormat="MM DD YYYY" formControlName="dateOfDiscard"
+                      placeholder="discard date"></ion-datetime>
+      </ion-item>
       <button ion-button block (click)="submit()" [disabled]="!discard.valid">Throwaway</button>
     </form>
     <button ion-button block color="danger" (click)="dismiss()">Cancel</button>
@@ -65,6 +70,11 @@ export class ThrowawayQuantityPricePopoverPage implements OnInit {
                                 Validators.min(0.01)
                               ]
                             ),
+      'dateOfDiscard': new FormControl("",
+                              [
+                                Validators.required
+                              ]
+                            ),
     });
   }
 
@@ -73,7 +83,7 @@ export class ThrowawayQuantityPricePopoverPage implements OnInit {
     let loader = this.loadingCtrl.create();
     loader.present();
     console.log("value.quantity = " + value.quantity + " value.unitPrice = " + value.unitPrice);
-    let newThrowaway = new Throwaway(new ItemCollection(this.item,value.quantity,value.unitPrice),new Date());
+    let newThrowaway = new Throwaway(new ItemCollection(this.item,value.quantity,value.unitPrice),value.dateOfDiscard);
     this.AWSComm.AWSCreateThrowaway(newThrowaway)
     .then(
       (message: string) => {

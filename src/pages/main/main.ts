@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { NavController, LoadingController, PopoverController, AlertController } from 'ionic-angular';
 
 import { ScannerService } from '../../services/scanner.service';
@@ -20,7 +20,7 @@ import { GetUPCPopover } from './getUPCpopover';
   selector: 'page-main',
   templateUrl: 'main.html',
 })
-export class MainPage {
+export class MainPage implements OnInit {
 
   itemRecordPage = ItemRecordPage;
   dailyNotificationsPage = DailyNotificationsPage;
@@ -43,9 +43,13 @@ export class MainPage {
               private AWSB: AWSCommBrowserService,
               private popoverController: PopoverController,
               private alertCtrl: AlertController) {
-      this.dummyFunctionCalls();
-      this.isLocalHost = (window.location.hostname == "localhost") ? true : false;
-      this.AWSComm = (this.isLocalHost == true) ? this.AWSB : this.AWS;
+  }
+
+  ngOnInit() {
+    //this.navCtrl.setRoot(MainPage);
+    this.dummyFunctionCalls();
+    this.isLocalHost = (window.location.hostname == "localhost") ? true : false;
+    this.AWSComm = (this.isLocalHost == true) ? this.AWSB : this.AWS;
   }
 
   private dummyFunctionCalls() { // This function is stupid, but it gets rid of a stupid warning on transpile.
@@ -114,9 +118,9 @@ export class MainPage {
         errAlert.present();
       } else if(item.name == "EMPTY") {
         let newEmptyItem = new ItemRecord(item.upc,"(Add New Item Name Here)");
-        this.navCtrl.push(ItemRecordPage,{item: newEmptyItem, saved: false});
+        this.navCtrl.push(ItemRecordPage,{item: newEmptyItem, saved: false, fromMain: true});
       } else {
-        this.navCtrl.push(ItemRecordPage,{item: item, saved: true});
+        this.navCtrl.push(ItemRecordPage,{item: item, saved: true, fromMain: true});
       }
       return;
     })

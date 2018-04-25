@@ -100,12 +100,7 @@ export class AWSCommService {
     return this.put(this.access.notificationFunction, {
                                                         "item" :
                                                         {
-                                                            "item" :
-                                                            {
-                                                                "upc" : notification.item.item.upc,
-                                                                "name" : notification.item.item.name,
-                                                                "isHighRisk" :notification.item.item.isHighRisk
-                                                            },
+                                                            "upc" : notification.item.item.upc,
                                                             "quantity" : notification.item.quantity,
                                                             "unitPrice" : notification.item.unitPrice
                                                         },
@@ -202,11 +197,7 @@ export class AWSCommService {
       "quantity": throwaway.item.quantity,
       "disposalDate": throwaway.dateOfDiscard,
       "unitPrice": throwaway.item.unitPrice,
-      "item": {
-        "name": throwaway.item.item.name,
-        "isHighRisk": throwaway.item.item.isHighRisk,
-        "upc": throwaway.item.item.upc
-      }
+      "upc": throwaway.item.item.upc
     };
     console.log("Passing throwaway: " + JSON.stringify(info));
     return this.put(this.access.throwawayFunction, info)
