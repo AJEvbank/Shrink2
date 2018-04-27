@@ -17,10 +17,10 @@
       <p>UPC: {{ shrink.upc }}</p>
     </ion-item>
     <ion-item-options side="left">
-      <button *ngIf="!shrink.highRisk" ion-button color='danger' (click)="onToggleHighRisk(i, true)">
+      <button *ngIf="!shrink.highRisk" ion-button color='green' (click)="onToggleHighRisk(i, true)">
         <ion-icon name="md-clipboard"></ion-icon>
       </button>
-      <button *ngIf="shrink.highRisk" ion-button color='green' (click)="onToggleHighRisk(i, false)">
+      <button *ngIf="shrink.highRisk" ion-button color='danger' (click)="onToggleHighRisk(i, false)">
         <ion-icon name="md-clipboard"></ion-icon>
       </button>
     </ion-item-options>
