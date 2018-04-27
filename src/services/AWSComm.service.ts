@@ -328,4 +328,8 @@ export class AWSCommService {
     })
   }
 
+  public AWSGetLossOverTime(dateRangeStart: Date, dateRangeEnd: Date, selectionType: string, upc?: string){
+
+  }
+
 }
