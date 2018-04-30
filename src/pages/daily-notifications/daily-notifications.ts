@@ -78,7 +78,7 @@ export class DailyNotificationsPage implements OnInit {
           )
           .catch(
             (err) => {
-              console.log("Error caught in viewNotes() delete function: " + err.json() + " :=> " + JSON.stringify(err));
+              console.log("Error caught in viewNotes() delete function: " + JSON.stringify(err));
               let errorAlert = this.alertCtrl.create({title: 'Error',message: "An error occurred. Please try again.",buttons: ['Dismiss']});
               errorAlert.present();
             }
@@ -189,7 +189,7 @@ export class DailyNotificationsPage implements OnInit {
     )
     .catch(
       (err) => {
-        console.log("Caught error in present() in daily-notifications: " + JSON.stringify(err) + " :=> " + err.json());
+        console.log("Caught error in present() in daily-notifications: " + JSON.stringify(err));
       }
     );
     editPage.onDidDismiss(

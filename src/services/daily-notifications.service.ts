@@ -67,7 +67,7 @@ export class DailyNotificationsService {
       return "SUCCESS";
     })
     .catch((err) => {
-      console.log("Error in FetchList() of dailyNotificationsService: " + JSON.stringify(err));
+      console.log("Error in FetchList() of dailyNotificationsService: " + JSON.stringify(err, Object.getOwnPropertyNames(err)));
       this.listLoaded = true;
       return "ERROR";
     })
@@ -89,7 +89,7 @@ export class DailyNotificationsService {
     )
     .catch(
       (err) => {
-        console.log("Error caught in permanentDeleteNotification(): " + err.json() + " :=> " + JSON.stringify(err));
+        console.log("Error caught in permanentDeleteNotification(): " + JSON.stringify(err));
         return "ERRORING";
       }
     )
@@ -105,7 +105,7 @@ export class DailyNotificationsService {
     )
     .catch(
       (err) => {
-        console.log("Caught error in fetchDateRangeNotifications(): " + err.json() + " :=> " + JSON.stringify(err));
+        console.log("Caught error in fetchDateRangeNotifications(): " + JSON.stringify(err));
         return "ERROR";
       }
     )

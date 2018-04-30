@@ -30,7 +30,9 @@ export class AWSCommBrowserService {
   }
 
   private get(functionURL: string) : Observable<Response> {
-    return this.http.get(this.access.base + functionURL);
+    let fullURL = this.access.base + functionURL;
+    console.log("fullURL = " + fullURL);
+    return this.http.get(fullURL);
   }
 
   private delete(functionURL: string, body: any) : Observable<Response> {
@@ -127,7 +129,7 @@ export class AWSCommBrowserService {
       else{
         let todaysNotifs: Notification[] = [];
         for(let res of resJSON.Items) {
-          let itemCollection = new ItemCollection(new ItemRecord(res.item.upc, res.item.name, res.item.isHighRisk), res.quantity, res.unitPrice);
+          let itemCollection = new ItemCollection(new ItemRecord(res.upc, res.name, res.HighRisk), res.quantity, res.unitPrice);
           todaysNotifs.push(new Notification(itemCollection, res.sellByDate, res.daysPrior, res.deliveryOption, res.memo, res.Id));
         }
         console.log("Got back good response! Here it is mapped: ");
