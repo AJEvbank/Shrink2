@@ -111,8 +111,9 @@ export class AWSCommBrowserService {
 
   public AWSFetchTodaysNotifications() : Promise<Notification[]> {
     let today = (new Date()).toLocaleString();
-    console.log("today: " + today);
-    return this.get(this.access.notificationFunction + this.access.notificationRetrieval + today)
+    let urlString = this.access.notificationFunction + this.access.notificationRetrieval + today;
+    console.log("today: " + today + " urlString: " + urlString);
+    return this.get(urlString)
     .map((response) => {
       let resJSON = response.json();
       if(resJSON.Items == undefined){
