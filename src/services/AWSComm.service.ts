@@ -150,7 +150,7 @@ export class AWSCommService {
     )
     .catch(
       (err) => {
-        console.log("Error caught in AWSPermanentDeleteNotification(): " + err.json() + " :=> " + JSON.stringify(err));
+        console.log("Error caught in AWSPermanentDeleteNotification(): " + JSON.stringify(err));
         return "ERRORED";
       }
     );
@@ -175,7 +175,7 @@ export class AWSCommService {
       else{
         let todaysNotifs: Notification[] = [];
         for(let res of resJSON.Items) {
-          let itemCollection = new ItemCollection(new ItemRecord(res.item.upc, res.item.name, res.item.isHighRisk), res.quantity, res.unitPrice);
+          let itemCollection = new ItemCollection(new ItemRecord(res.upc, res.name, res.highRisk), res.quantity, res.unitPrice);
           todaysNotifs.push(new Notification(itemCollection, res.sellByDate, res.daysPrior, res.deliveryOption, res.memo, res.Id));
         }
         console.log("Got back good response! Here it is mapped: ");
@@ -215,7 +215,7 @@ export class AWSCommService {
     )
     .catch(
       (err) => {
-        console.log("Caught error from put: " + err.json() + " :=> " + JSON.stringify(err));
+        console.log("Caught error from put: " + JSON.stringify(err));
         return "ERROR";
       }
     );
@@ -266,7 +266,7 @@ export class AWSCommService {
         else{
           let requestedNotifs: Notification[] = [];
           for(let res of resJSON.Items) {
-            let itemCollection = new ItemCollection(new ItemRecord(res.item.upc, res.item.name, res.item.isHighRisk), res.quantity, res.unitPrice);
+            let itemCollection = new ItemCollection(new ItemRecord(res.upc, res.name, res.highRisk), res.quantity, res.unitPrice);
             requestedNotifs.push(new Notification(itemCollection, res.sellByDate, res.daysPrior, res.deliveryOption, res.memo, res.Id));
           }
           console.log("Got back good response! Here it is mapped: " + JSON.stringify(requestedNotifs));
@@ -276,7 +276,7 @@ export class AWSCommService {
     )
     .catch(
       (err) => {
-        console.log("Caught error in AWSFetchDateRangeNotifications(): " + err.json() + " :=> " + JSON.stringify(err));
+        console.log("Caught error in AWSFetchDateRangeNotifications(): " + JSON.stringify(err));
         return [];
       }
     )
@@ -314,7 +314,6 @@ export class AWSCommService {
     })
     .catch((err) => {
       console.log("Caught error in AWSFetchHighRiskList(): " + JSON.stringify(err));
-      console.log("Caught error in AWSFetchHighRiskList(): " + err.json());
       return {list: [], message: "ERROR"};
     })
   }
