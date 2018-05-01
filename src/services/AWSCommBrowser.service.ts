@@ -118,6 +118,7 @@ export class AWSCommBrowserService {
     return this.get(urlString)
     .map((response) => {
       let resJSON = response.json();
+      console.log("response.json(): " + JSON.stringify(resJSON));
       if(resJSON.Items == undefined){
         console.log("Got back an undefined response! Here it is: " + JSON.stringify(resJSON));
         return[]
@@ -129,7 +130,7 @@ export class AWSCommBrowserService {
       else{
         let todaysNotifs: Notification[] = [];
         for(let res of resJSON.Items) {
-          let itemCollection = new ItemCollection(new ItemRecord(res.upc, res.name, res.HighRisk), res.quantity, res.unitPrice);
+          let itemCollection = new ItemCollection(new ItemRecord(res.upc, res.name, res.highRisk), res.quantity, res.unitPrice);
           todaysNotifs.push(new Notification(itemCollection, res.sellByDate, res.daysPrior, res.deliveryOption, res.memo, res.Id));
         }
         console.log("Got back good response! Here it is mapped: ");
@@ -215,6 +216,7 @@ export class AWSCommBrowserService {
     .map(
       (response) => {
         let resJSON = response.json();
+        console.log("response.json(): " + JSON.stringify(resJSON));
         if(resJSON.Items == undefined){
           console.log("Got back an undefined response! Here it is: " + JSON.stringify(resJSON));
           return [];
@@ -226,7 +228,7 @@ export class AWSCommBrowserService {
         else{
           let requestedNotifs: Notification[] = [];
           for(let res of resJSON.Items) {
-            let itemCollection = new ItemCollection(new ItemRecord(res.item.upc, res.item.name, res.item.isHighRisk), res.quantity, res.unitPrice);
+            let itemCollection = new ItemCollection(new ItemRecord(res.upc, res.name, res.highRisk), res.quantity, res.unitPrice);
             requestedNotifs.push(new Notification(itemCollection, res.sellByDate, res.daysPrior, res.deliveryOption, res.memo, res.Id));
           }
           console.log("Got back good response! Here it is mapped: ");

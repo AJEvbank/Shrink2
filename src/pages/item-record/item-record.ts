@@ -34,8 +34,7 @@ export class ItemRecordPage implements OnInit {
               private shelfHelperService: ShelfHelperService,
               private hrService: HighRiskListService,
               private popoverCtrl: PopoverController,
-              private loadingCtrl: LoadingController,
-              private viewCtrl: ViewController
+              private loadingCtrl: LoadingController
               ) {
   }
 

@@ -7,6 +7,8 @@ import { Notification } from '../assets/models/notification.model';
 import { AWSCommService } from './AWSComm.service';
 import { AWSCommBrowserService } from './AWSCommBrowser.service';
 
+import moment from 'moment';
+
 
 @Injectable()
 export class DailyNotificationsService {
@@ -96,7 +98,10 @@ export class DailyNotificationsService {
   }
 
   public fetchDateRangeNotifications(from: string, to: string) : Promise<string> {
-    return this.AWSComm.AWSFetchDateRangeNotifications(from,to)
+    let newFrom = moment((new Date(from)).valueOf()).format("YYYY-MM-DD");
+    let newTo = moment((new Date(to)).valueOf()).format("YYYY-MM-DD");
+    console.log("newFrom: " + newFrom + " newTo: " + newTo);
+    return this.AWSComm.AWSFetchDateRangeNotifications(newFrom,newTo)
     .then(
       (notifications: Notification []) => {
         this.dailyNotificationsList = (notifications.length > 0) ? notifications.slice() : [];

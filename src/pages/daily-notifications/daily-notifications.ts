@@ -56,7 +56,7 @@ export class DailyNotificationsPage implements OnInit {
 
   private viewNotes(clickEvent=null, notification: Notification = null) {
     if (clickEvent == null) { return; }
-    let popover = this.popoverCtrl.create(NotificationPopoverPage, {notification: notification});
+    let popover = this.popoverCtrl.create(NotificationPopoverPage, {notification: notification}, { enableBackdropDismiss: false});
     popover.present();
     popover.onDidDismiss(
       (data) => {
@@ -132,7 +132,7 @@ export class DailyNotificationsPage implements OnInit {
   private searchByDate(clear: boolean) {
     if (clear == false) { return; }
     console.log("searchByDate()");
-    let search = this.popoverCtrl.create(SearchByDateRangePopover);
+    let search = this.popoverCtrl.create(SearchByDateRangePopover, {}, { enableBackdropDismiss: false});
     search.present();
     let loader = this.loadingCtrl.create();
     search.onDidDismiss(
