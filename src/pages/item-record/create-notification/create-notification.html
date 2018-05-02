@@ -26,10 +26,28 @@
       <ion-label floating>Quantity</ion-label>
       <ion-input type="number" formControlName="quantity"></ion-input>
     </ion-item>
+
+    <ion-item *ngIf="notificationForm.controls['quantity'].hasError('pattern') && !notificationForm.controls['quantity'].hasError('min')" text-wrap>
+      <ion-label>You must enter a valid quantity.</ion-label>
+    </ion-item>
+
+    <ion-item *ngIf="notificationForm.controls['quantity'].hasError('min')" text-wrap>
+      <ion-label>Quantity must be greater than zero.</ion-label>
+    </ion-item>
+
     <ion-item>
       <ion-label floating>Unit Price</ion-label>
       <ion-input type="number" formControlName="unitPrice"></ion-input>
     </ion-item>
+
+    <ion-item *ngIf="notificationForm.controls['unitPrice'].hasError('pattern') && !notificationForm.controls['unitPrice'].hasError('min')" text-wrap>
+      <ion-label>You must enter a valid price.</ion-label>
+    </ion-item>
+
+    <ion-item *ngIf="notificationForm.controls['unitPrice'].hasError('min')" text-wrap>
+      <ion-label>Price must be greater than zero.</ion-label>
+    </ion-item>
+
     <ion-item>
       <ion-label>Sell-By Date:</ion-label>
       <ion-datetime displayFormat="MM/DD/YYYY" pickerFormat="MM DD YYYY" formControlName="sellByDate"

@@ -52,8 +52,12 @@ export class CreateNotificationPage implements OnInit {
   private initializeForm() {
     this.notificationForm = new FormGroup({
       'itemCollection': new FormControl(this.notification.item, Validators.required),
-      'quantity': new FormControl(this.notification.item.quantity, Validators.required),
-      'unitPrice': new FormControl(this.notification.item.unitPrice, Validators.required),
+      'quantity': new FormControl("1", [ Validators.required,
+                                         Validators.min(0.01),
+                                         Validators.pattern(/^([1-9][0-9]*)$/) ]),
+      'unitPrice': new FormControl("1.00", [ Validators.required,
+                                             Validators.min(0.01),
+                                             Validators.pattern(/^([0-9]+\.[0-9]{0,2})$/) ]),
       'daysPrior': new FormControl(this.notification.daysPrior, [ Validators.required, Validators.min(0) ]),
       'sellByDate': new FormControl("", [ Validators.required, this.isNotPriorToToday() ]),
       'deliveryOption': new FormControl(this.notification.deliveryOption, Validators.required),
@@ -67,7 +71,7 @@ export class CreateNotificationPage implements OnInit {
   onSubmit() {
     let value = this.notificationForm.value;
 
-    this.notification.item.quantity = value.quantity;
+    this.notification.item.quantity = parseInt(value.quantity);
     this.notification.item.unitPrice = value.unitPrice;
     this.notification.sellByDate = value.sellByDate;
     this.notification.daysPrior = value.daysPrior;
