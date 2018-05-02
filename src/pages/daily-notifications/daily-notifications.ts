@@ -105,7 +105,7 @@ export class DailyNotificationsPage implements OnInit {
           this.searchedByRange = false;
           loader.dismiss();
         }
-        else if (message == "ERROR") {
+        else if (message == "ERROR"){
           loader.dismiss();
           let errorAlert = this.alertCtrl.create({title: 'Error',message: "Could not fetch the list. Use Refresh button to retry.",buttons: ['Dismiss']});
           errorAlert.present();

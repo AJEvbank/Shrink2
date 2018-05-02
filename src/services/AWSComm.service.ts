@@ -145,16 +145,16 @@ export class AWSCommService {
     );
   }
 
-  public AWSFetchTodaysNotifications() : Promise<Notification[]> {
+  public AWSFetchTodaysNotifications() : Promise<{notifications: Notification[], message: string}> {
     let today = moment((new Date()).valueOf()).format("YYYY/MM/DDTHH:mm:ss");
     return this.get(this.access.notificationFunction + this.access.notificationRetrieval + today)
     .then((response) => {
       let resJSON = JSON.parse(response.data);
       if(resJSON == undefined || resJSON.Items == undefined){
-        return [];
+        return {notifications: [], message: "UNDEFINED"};
       }
       else if(resJSON.Items.length == 0){
-        return [];
+        return {notifications: [], message: "EMPTY"};
       }
       else{
         let todaysNotifs: Notification[] = [];
@@ -162,12 +162,11 @@ export class AWSCommService {
           let itemCollection = new ItemCollection(new ItemRecord(res.upc, res.name, res.highRisk), res.quantity, res.unitPrice);
           todaysNotifs.push(new Notification(itemCollection, res.sellByDate, res.daysPrior, res.deliveryOption, res.memo, res.Id));
         }
-        return todaysNotifs;
+        return {notifications: todaysNotifs, message: "SUCCESS"};
       }
-      //return [];
     })
     .catch((err) => {
-      return [];
+      return {notifications: [], message: "ERROR"};
     })
   }
 
@@ -215,7 +214,7 @@ export class AWSCommService {
     });
   }
 
-  public AWSFetchDateRangeNotifications(from: string, to: string) : Promise<Notification []> {
+  public AWSFetchDateRangeNotifications(from: string, to: string) : Promise<{notifications: Notification [], message: string}> {
     let urlString: string = (from == to) ? this.access.notificationFunction + this.access.notificationRetrieval + from
                                          : this.access.notificationFunction + this.access.fromDate + from + this.access.toDate + to;
     return this.get(urlString)
@@ -223,10 +222,10 @@ export class AWSCommService {
       (response) => {
         let resJSON = JSON.parse(response.data);
         if(resJSON.Items == undefined){
-          return [];
+          return {notifications: [], message: "UNDEFINED"};
         }
         else if(resJSON.Items.length <= 0){
-          return [];
+          return {notifications: [], message: "EMPTY"};
         }
         else{
           let requestedNotifs: Notification[] = [];
@@ -234,13 +233,13 @@ export class AWSCommService {
             let itemCollection = new ItemCollection(new ItemRecord(res.upc, res.name, res.highRisk), res.quantity, res.unitPrice);
             requestedNotifs.push(new Notification(itemCollection, res.sellByDate, res.daysPrior, res.deliveryOption, res.memo, res.Id));
           }
-          return requestedNotifs;
+          return {notifications: requestedNotifs, message: "SUCCESS"};
         }
       }
     )
     .catch(
       (err) => {
-        return [];
+        return {notifications: [], message: "ERROR"};
       }
     )
   }

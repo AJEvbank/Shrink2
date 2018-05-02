@@ -47,21 +47,22 @@ export class AWSCommBrowserService {
 
   public AWSgetupc(upc: string) : Promise<{item: ItemRecord, message: string}> {
     return this.get(this.access.upcFunction + upc)
-    .map((response) => {
+    .map(
+      (response) => {
 
-      let resJSON = response.json();
-      if (resJSON.Items == undefined) {
-        return {item: null, message: "ERROR"};
-      }
-      else if(resJSON.Items.length > 0) {
-        let newItemA = new ItemRecord(upc, resJSON.Items[0].name, resJSON.Items[0].highRisk);
-        return {item: newItemA, message: "SUCCESS"};;
-      }
-      else {
-        let newItemC = new ItemRecord(upc, "EMPTY");
-        return {item: null, message: "EMPTY"};;
-      }
-    }).toPromise<{item: ItemRecord, message: string}>();
+        let resJSON = response.json();
+        if (resJSON.Items == undefined) {
+          return {item: null, message: "ERROR"};
+        }
+        else if(resJSON.Items.length > 0) {
+          let newItemA = new ItemRecord(upc, resJSON.Items[0].name, resJSON.Items[0].highRisk);
+          return {item: newItemA, message: "SUCCESS"};;
+        }
+        else {
+          let newItemC = new ItemRecord(upc, "EMPTY");
+          return {item: null, message: "EMPTY"};;
+        }
+      }).toPromise<{item: ItemRecord, message: string}>();
   }
 
   public AWSupdateItemRecord(item: ItemRecord) : Promise<{item: ItemRecord, message: string}> {
@@ -107,16 +108,16 @@ export class AWSCommBrowserService {
     ).toPromise<string>();
   }
 
-  public AWSFetchTodaysNotifications() : Promise<Notification[]> {
+  public AWSFetchTodaysNotifications() : Promise<{notifications: Notification[], message: string}> {
     let today = moment((new Date()).valueOf()).format("YYYY-MM-DD");
     return this.get(this.access.notificationFunction + this.access.notificationRetrieval + today)
     .map((response) => {
       let resJSON = response.json();
       if(resJSON.Items == undefined){
-        return [];
+        return {notifications: [], message: "UNDEFINED"};
       }
       else if(resJSON.Items.length <= 0){
-        return [];
+        return {notifications: [], message: "EMPTY"};
       }
       else{
         let todaysNotifs: Notification[] = [];
@@ -124,9 +125,9 @@ export class AWSCommBrowserService {
           let itemCollection = new ItemCollection(new ItemRecord(res.upc, res.name, res.highRisk), res.quantity, res.unitPrice);
           todaysNotifs.push(new Notification(itemCollection, res.sellByDate, res.daysPrior, res.deliveryOption, res.memo, res.Id));
         }
-        return todaysNotifs;
+        return {notifications: todaysNotifs, message: "SUCCESS"};
       }
-    }).toPromise<Notification[]>();
+    }).toPromise<{notifications: Notification[], message: string}>();
   }
 
   public AWSPermanentDeleteNotification(Id: string) : Promise<string>{
@@ -183,7 +184,7 @@ export class AWSCommBrowserService {
     }).toPromise<ShrinkAggregate[]>();
   }
 
-  public AWSFetchDateRangeNotifications(from: string, to: string) : Promise<Notification []> {
+  public AWSFetchDateRangeNotifications(from: string, to: string) : Promise<{notifications: Notification [], message: string}> {
     let urlString: string = (from == to) ? this.access.notificationFunction + this.access.notificationRetrieval + from
                                          : this.access.notificationFunction + this.access.fromDate + from + this.access.toDate + to;
     return this.get(urlString)
@@ -191,10 +192,10 @@ export class AWSCommBrowserService {
       (response) => {
         let resJSON = response.json();
         if(resJSON.Items == undefined){
-          return [];
+          return {notifications: [], message: "UNDEFINED"};
         }
         else if(resJSON.Items.length <= 0){
-          return [];
+          return {notifications: [], message: "EMPTY"};
         }
         else{
           let requestedNotifs: Notification[] = [];
@@ -202,10 +203,10 @@ export class AWSCommBrowserService {
             let itemCollection = new ItemCollection(new ItemRecord(res.upc, res.name, res.highRisk), res.quantity, res.unitPrice);
             requestedNotifs.push(new Notification(itemCollection, res.sellByDate, res.daysPrior, res.deliveryOption, res.memo, res.Id));
           }
-          return requestedNotifs;
+          return {notifications: requestedNotifs, message: "SUCCESS"};
         }
       }
-    ).toPromise<Notification []>();
+    ).toPromise<{notifications: Notification [], message: string}>();
   }
 
   public shoutBack() {

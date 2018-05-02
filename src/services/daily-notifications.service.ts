@@ -42,9 +42,10 @@ export class DailyNotificationsService {
     );
   }
 
-  public removeItem(index: number){
+  public removeItem(index: number) : void {
     //const itemSave: Notification = this.dailyNotificationsList.slice(index, index+1)[0];
     this.dailyNotificationsList.splice(index, 1);
+    return;
   }
 
   //Fetch the list from the server, make update service list.
@@ -52,17 +53,28 @@ export class DailyNotificationsService {
   public FetchList() : Promise<string> {
     //let AWSComm = (window.location.hostname == "localhost") ? this.AWSB : this.AWS;
     return this.AWSComm.AWSFetchTodaysNotifications()
-    .then((todaysNotifs) => {
+    .then(
+      (data: {notifications: Notification[], message: string}) => {
       this.listLoaded = true;
-      this.dailyNotificationsList = todaysNotifs.slice();
-      return "SUCCESS";
+      let rtrn: string = "";
+      if (data.message == "SUCCESS") {
+        this.dailyNotificationsList = data.notifications.slice();
+        rtrn = "SUCCESS";
+      }else if (data.message == "EMPTY") {
+        this.dailyNotificationsList = [];
+        rtrn = "SUCCESS";
+      }
+      else {
+        rtrn = "ERROR";
+      }
+      return data.message;
     })
     .catch((err) => {
       return "ERROR";
     })
   }
 
-  public GetList() {
+  public GetList() : Notification [] {
     return this.dailyNotificationsList.slice();
   }
 
@@ -85,9 +97,16 @@ export class DailyNotificationsService {
     let newTo = moment((new Date(to)).valueOf()).format("YYYY-MM-DD");
     return this.AWSComm.AWSFetchDateRangeNotifications(newFrom,newTo)
     .then(
-      (notifications: Notification []) => {
-        this.dailyNotificationsList = (notifications.length > 0) ? notifications.slice() : [];
-        return "SUCCESS";
+      (data: {notifications: Notification[], message: string}) => {
+        let rtrn: string = "";
+        if (data.message == "SUCCESS" || data.message == "EMPTY") {
+          this.dailyNotificationsList = (data.notifications.length > 0) ? data.notifications.slice() : [];
+          rtrn = "SUCCESS";
+        }
+        else {
+          rtrn = "ERROR";
+        }
+        return rtrn;
       }
     )
     .catch(
