@@ -40,9 +40,17 @@ export class ShelfHelperPage implements OnInit {
 
   public deleteToGetItem(index: number) : void {
     this.shelfHelperService.removeItem(index)
-    .then(() => {
-      this.shelfHelperList = this.shelfHelperService.loadList();
-      return;
+    .then(
+      (message: string) => {
+        if (message == "SUCCESS") {
+          this.shelfHelperList = this.shelfHelperService.loadList();
+        }
+        else if (message == "FAILED" || message == "ERROR") {
+          this.shelfHelperList = this.shelfHelperService.loadList();
+          let error = this.alertCtrl.create({title: 'Error',message:'An error occurred. Please try again.',buttons:['Dismiss']});
+          error.present();
+        }
+        return;
     })
     .catch((err) => {
       return;

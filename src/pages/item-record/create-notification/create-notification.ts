@@ -12,6 +12,8 @@ import { DailyNotificationsService } from '../../../services/daily-notifications
 
 import moment from 'moment';
 
+import { LogHandler } from '../../../assets/helpers/LogHandler';
+
 @Component({
   selector: 'page-create-notification',
   templateUrl: 'create-notification.html',
@@ -29,6 +31,8 @@ export class CreateNotificationPage implements OnInit {
 
 
   notificationForm: FormGroup;
+
+  logger: LogHandler = new LogHandler("CreateNotificationPage");
 
 
   constructor(private navParams: NavParams,
@@ -81,11 +85,13 @@ export class CreateNotificationPage implements OnInit {
     this.dailyNotificationsService.addItem(this.notification)
     .then(
       (data) => {
+        this.logger.logCont(data,"onSubmit");
         this.viewCtrl.dismiss(data);
       }
     )
     .catch(
       (err) => {
+        this.logger.logErr(err,"onSubmit");
         this.viewCtrl.dismiss("ERROR");
       }
     );

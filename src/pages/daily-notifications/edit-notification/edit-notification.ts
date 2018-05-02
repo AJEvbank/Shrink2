@@ -9,6 +9,8 @@ import { DailyNotificationsService } from '../../../services/daily-notifications
 
 import moment from 'moment';
 
+import { LogHandler } from '../../../assets/helpers/LogHandler';
+
 @Component({
   selector: 'page-edit-notification',
   templateUrl: 'edit-notification.html',
@@ -24,6 +26,8 @@ export class EditNotificationPage {
   private currentDay: Date;
 
   notificationForm: FormGroup;
+
+  logger: LogHandler = new LogHandler("EditNotificationPage");
 
   constructor(private navParams: NavParams,
               private viewCtrl: ViewController,
@@ -73,11 +77,13 @@ export class EditNotificationPage {
     this.dailyNotificationsService.addItem(this.notification)
     .then(
       (data) => {
+        this.logger.logCont(data,"onSubmit");
         this.viewCtrl.dismiss(data);
       }
     )
     .catch(
       (err) => {
+        this.logger.logErr(err,"onSubmit");
         this.viewCtrl.dismiss("ERROR");
       }
     );

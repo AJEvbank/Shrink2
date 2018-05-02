@@ -5,6 +5,8 @@ import { ItemRecord } from '../assets/models/item-record.model';
 import { AWSCommBrowserService } from '../services/AWSCommBrowser.service';
 import { AWSCommService } from '../services/AWSComm.service';
 
+import { LogHandler } from '../assets/helpers/LogHandler';
+
 
 @Injectable()
 export class HighRiskListService {
@@ -13,6 +15,8 @@ export class HighRiskListService {
   private listLoaded = false;
 
   private AWSComm: AWSCommBrowserService | AWSCommService;
+
+  logger: LogHandler = new LogHandler("HighRiskListService");
 
   constructor(private AWSCommBrowser: AWSCommBrowserService,
               private AWSCommMobile: AWSCommService) {
@@ -26,23 +30,25 @@ export class HighRiskListService {
     .then(
       (itemResponse) => {
       if (itemResponse.message == "SUCCESS") {
-        let index = this.highRiskList.indexOf(itemResponse.item);
-        if(itemResponse.item.isHighRisk){
-          //Only add the item if it isn't already there.\
-          if(index == -1){
-            this.highRiskList.push(itemResponse.item);
+          this.logger.logCont(itemResponse,"ToggleHighRisk");
+          let index = this.highRiskList.indexOf(itemResponse.item);
+          if(itemResponse.item.isHighRisk){
+            //Only add the item if it isn't already there.\
+            if(index == -1){
+              this.highRiskList.push(itemResponse.item);
+            }
           }
-        }
-        else{
-          //Same principle here.
-          if(index > -1){
-            this.highRiskList.splice(index, 1);
+          else{
+            //Same principle here.
+            if(index > -1){
+              this.highRiskList.splice(index, 1);
+            }
           }
-        }
-        return {item: itemResponse.item, message: itemResponse.message};
+          return {item: itemResponse.item, message: itemResponse.message};
       }
     })
     .catch((err) => {
+      this.logger.logErr(err,"ToggleHighRisk");
       return {item: oldItem, message: "ERROR"};
     });
   }
@@ -51,6 +57,7 @@ export class HighRiskListService {
     return this.AWSComm.AWSFetchHighRiskList()
     .then(
       (data) => {
+        this.logger.logCont(data,"FetchList");
         let rtrn: string;
         if(data.message == "UNDEFINED" || data.message == "ERROR") {
           rtrn = "ERROR";
@@ -65,6 +72,7 @@ export class HighRiskListService {
     )
     .catch(
       (err) => {
+        this.logger.logErr(err,"FetchList");
         return "ERROR";
       }
     )

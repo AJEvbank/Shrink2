@@ -13,7 +13,6 @@ import { Throwaway } from '../assets/models/throwaway.model';
 
 import { LogHandler } from '../assets/helpers/LogHandler';
 
-
 import moment from 'moment';
 
 @Injectable()

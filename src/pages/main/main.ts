@@ -107,6 +107,11 @@ export class MainPage implements OnInit {
     this.scanner.androidScan()
     .then(
       (upc) => {
+        if (upc == "ERROR") {
+          let errAlert = this.alertCtrl.create({title: 'Error',message: "An error occurred. Please try again.",buttons: ['Dismiss']});
+          errAlert.present();
+          return;
+        }
         this.logger.logCont(upc,"scanItem");
         loader.present();
         return this.AWSComm.AWSgetupc(upc);
