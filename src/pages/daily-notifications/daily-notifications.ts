@@ -48,7 +48,6 @@ export class DailyNotificationsPage implements OnInit {
 
   private deleteItem(index: number) {
     if (index < 0) { return; }
-    console.log("delete " + index);
     this.dailyNotificationsService.removeItem(index);
     this.notificationList = this.dailyNotificationsService.GetList();
     return;
@@ -61,11 +60,9 @@ export class DailyNotificationsPage implements OnInit {
     popover.onDidDismiss(
       (data) => {
         if (data.Id != null) {
-          console.log("Delete notification with Id: " + data.Id);
           this.dailyNotificationsService.permanentDeleteNotification(data.Id)
           .then(
             (message) => {
-              console.log("message in onDidDismiss(): " + message);
               if(message == undefined || message == "ERRORS" || message == "ERRORING" || message == "ERRORED") {
                 let errorAlert = this.alertCtrl.create({title: 'Error',message: "An error occurred. Please try again.",buttons: ['Dismiss']});
                 errorAlert.present();
@@ -78,7 +75,6 @@ export class DailyNotificationsPage implements OnInit {
           )
           .catch(
             (err) => {
-              console.log("Error caught in viewNotes() delete function: " + JSON.stringify(err));
               let errorAlert = this.alertCtrl.create({title: 'Error',message: "An error occurred. Please try again.",buttons: ['Dismiss']});
               errorAlert.present();
             }
@@ -90,14 +86,12 @@ export class DailyNotificationsPage implements OnInit {
   }
 
   public refreshList() {
-    console.log("Refreshing the list.");
     this.FetchList();
   }
 
   public FetchList(){
     //Setup loader...
 
-    console.log("Entered FetchList()");
     let loader = this.loadingCtrl.create({content: "Updating..."});
     loader.present();
     //Make async request to AWS
@@ -105,7 +99,6 @@ export class DailyNotificationsPage implements OnInit {
     .then(
       (message: string) => {
         //It works! Update local list with service list!
-        console.log("Message in FetchList() of daily-notifications then(): " + message);
         if (message == "SUCCESS") {
           this.notificationList = this.dailyNotificationsService.GetList();
           this.noNotifications = this.notificationList.length == 0;
@@ -121,27 +114,22 @@ export class DailyNotificationsPage implements OnInit {
     })
     .catch((err) => {
       //Uh-oh! Print the error!
-      console.log("Error in FetchList(): " + JSON.stringify(err));
       let errorAlert = this.alertCtrl.create({title: 'Error',message: "Could not fetch the list. Use Refresh.",buttons: ['Dismiss']});
       errorAlert.present();
-      console.log("Dismissed in catch()");
       loader.dismiss();
     });
   }
 
   private searchByDate(clear: boolean) {
     if (clear == false) { return; }
-    console.log("searchByDate()");
     let search = this.popoverCtrl.create(SearchByDateRangePopover, {}, { enableBackdropDismiss: false});
     search.present();
     let loader = this.loadingCtrl.create();
     search.onDidDismiss(
       (data) => {
-        console.log("data: " + JSON.stringify(data));
         loader.dismiss();
         if (data.cancelled == false) {
           this.searchedByRange = true;
-          console.log("Firing transaction with from = " + JSON.stringify(data.from) + " and to = " + JSON.stringify(data.to));
           this.dailyNotificationsService.fetchDateRangeNotifications(data.from,data.to)
           .then(
             (data) => {
@@ -161,14 +149,12 @@ export class DailyNotificationsPage implements OnInit {
           )
           .catch(
             (err) => {
-              console.log("Caught error in searchByDate(): " + JSON.stringify(err));
               let error = this.alertCtrl.create({title: 'Error',message: "Could not fetch the list. Please try again.",buttons: ['Dismiss']});
               error.present();
             }
           );
         }
         else {
-          console.log("Cancelled.");
           loader.dismiss();
         }
       }
@@ -178,18 +164,14 @@ export class DailyNotificationsPage implements OnInit {
 
   private editItem(notification: Notification, index: number) {
     if (index < 0) return;
-    console.log("editItem():");
-    console.log("Notification: " + JSON.stringify(notification));
     let editPage = this.modalCtrl.create(EditNotificationPage, { notification: notification });
     editPage.present()
     .then(
       () => {
-        console.log("Successfully loaded editPage in daily-notifications.");
       }
     )
     .catch(
       (err) => {
-        console.log("Caught error in present() in daily-notifications: " + JSON.stringify(err));
       }
     );
     editPage.onDidDismiss(

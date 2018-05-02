@@ -29,8 +29,6 @@ export class DailyNotificationsService {
   }
 
   public addItem(item: Notification) : Promise<string> {
-    console.log("Firing addItem(): " + JSON.stringify(item));
-    //let AWSComm = (window.location.hostname == "localhost") ? this.AWSB : this.AWS;
 
     return this.AWSComm.AWScreateNotification(item)
     .then(
@@ -45,7 +43,6 @@ export class DailyNotificationsService {
     )
     .catch(
       (err) => {
-        console.log("Error caught in addItem(): " + err.toString() + " Stringified error: " + JSON.stringify(err));
         return "ERROR";
       }
     );
@@ -63,35 +60,29 @@ export class DailyNotificationsService {
     //let AWSComm = (window.location.hostname == "localhost") ? this.AWSB : this.AWS;
     return this.AWSComm.AWSFetchTodaysNotifications()
     .then((todaysNotifs) => {
-      console.log("todaysNotifs: " + JSON.stringify(todaysNotifs));
       this.listLoaded = true;
       this.dailyNotificationsList = todaysNotifs.slice();
       return "SUCCESS";
     })
     .catch((err) => {
-      console.log("Error in FetchList() of dailyNotificationsService: " + JSON.stringify(err, Object.getOwnPropertyNames(err)));
       this.listLoaded = true;
       return "ERROR";
     })
   }
 
   public GetList() {
-    console.log("In GetList():" + JSON.stringify(this.dailyNotificationsList));
     return this.dailyNotificationsList.slice();
   }
 
   public permanentDeleteNotification(Id: string) : Promise<string> {
-    console.log("In service function.");
     return this.AWSComm.AWSPermanentDeleteNotification(Id)
     .then(
       (message: string) => {
-        console.log("message in service: " + message);
         return message;
       }
     )
     .catch(
       (err) => {
-        console.log("Error caught in permanentDeleteNotification(): " + JSON.stringify(err));
         return "ERRORING";
       }
     )
@@ -100,7 +91,6 @@ export class DailyNotificationsService {
   public fetchDateRangeNotifications(from: string, to: string) : Promise<string> {
     let newFrom = moment((new Date(from)).valueOf()).format("YYYY-MM-DD");
     let newTo = moment((new Date(to)).valueOf()).format("YYYY-MM-DD");
-    console.log("newFrom: " + newFrom + " newTo: " + newTo);
     return this.AWSComm.AWSFetchDateRangeNotifications(newFrom,newTo)
     .then(
       (notifications: Notification []) => {
@@ -110,7 +100,6 @@ export class DailyNotificationsService {
     )
     .catch(
       (err) => {
-        console.log("Caught error in fetchDateRangeNotifications(): " + JSON.stringify(err));
         return "ERROR";
       }
     )

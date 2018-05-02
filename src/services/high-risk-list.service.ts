@@ -43,7 +43,6 @@ export class HighRiskListService {
       }
     })
     .catch((err) => {
-      console.log(err);
       return {item: oldItem, message: "ERROR"};
     });
   }
@@ -68,7 +67,6 @@ export class HighRiskListService {
     )
     .catch(
       (err) => {
-        console.log("Error caught in FetchList: " + JSON.stringify(err) + " :=> " + err.json());
         return "ERROR";
       }
     )

@@ -32,12 +32,9 @@ export class EditNotificationPage {
 
   ngOnInit() {
     this.notification = this.navParams.get('notification');
-    console.log("Notification in ngOnInit(): " + JSON.stringify(this.notification));
-    console.log("\n\n\n");
     this.name = this.notification.item.item.name;
     this.upc = this.notification.item.item.upc;
     this.displayDate = new Date(this.notification.sellByDate);
-    console.log("displayDate: " + this.displayDate);
     let temp = new Date();
     this.currentDay = new Date(temp.getFullYear(),temp.getMonth(),temp.getDate());
     this.itemCollection = new ItemCollection(this.notification.item.item, this.notification.item.quantity, this.notification.item.unitPrice);
@@ -60,11 +57,8 @@ export class EditNotificationPage {
   }
 
   onSubmit(message: string) {
-    console.log("message in onSubmit(): " + message);
 
     let value = this.notificationForm.value;
-
-    console.log("value.sellByDate var: " + value.sellByDate);
 
     this.notification.item.quantity = value.quantity;
     this.notification.item.unitPrice = value.unitPrice;
@@ -74,11 +68,8 @@ export class EditNotificationPage {
     this.notification.memo = value.memo;
     if(message == 'create') {
       this.notification.Id = null;
-      console.log("message == " + message);
-      console.log("this.notification.Id == " + this.notification.Id);
     }
 
-    console.log("notification in onSubmit(): " + JSON.stringify(this.notification));
     this.dailyNotificationsService.addItem(this.notification)
     .then(
       (data) => {
@@ -87,7 +78,6 @@ export class EditNotificationPage {
     )
     .catch(
       (err) => {
-        console.log("Error caught in onSubmit(): " + err.toString() + " Stringified error: " + JSON.stringify(err));
         this.viewCtrl.dismiss("ERROR");
       }
     );
@@ -105,7 +95,6 @@ export class EditNotificationPage {
       let month: string = ctrl.value.slice(5,7);
       let year: string = ctrl.value.slice(0,4);
       let realValue = new Date(Number(year),Number(month) - 1,Number(day));
-      console.log("today = " + today.toString() + "ctrl.value = " + ctrl.value + " realValue = " + realValue.toString());
       if (realValue < today) {
         let returnDataI = moment(realValue.valueOf()).format("MM/DD/YYYY");
         return {'isPriorToToday': returnDataI};
@@ -127,7 +116,6 @@ export class EditNotificationPage {
       let year: string = sellByDateCtrl.value.slice(0,4);
       let daysPrior = daysPriorCtrl.value;
       let deliveryDate = new Date(Number(year),Number(month) - 1,Number(day) - Number(daysPrior));
-      console.log("today = " + today.toString() + "sellByDateCtrl.value = " + sellByDateCtrl.value + " deliveryDate = " + deliveryDate.toString());
       if (deliveryDate < today) {
         let returnDataD = moment(deliveryDate.valueOf()).format("MM/DD/YYYY");
         return {'isDeliveredPriorToToday': returnDataD};

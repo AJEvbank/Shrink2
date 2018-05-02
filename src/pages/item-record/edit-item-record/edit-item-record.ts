@@ -58,7 +58,6 @@ export class EditItemRecordPage implements OnInit {
     )
     .catch(
       (err) => {
-        console.log("Error caught in onSubmit: " + JSON.stringify(err));
         this.viewCtrl.dismiss({item: oldValue, ErrorCode: "http error"});
       }
     );

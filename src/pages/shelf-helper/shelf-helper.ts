@@ -32,7 +32,6 @@ export class ShelfHelperPage implements OnInit {
     )
     .catch(
       (err) => {
-        console.log(err);
         this.shelfHelperList = [];
       }
     )
@@ -42,10 +41,8 @@ export class ShelfHelperPage implements OnInit {
     this.shelfHelperService.removeItem(index)
     .then(() => {
       this.shelfHelperList = this.shelfHelperService.loadList();
-      console.log(this.shelfHelperList);
     })
     .catch((err) => {
-      console.log(err);
     });
   }
 
@@ -74,7 +71,6 @@ export class ShelfHelperPage implements OnInit {
           )
           .catch(
             (err) => {
-              console.log(err);
               this.shelfHelperList = [];
             }
           );
@@ -87,7 +83,6 @@ export class ShelfHelperPage implements OnInit {
     )
     .catch(
       (err) => {
-        console.log("Error when clearing storage: " + JSON.stringify(err) + " :=> " + err.json());
         let error = this.alertCtrl.create({title: 'Error',message:'An error occurred. Please try again.',buttons:['Dismiss']});
         error.present();
       }
@@ -95,7 +90,6 @@ export class ShelfHelperPage implements OnInit {
   }
 
   viewItem(item: ItemRecord, i) {
-    console.log("viewItem(" + JSON.stringify(item) + ", " + i + ")");
     this.navCtrl.push(ItemRecordPage,{item: item, saved: true, fromMain: false});
   }
 

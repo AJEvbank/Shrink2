@@ -13,15 +13,11 @@ export class ShelfHelperService {
 
   public addItem(item: ToGetItem) {
     let found = false, oldQuantity: number, oldIndex: number;
-    console.log("The list: " + JSON.stringify(this.shelfHelperList));
     for(let eachItem of this.shelfHelperList) {
-      console.log(item.item.upc + " ? " + eachItem.item.upc);
-      console.log("eachItem: " + JSON.stringify(eachItem));
       if (item.item.upc == eachItem.item.upc) {
         oldQuantity = eachItem.quantity;
         oldIndex = this.shelfHelperList.indexOf(eachItem);
         let sum : number = Number(eachItem.quantity) + Number(item.quantity);
-        console.log(item.quantity + " + " + item.quantity + " = " + sum);
         eachItem.quantity = sum;
         found = true;
         break;
@@ -34,7 +30,6 @@ export class ShelfHelperService {
     .then()
     .catch(
       (err) => {
-        console.log(err);
         if (!found) {
           this.shelfHelperList.splice(this.shelfHelperList.indexOf(item),1);
         }
@@ -52,7 +47,6 @@ export class ShelfHelperService {
     .then()
     .catch(
       (err) => {
-        console.log(err);
         this.addItem(itemSave);
       }
     )
@@ -68,7 +62,6 @@ export class ShelfHelperService {
     )
     .catch(
       (err) => {
-        console.log(err);
         return this.shelfHelperList = [];
       }
     )
@@ -81,12 +74,9 @@ export class ShelfHelperService {
   public updateItem(toGet: ToGetItem) {
     let found = false, oldQuantity: number, oldIndex: number;
     for(let eachItem of this.shelfHelperList) {
-      console.log(toGet.item.upc + " ? " + eachItem.item.upc);
       if (toGet.item.upc == eachItem.item.upc) {
         oldQuantity = eachItem.quantity;
         oldIndex = this.shelfHelperList.indexOf(eachItem);
-        // let sum = eachItem.quantity + item.quantity;
-        // console.log(eachItem.quantity + " + " + item.quantity + " = " + sum);
         eachItem.quantity = toGet.quantity;
         found = true;
         break;
@@ -99,7 +89,6 @@ export class ShelfHelperService {
     .then()
     .catch(
       (err) => {
-        console.log(err);
         if (!found) {
           this.shelfHelperList.splice(this.shelfHelperList.indexOf(toGet),1);
         }
@@ -119,7 +108,6 @@ export class ShelfHelperService {
     )
     .catch(
       (err) => {
-        console.log("Error when clearing storage: " + JSON.stringify(err) + " :=> " + err.json());
         return "ERROR";
       }
     );

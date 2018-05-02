@@ -41,7 +41,6 @@ export class ItemRecordPage implements OnInit {
   ngOnInit() {
     this.item = this.navParams.get('item');
     this.isCompleteItemRecord = this.navParams.get('saved');
-    console.log("isCompleteItemRecord: " + this.isCompleteItemRecord + " : " + this.navParams.get('saved'));
     this.shelfHelperService.fetchList();
   }
 
@@ -50,7 +49,6 @@ export class ItemRecordPage implements OnInit {
     editModal.present();
     editModal.onDidDismiss(
       (data) => {
-        console.log("In editItem(): " + JSON.stringify(data));
         if (data.ErrorCode == "empty/wrong" || data.ErrorCode == "http error") {
           let errorAlert = this.alertCtrl.create({
             title: 'Error',
@@ -62,15 +60,12 @@ export class ItemRecordPage implements OnInit {
         } else {
           this.item = data.item;
           this.isCompleteItemRecord = true;
-          console.log("Checking data..." + JSON.stringify(data.item));
-          console.log("Checking current item..." + JSON.stringify(this.item));
         }
       }
     );
   }
 
   createNotification() {
-    console.log("createNotification()");
     if (this.isCompleteItemRecord == true) {
       let createNotificationModal = this.modalCtrl.create(CreateNotificationPage, {item: this.item});
       createNotificationModal.present();
@@ -115,7 +110,6 @@ export class ItemRecordPage implements OnInit {
         }
       })
       .catch((err) => {
-        console.log(err);
         loader.dismiss();
         let error = this.alertCtrl.create({title: "Error",message: "An error occurred. Please try again.",buttons:['Dismiss']});
         error.present();
@@ -130,7 +124,6 @@ export class ItemRecordPage implements OnInit {
   }
 
   addToShelfHelperList() {
-    console.log("addToShelfHelperList()");
     if (this.isCompleteItemRecord == true) {
       let getQuantity = this.popoverCtrl.create(ShelfHelperAddQuantityPopover, {item: this.item}, { enableBackdropDismiss: false});
       getQuantity.present();
@@ -139,7 +132,6 @@ export class ItemRecordPage implements OnInit {
           if(data.quantity != "NO_Quantity") {
             this.shelfHelperService.addItem(new ToGetItem(this.item, data.quantity));
           }
-          console.log(this.shelfHelperService.loadList());
         }
       );
     }
@@ -154,7 +146,6 @@ export class ItemRecordPage implements OnInit {
   }
 
   throwaway() {
-    console.log("throwaway()");
     if (this.isCompleteItemRecord == true) {
       let throwaway = this.popoverCtrl.create(ThrowawayQuantityPricePopoverPage, { item: this.item }, { enableBackdropDismiss: false });
       throwaway.present();
@@ -162,12 +153,10 @@ export class ItemRecordPage implements OnInit {
         (data) => {
           // This is repetitive, but will be necessary later.
           if(data.response == "ERROR") {
-            console.log("Error from server: " + JSON.stringify(data));
             let errorAlert = this.alertCtrl.create({title: 'Error',message: "Could not create throwaway record. Please try again.",buttons: ['Dismiss']});
             errorAlert.present();
           }
           else if(data.response == "CANCELLED"){
-            console.log("Action cancelled: " + JSON.stringify(data));
           }
           else {
             let toast = this.toastCtrl.create({message: 'Throwaway record saved.',duration: 2000,position: 'bottom'});
@@ -186,7 +175,6 @@ export class ItemRecordPage implements OnInit {
     //this.navCtrl.push(MainPage);
     let lastIndex = this.navCtrl.indexOf(this.navCtrl.last());
     let difference = lastIndex - 2;
-    console.log("lastIndex = " + lastIndex + " difference = " + difference);
     this.navCtrl.remove(2,difference);
     this.navCtrl.pop();
   }

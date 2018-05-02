@@ -65,7 +65,6 @@ export class MainPage implements OnInit {
     pop.present();
     pop.onDidDismiss(
       (upc) => {
-        console.log(upc);
         if (upc != "NO_UPC") {
           let loader = this.loadingCtrl.create();
           loader.present();
@@ -73,19 +72,15 @@ export class MainPage implements OnInit {
           .then(
             (item: ItemRecord) => {
               loader.dismiss();
-              console.log("item: " + JSON.stringify(item));
               if(item.name == "EMPTY") {
-                console.log("NewRecord Triggered");
                 let newEmptyItem = new ItemRecord(item.upc,"(Add New Item Name Here)");
                 this.navCtrl.push(ItemRecordPage,{item: newEmptyItem, saved: false, fromMain: true});
               }
               else if(item.name == "ERROR") {
-                console.log("Error on response.");
                 let errAlert = this.alertCtrl.create({title: 'Error',message: "An error occurred. Please try again.",buttons: ['Dismiss']});
                 errAlert.present();
               }
               else {
-                console.log("else Triggered");
                 this.navCtrl.push(ItemRecordPage,{item: item, saved: true, fromMain: true});
               }
           })
@@ -93,7 +88,6 @@ export class MainPage implements OnInit {
             loader.dismiss();
             let errAlert = this.alertCtrl.create({title: 'Error',message: "An error occurred. Please try again.",buttons: ['Dismiss']});
             errAlert.present();
-            console.log("This is the error: " + err);
           });
         }
       }
@@ -105,15 +99,12 @@ export class MainPage implements OnInit {
     let loader = this.loadingCtrl.create();
     this.scanner.androidScan()
     .then((upc) => {
-      console.log("Successfully got a upc: " + upc);
       loader.present();
       return this.AWSComm.AWSgetupc(upc);
     })
     .then((item) => {
-      console.log("Successfully got an ItemRecord: " + JSON.stringify(item));
       loader.dismiss();
       if(item.name == "ERROR"){
-        console.log("An error occurred in record retrieval!");
         let errAlert = this.alertCtrl.create({title: 'Error',message: "An error occurred. Please try again.",buttons: ['Dismiss']});
         errAlert.present();
       } else if(item.name == "EMPTY") {
@@ -126,7 +117,6 @@ export class MainPage implements OnInit {
     })
     .catch((err) => {
       loader.dismiss();
-      console.log(JSON.stringify(err));
       let errAlert = this.alertCtrl.create({title: 'Error',message: "An error occurred. Please try again.",buttons: ['Dismiss']});
       errAlert.present();
       return;

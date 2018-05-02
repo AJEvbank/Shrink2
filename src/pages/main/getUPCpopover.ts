@@ -34,7 +34,6 @@ export class GetUPCPopover implements OnInit {
 
   ngOnInit() {
     this.initializeForm();
-    console.log("Error testing: " + this.upc.controls['upc'].getError('CheckDigit'));
   }
 
   private initializeForm() {
@@ -55,7 +54,6 @@ export class GetUPCPopover implements OnInit {
 
   submit() {
     let value = this.upc.value;
-    console.log("value = " + value);
     this.viewCtrl.dismiss(value.upc);
   }
 

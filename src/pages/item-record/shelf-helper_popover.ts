@@ -51,7 +51,6 @@ export class ShelfHelperAddQuantityPopover implements OnInit {
 
   submit() {
     let value = this.quantity.value;
-    console.log("value = " + value);
     this.viewCtrl.dismiss({quantity: value.quantity});
   }
 

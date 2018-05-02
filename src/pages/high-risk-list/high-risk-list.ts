@@ -43,7 +43,6 @@ export class HighRiskListPage implements OnInit {
       )
       .catch(
         (err) => {
-          console.log("Error caught in ngOnInit(): " + JSON.stringify(err) + " :=> " + err.json());
           let error = this.alertCtrl.create({title: "Error",message: "There was an error loading the list. Please use the refresh button.",buttons:['Dismiss']});
           error.present();
         }
@@ -70,7 +69,6 @@ export class HighRiskListPage implements OnInit {
     this.hrService.FetchList()
     .then(
       (message: string) => {
-        console.log("message from HighRiskListService: " + message);
         if (message == "SUCCESS") {
           this.highRiskList = this.hrService.GetList();
           this.emptyList = false;
@@ -87,7 +85,6 @@ export class HighRiskListPage implements OnInit {
     )
     .catch(
       (err) => {
-        console.log("Error caught in ngOnInit(): " + JSON.stringify(err) + " :=> " + err.json());
         let error = this.alertCtrl.create({title: "Error",message: "There was an error loading the list. Please use the refresh button.",buttons:['Dismiss']});
         error.present();
       }
@@ -96,7 +93,6 @@ export class HighRiskListPage implements OnInit {
 
   private viewItem(item: ItemRecord, i: number) {
     if(i < 0) return;
-    console.log("viewItem(" + JSON.stringify(item) + ", " + i + ")");
     this.navCtrl.push(ItemRecordPage,{item: item, saved: true, fromMain: false});
   }
 }
