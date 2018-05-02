@@ -16,6 +16,8 @@ import { ReportsPage } from '../reports/reports';
 
 import { GetUPCPopover } from './getUPCpopover';
 
+import { LogHandler } from '../../assets/helpers/LogHandler';
+
 @Component({
   selector: 'page-main',
   templateUrl: 'main.html',
@@ -34,6 +36,8 @@ export class MainPage implements OnInit {
 
   AWSComm: AWSCommService | AWSCommBrowserService;
   isLocalHost: boolean;
+
+  logger: LogHandler = new LogHandler("MainPage");
 
 
   constructor(private navCtrl: NavController,
@@ -65,12 +69,14 @@ export class MainPage implements OnInit {
     pop.present();
     pop.onDidDismiss(
       (upc) => {
+        this.logger.logCont(upc,"getItemByUPC");
         if (upc != "NO_UPC") {
           let loader = this.loadingCtrl.create();
           loader.present();
           this.AWSComm.AWSgetupc(upc)
           .then(
             (data: {item: ItemRecord, message: string}) => {
+              this.logger.logCont(data,"getItemByUPC");
               loader.dismiss();
               if(data.message == "EMPTY") {
                 let newEmptyItem = new ItemRecord(data.item.upc,"(Add New Item Name Here)");
@@ -86,6 +92,7 @@ export class MainPage implements OnInit {
           })
           .catch((err) => {
             loader.dismiss();
+            this.logger.logErr(err,"getItemByUPC");
             let errAlert = this.alertCtrl.create({title: 'Error',message: "An error occurred. Please try again.",buttons: ['Dismiss']});
             errAlert.present();
           });
@@ -98,30 +105,34 @@ export class MainPage implements OnInit {
     if (clear == false) { return; }
     let loader = this.loadingCtrl.create();
     this.scanner.androidScan()
-    .then((upc) => {
-      loader.present();
-      return this.AWSComm.AWSgetupc(upc);
-    })
     .then(
-      (data: {item: ItemRecord, message: string}) => {
-      loader.dismiss();
-      if(data.message == "ERROR"){
+      (upc) => {
+        this.logger.logCont(upc,"scanItem");
+        loader.present();
+        return this.AWSComm.AWSgetupc(upc);
+      })
+      .then(
+        (data: {item: ItemRecord, message: string}) => {
+          this.logger.logCont(data,"scanItem");
+          loader.dismiss();
+          if(data.message == "ERROR"){
+            let errAlert = this.alertCtrl.create({title: 'Error',message: "An error occurred. Please try again.",buttons: ['Dismiss']});
+            errAlert.present();
+          }else if (data.message == "EMPTY") {
+            let newEmptyItem = new ItemRecord(data.item.upc,"(Add New Item Name Here)");
+            this.navCtrl.push(ItemRecordPage,{item: newEmptyItem, saved: false, fromMain: true});
+          }else {
+            this.navCtrl.push(ItemRecordPage,{item: data.item, saved: true, fromMain: true});
+          }
+          return;
+      })
+      .catch((err) => {
+        loader.dismiss();
+        this.logger.logErr(err,"scanItem");
         let errAlert = this.alertCtrl.create({title: 'Error',message: "An error occurred. Please try again.",buttons: ['Dismiss']});
         errAlert.present();
-      }else if (data.message == "EMPTY") {
-        let newEmptyItem = new ItemRecord(data.item.upc,"(Add New Item Name Here)");
-        this.navCtrl.push(ItemRecordPage,{item: newEmptyItem, saved: false, fromMain: true});
-      }else {
-        this.navCtrl.push(ItemRecordPage,{item: data.item, saved: true, fromMain: true});
-      }
-      return;
-    })
-    .catch((err) => {
-      loader.dismiss();
-      let errAlert = this.alertCtrl.create({title: 'Error',message: "An error occurred. Please try again.",buttons: ['Dismiss']});
-      errAlert.present();
-      return;
-    })
+        return;
+      })
   }
 
   private prepareHighRiskList(clear: boolean) {

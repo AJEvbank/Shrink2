@@ -9,6 +9,7 @@ import { AWSCommBrowserService } from './AWSCommBrowser.service';
 
 import moment from 'moment';
 
+import { LogHandler } from '../assets/helpers/LogHandler';
 
 @Injectable()
 export class DailyNotificationsService {
@@ -17,6 +18,8 @@ export class DailyNotificationsService {
 
   private listLoaded = false;
   private AWSComm: AWSCommService | AWSCommBrowserService;
+
+  private logger: LogHandler = new LogHandler("DailyNotificationsService");
 
   constructor(private AWS: AWSCommService,
               private AWSB: AWSCommBrowserService) {
