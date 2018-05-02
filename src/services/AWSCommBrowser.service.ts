@@ -263,4 +263,8 @@ export class AWSCommBrowserService {
       }
     ).toPromise<{list: ItemRecord[], message: string}>();
   }
+
+  public AWSGetLossOverTime(dateRangeStart: Date, dateRangeEnd: Date, selectionType: string, upc?: string){
+    //Probably cast to shrinkAggregate and return a list. Don't need much else.
+  }
 }
