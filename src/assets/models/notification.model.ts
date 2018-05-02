@@ -1,5 +1,7 @@
 import { ItemCollection } from './item-collection.model';
 
+import moment from 'moment';
+
 export class Notification {
 
   public item: ItemCollection;
@@ -7,7 +9,7 @@ export class Notification {
   public daysPrior: number;
   public deliveryOption: Notification.Option;
   // MEMO: add property for date of creation.
-  public dateOfCreation: Date;
+  public dateOfCreation: string;
   // MEMO: add memo property (string) for user's notes.
   public memo: string;
   public Id: string;
@@ -18,7 +20,7 @@ export class Notification {
     this.daysPrior = daysPrior;
     this.deliveryOption = deliveryOption;
     this.memo = memo;
-    this.dateOfCreation = new Date();
+    this.dateOfCreation = moment((new Date()).valueOf()).format("YYYY-MM-DD");
     this.Id = id;
   }
 }

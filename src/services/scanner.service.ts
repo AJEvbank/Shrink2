@@ -18,7 +18,6 @@ export class ScannerService {
       return result.text;
     })
     .catch((err) => {
-      console.log(JSON.stringify(err));
       return " ";
     })
   }

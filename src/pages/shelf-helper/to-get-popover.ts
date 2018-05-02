@@ -14,6 +14,12 @@ import { ToGetItem } from '../../assets/models/to-get-item.model';
               <ion-label>Quantity:</ion-label>
               <ion-input type="number" formControlName="quantity"></ion-input>
             </ion-item>
+            <ion-item *ngIf="toGetForm.controls.quantity.hasError('min')">
+              <ion-label>Quantity must be one or greater.</ion-label>
+            </ion-item>
+            <ion-item *ngIf="toGetForm.controls.quantity.hasError('pattern')">
+              <ion-label>Quantity must be a valid number with no leading zeros.</ion-label>
+            </ion-item>
             <button type="submit" ion-button block [disabled]="!toGetForm.valid">Save Changes</button>
           </form>
         <button ion-button color="danger" (click)="dismiss()">Cancel</button>
@@ -36,15 +42,15 @@ export class ToGetEditPopover implements OnInit {
 
   private initializeForm() {
     this.toGetForm = new FormGroup({
-      'quantity': new FormControl(this.toGet.quantity, [ Validators.required, Validators.min(0) ])
+      'quantity': new FormControl(this.toGet.quantity, [ Validators.required, Validators.min(1) ])
     });
   }
 
   onSubmit() {
     //let oldValue = new ToGetItem(new ItemRecord(this.toGet.item.upc,this.toGet.item.name,this.toGet.item.isHighRisk),this.toGet.quantity);
     let value = this.toGetForm.value;
-    this.toGet.quantity = value.quantity;
-    console.log("onSubmit: " + JSON.stringify(this.toGet));
+    this.toGet.quantity = Math.trunc(value.quantity);
+    console.log("toGet: " + Math.trunc(value.quantity));
     this.viewCtrl.dismiss({toGet: this.toGet});
   }
 

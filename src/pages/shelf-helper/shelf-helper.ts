@@ -21,7 +21,8 @@ export class ShelfHelperPage implements OnInit {
   constructor(private navCtrl: NavController,
               private shelfHelperService: ShelfHelperService,
               private popoverCtrl: PopoverController,
-              private alertCtrl: AlertController) {}
+              private alertCtrl: AlertController
+              ) {}
 
   ngOnInit() {
     this.shelfHelperService.fetchList()
@@ -32,36 +33,50 @@ export class ShelfHelperPage implements OnInit {
     )
     .catch(
       (err) => {
-        console.log(err);
         this.shelfHelperList = [];
       }
     )
   }
 
-  deleteToGetItem(index: number) {
+  public deleteToGetItem(index: number) : void {
     this.shelfHelperService.removeItem(index)
     .then(() => {
       this.shelfHelperList = this.shelfHelperService.loadList();
-      console.log(this.shelfHelperList);
+      return;
     })
     .catch((err) => {
-      console.log(err);
+      return;
     });
   }
 
-  editQuantity(clickEvent, toGet: ToGetItem) {
+  public editQuantity(clickEvent, toGet: ToGetItem, index: number, oldQuantity: number) : void {
     let popover = this.popoverCtrl.create(ToGetEditPopover, {toGet: toGet});
     popover.present();
     popover.onDidDismiss(
       ({toGet: ToGetItem}) => {
-
-        this.shelfHelperService.updateItem(toGet);
-        this.shelfHelperList = this.shelfHelperService.loadList();
+        this.shelfHelperService.updateItem(toGet, index, oldQuantity)
+        .then(
+          (data: string) => {
+            if (data == "SUCCESS") {
+              this.shelfHelperList = this.shelfHelperService.loadList();
+            }
+            else if (data == "ERROR") {
+              let error = this.alertCtrl.create({title: 'Error',message:'An error occurred. Please try again.',buttons:['Dismiss']});
+              error.present();
+            }
+            return;
+          }
+        )
+        .catch(
+          (err) => {
+            return;
+          }
+        );
       }
     );
   }
 
-  clearList() {
+  public clearList() : void {
     this.shelfHelperService.wipeStorage()
     .then(
       (message) => {
@@ -70,37 +85,40 @@ export class ShelfHelperPage implements OnInit {
           .then(
             (list: ToGetItem []) => {
               this.shelfHelperList = list;
+              return;
             }
           )
           .catch(
             (err) => {
-              console.log(err);
               this.shelfHelperList = [];
+              return;
             }
           );
         }
         else if (message == "ERROR") {
           let error = this.alertCtrl.create({title: 'Error',message:'An error occurred. Please try again.',buttons:['Dismiss']});
           error.present();
+          return;
         }
       }
     )
     .catch(
       (err) => {
-        console.log("Error when clearing storage: " + JSON.stringify(err) + " :=> " + err.json());
         let error = this.alertCtrl.create({title: 'Error',message:'An error occurred. Please try again.',buttons:['Dismiss']});
         error.present();
+        return;
       }
     );
   }
 
-  viewItem(item: ItemRecord, i) {
-    console.log("viewItem(" + JSON.stringify(item) + ", " + i + ")");
+  public viewItem(item: ItemRecord, i) : void {
     this.navCtrl.push(ItemRecordPage,{item: item, saved: true, fromMain: false});
+    return;
   }
 
-  refreshList() {
+  public refreshList() : void {
     this.shelfHelperList = this.shelfHelperService.loadList();
+    return;
   }
 
 }

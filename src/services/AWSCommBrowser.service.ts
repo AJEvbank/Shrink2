@@ -12,7 +12,7 @@ import { ShrinkAggregate } from '../assets/models/shrink-agreggate.model';
 import { Throwaway } from '../assets/models/throwaway.model';
 
 
-//import { uuid } from 'uuid/v1';
+import moment from 'moment';
 
 @Injectable()
 export class AWSCommBrowserService {
@@ -26,11 +26,15 @@ export class AWSCommBrowserService {
   // Generic http request functions return Promise<HTTPResponse>.
 
   private put(functionURL: string, body: any) : Observable<Response> {
+    console.log("URL: " + this.access.base + functionURL);
+    console.log("body: " + JSON.stringify(body));
     return this.http.put(this.access.base + functionURL, body);
   }
 
   private get(functionURL: string) : Observable<Response> {
-    return this.http.get(this.access.base + functionURL);
+    let fullURL = this.access.base + functionURL;
+    console.log("URL: " + fullURL);
+    return this.http.get(fullURL);
   }
 
   private delete(functionURL: string, body: any) : Observable<Response> {
@@ -40,21 +44,18 @@ export class AWSCommBrowserService {
   // Specific requests return a Promise<(desired data type here)>.
 
   public AWSgetupc(upc: string) : Promise<ItemRecord> {
-    return this.get(this.access.upcFunction + upc).map((response) => {
+    return this.get(this.access.upcFunction + upc)
+    .map((response) => {
       let resJSON = response.json();
-      console.log(resJSON);
       if (resJSON.Items == undefined) {
-      console.log("No Items[] on response!");
         let newItemB = new ItemRecord(upc, "ERROR");
         return newItemB;
       }
       else if(resJSON.Items.length > 0) {
-        console.log("Got valid record back!");
         let newItemA = new ItemRecord(upc, resJSON.Items[0].name, resJSON.Items[0].highRisk);
         return newItemA;
       }
       else {
-        console.log("Got empty record back!");
         let newItemC = new ItemRecord(upc, "EMPTY");
         return newItemC;
       }
@@ -66,19 +67,16 @@ export class AWSCommBrowserService {
     .map((response) => {
       let resJSON = response.json();
       if(resJSON.upc == undefined){
-        console.log("Something is REALLY wrong!\n" + resJSON);
         return {item: new ItemRecord(item.upc, "ERROR"), message: "ERROR"};
       }
       else{
         let updateItem = resJSON.upc;
-        //console.log("not undefined");
         return {item: new ItemRecord(updateItem.upcId, updateItem.name, updateItem.highRisk), message: "SUCCESS"};
       }
     }).toPromise<{item: ItemRecord, message: string}>();
   }
 
   public AWScreateNotification(notification: Notification) : Promise<string> {
-    console.log("Notification: " + JSON.stringify(notification));
     return this.put(this.access.notificationFunction, {
                                                         "item" :
                                                         {
@@ -89,7 +87,7 @@ export class AWSCommBrowserService {
                                                         "sellByDate" : notification.sellByDate.toString(),
                                                         "daysPrior" : notification.daysPrior,
                                                         "deliveryOption" : notification.deliveryOption,
-                                                        "dateOfCreation" : notification.dateOfCreation.toString(),
+                                                        "dateOfCreation" : notification.dateOfCreation,
                                                         "memo" : notification.memo,
                                                         "Id" : notification.Id
                                                       }
@@ -98,11 +96,9 @@ export class AWSCommBrowserService {
       (response) => {
         let resJSON = response.json();
         if(resJSON.notification == undefined) {
-          console.log("Undefined response from server: " + JSON.stringify(resJSON));
           return "UNDEFINED";
         }
         else {
-          console.log("Response from server: " + JSON.stringify(resJSON));
           return "SUCCESS";
         }
       }
@@ -110,40 +106,32 @@ export class AWSCommBrowserService {
   }
 
   public AWSFetchTodaysNotifications() : Promise<Notification[]> {
-    let today = (new Date()).toLocaleString();
-    console.log("today: " + today);
+    let today = moment((new Date()).valueOf()).format("YYYY-MM-DD");
     return this.get(this.access.notificationFunction + this.access.notificationRetrieval + today)
     .map((response) => {
       let resJSON = response.json();
       if(resJSON.Items == undefined){
-        console.log("Got back an undefined response! Here it is: " + JSON.stringify(resJSON));
-        return[]
+        return [];
       }
       else if(resJSON.Items.length <= 0){
-        console.log("No notifications for given day! Here's the response: " + JSON.stringify(resJSON));
         return [];
       }
       else{
         let todaysNotifs: Notification[] = [];
         for(let res of resJSON.Items) {
-          let itemCollection = new ItemCollection(new ItemRecord(res.item.upc, res.item.name, res.item.isHighRisk), res.quantity, res.unitPrice);
+          let itemCollection = new ItemCollection(new ItemRecord(res.upc, res.name, res.highRisk), res.quantity, res.unitPrice);
           todaysNotifs.push(new Notification(itemCollection, res.sellByDate, res.daysPrior, res.deliveryOption, res.memo, res.Id));
         }
-        console.log("Got back good response! Here it is mapped: ");
-        console.log(todaysNotifs);
         return todaysNotifs;
       }
     }).toPromise<Notification[]>();
   }
 
   public AWSPermanentDeleteNotification(Id: string) : Promise<string>{
-    let body = {};
-    return this.delete(this.access.notificationFunction + this.access.notificationId + Id, body)
+    return this.delete(this.access.notificationFunction + this.access.notificationId + Id, {Id: Id})
     .map(
       (response) => {
         let resJSON = response.json();
-        console.log("Service response: " + JSON.stringify(response));
-        console.log("Service resJSON: " + JSON.stringify(resJSON));
         if (resJSON.notification.Id == Id) {
           return "SUCCESS";
         }
@@ -155,19 +143,16 @@ export class AWSCommBrowserService {
   }
 
   public AWSCreateThrowaway(throwaway: Throwaway) : Promise<string> {
-    console.log("Creating throwaway: " + JSON.stringify(throwaway));
     let info = {
       "quantity": throwaway.item.quantity,
       "disposalDate": throwaway.dateOfDiscard,
       "unitPrice": throwaway.item.unitPrice,
       "upc": throwaway.item.item.upc
     };
-    console.log("Passing throwaway: " + JSON.stringify(info));
     return this.put(this.access.throwawayFunction, info)
     .map(
       (response) => {
         let resJSON = response.json();
-        console.log("Response from server: " + JSON.stringify(resJSON));
         if (resJSON.notification == undefined) { // What property is undefined?
           return "ERROR";
         }
@@ -197,37 +182,24 @@ export class AWSCommBrowserService {
   }
 
   public AWSFetchDateRangeNotifications(from: string, to: string) : Promise<Notification []> {
-    let urlString: string;
-    console.log("(new Date(from)).toDateString(): " + (new Date(from)).toDateString());
-    console.log("(new Date(to)).toDateString(): " + (new Date(to)).toDateString());
-    if ((new Date(from)).toDateString() == (new Date(to)).toDateString()) {
-      console.log("==");
-      urlString = this.access.notificationFunction + this.access.notificationRetrieval + from;
-    }
-    else {
-      console.log("!=");
-      urlString = this.access.notificationFunction + this.access.fromDate + from + this.access.toDate + to;
-    }
+    let urlString: string = (from == to) ? this.access.notificationFunction + this.access.notificationRetrieval + from
+                                         : this.access.notificationFunction + this.access.fromDate + from + this.access.toDate + to;
     return this.get(urlString)
     .map(
       (response) => {
         let resJSON = response.json();
         if(resJSON.Items == undefined){
-          console.log("Got back an undefined response! Here it is: " + JSON.stringify(resJSON));
           return [];
         }
         else if(resJSON.Items.length <= 0){
-          console.log("No notifications for given day! Here's the response: " + JSON.stringify(resJSON));
           return [];
         }
         else{
           let requestedNotifs: Notification[] = [];
           for(let res of resJSON.Items) {
-            let itemCollection = new ItemCollection(new ItemRecord(res.item.upc, res.item.name, res.item.isHighRisk), res.quantity, res.unitPrice);
+            let itemCollection = new ItemCollection(new ItemRecord(res.upc, res.name, res.highRisk), res.quantity, res.unitPrice);
             requestedNotifs.push(new Notification(itemCollection, res.sellByDate, res.daysPrior, res.deliveryOption, res.memo, res.Id));
           }
-          console.log("Got back good response! Here it is mapped: ");
-          console.log(requestedNotifs);
           return requestedNotifs;
         }
       }
@@ -235,7 +207,7 @@ export class AWSCommBrowserService {
   }
 
   public shoutBack() {
-    console.log("This is the browser service.");
+    console.log("Using the browser service.");
   }
 
   public AWSFetchHighRiskList() : Promise<{list: ItemRecord[], message: string}> {
@@ -243,7 +215,6 @@ export class AWSCommBrowserService {
     .map(
       (response) => {
         let resJSON = response.json();
-        console.log("response: " + JSON.stringify(response) + " :=> " + "resJSON: " + JSON.stringify(resJSON));
         let highRiskList: ItemRecord[] = [];
         let message: string = "";
         if(resJSON.Items == undefined) {

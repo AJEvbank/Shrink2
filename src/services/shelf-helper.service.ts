@@ -11,36 +11,30 @@ export class ShelfHelperService {
 
   constructor(private storage: Storage) {}
 
-  public addItem(item: ToGetItem) {
-    let found = false, oldQuantity: number, oldIndex: number;
-    console.log("The list: " + JSON.stringify(this.shelfHelperList));
-    for(let eachItem of this.shelfHelperList) {
-      console.log(item.item.upc + " ? " + eachItem.item.upc);
-      console.log("eachItem: " + JSON.stringify(eachItem));
-      if (item.item.upc == eachItem.item.upc) {
-        oldQuantity = eachItem.quantity;
-        oldIndex = this.shelfHelperList.indexOf(eachItem);
-        let sum : number = Number(eachItem.quantity) + Number(item.quantity);
-        console.log(item.quantity + " + " + item.quantity + " = " + sum);
-        eachItem.quantity = sum;
-        found = true;
-        break;
-      }
+  public addItem(item: ToGetItem) : Promise<string> {
+    let found = false, newIndex: number = 0, oldItemQuantity: number;
+    let indexByUPC = this.shelfHelperList.map(function(it) { return it.item.upc }).indexOf(item.item.upc);
+    if (indexByUPC == -1) {
+      newIndex = this.shelfHelperList.push(item);
+      newIndex--;
     }
-    if (!found) {
-      this.shelfHelperList.push(item);
+    else {
+      oldItemQuantity = this.shelfHelperList[indexByUPC].quantity;
+      this.shelfHelperList[indexByUPC].quantity = Number(this.shelfHelperList[indexByUPC].quantity) + Number(item.quantity);
     }
-    this.storage.set('shelfHelperList',this.shelfHelperList)
-    .then()
+    return this.storage.set('shelfHelperList',this.shelfHelperList)
+    .then(
+      () => { return "SUCCESS"; }
+    )
     .catch(
       (err) => {
-        console.log(err);
-        if (!found) {
-          this.shelfHelperList.splice(this.shelfHelperList.indexOf(item),1);
+        if (indexByUPC == -1) {
+          this.shelfHelperList.splice(newIndex,1);
         }
         else {
-          this.shelfHelperList[oldIndex].quantity = oldQuantity;
+          this.shelfHelperList[indexByUPC].quantity = oldItemQuantity;
         }
+        return "ERROR";
       }
     );
   }
@@ -52,7 +46,6 @@ export class ShelfHelperService {
     .then()
     .catch(
       (err) => {
-        console.log(err);
         this.addItem(itemSave);
       }
     )
@@ -68,44 +61,25 @@ export class ShelfHelperService {
     )
     .catch(
       (err) => {
-        console.log(err);
         return this.shelfHelperList = [];
       }
     )
   }
 
-  public loadList() {
+  public loadList() : ToGetItem[] {
     return this.shelfHelperList.slice();
   }
 
-  public updateItem(toGet: ToGetItem) {
-    let found = false, oldQuantity: number, oldIndex: number;
-    for(let eachItem of this.shelfHelperList) {
-      console.log(toGet.item.upc + " ? " + eachItem.item.upc);
-      if (toGet.item.upc == eachItem.item.upc) {
-        oldQuantity = eachItem.quantity;
-        oldIndex = this.shelfHelperList.indexOf(eachItem);
-        // let sum = eachItem.quantity + item.quantity;
-        // console.log(eachItem.quantity + " + " + item.quantity + " = " + sum);
-        eachItem.quantity = toGet.quantity;
-        found = true;
-        break;
-      }
-    }
-    if (!found) {
-      this.shelfHelperList.push(toGet);
-    }
-    this.storage.set('shelfHelperList',this.shelfHelperList)
-    .then()
+  public updateItem(toGet: ToGetItem, index: number, oldQuantity: number) : Promise<string> {
+    this.shelfHelperList[index].quantity = toGet.quantity;
+    return this.storage.set('shelfHelperList',this.shelfHelperList)
+    .then(
+      () => { return "SUCCESS"; }
+    )
     .catch(
       (err) => {
-        console.log(err);
-        if (!found) {
-          this.shelfHelperList.splice(this.shelfHelperList.indexOf(toGet),1);
-        }
-        else {
-          this.shelfHelperList[oldIndex].quantity = oldQuantity;
-        }
+        this.shelfHelperList[index].quantity = oldQuantity;
+        return "ERROR";
       }
     );
   }
@@ -119,7 +93,6 @@ export class ShelfHelperService {
     )
     .catch(
       (err) => {
-        console.log("Error when clearing storage: " + JSON.stringify(err) + " :=> " + err.json());
         return "ERROR";
       }
     );

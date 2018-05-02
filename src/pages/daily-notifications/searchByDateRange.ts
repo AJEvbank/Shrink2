@@ -43,13 +43,9 @@ export class SearchByDateRangePopover implements OnInit {
 
   ngOnInit() {
     this.from = new Date();
-    console.log("from: " + this.from);
     this.to = new Date();
-    console.log("from: " + this.to);
     this.fromMoment = moment().format();
-    console.log("fromMoment: " + this.fromMoment);
     this.toMoment = moment().format();
-    console.log("toMoment: " + this.toMoment);
     this.initializeForm();
   }
 
@@ -66,8 +62,6 @@ export class SearchByDateRangePopover implements OnInit {
 
   submit() {
     let value = this.dateRange.value;
-    console.log("value = " + value);
-    console.log("localFrom = " + (new Date(value.from)).toLocaleString());
     if (value.from > value.to) {
       let error = this.alertCtrl.create({title: 'Error', message: "'To' date cannot be prior to 'From' date.", buttons: ['Dismiss']});
       error.present();

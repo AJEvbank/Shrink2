@@ -43,7 +43,8 @@ export class ShelfHelperAddQuantityPopover implements OnInit {
       'quantity': new FormControl("1",
                               [
                                 Validators.required,
-                                Validators.min(1)
+                                Validators.min(1),
+                                Validators.pattern(/^(0|[1-9][0-9]*)$/)
                               ]
                              )
     });
@@ -51,7 +52,6 @@ export class ShelfHelperAddQuantityPopover implements OnInit {
 
   submit() {
     let value = this.quantity.value;
-    console.log("value = " + value);
     this.viewCtrl.dismiss({quantity: value.quantity});
   }
 

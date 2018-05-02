@@ -43,7 +43,6 @@ export class HighRiskListService {
       }
     })
     .catch((err) => {
-      console.log(err);
       return {item: oldItem, message: "ERROR"};
     });
   }
@@ -52,23 +51,20 @@ export class HighRiskListService {
     return this.AWSComm.AWSFetchHighRiskList()
     .then(
       (data) => {
+        let rtrn: string;
         if(data.message == "UNDEFINED" || data.message == "ERROR") {
-          return "ERROR";
+          rtrn = "ERROR";
         }
-        else if (data.message == "EMPTY") {
+        else if (data.message == "EMPTY" || data.message == "SUCCESS") {
           this.listLoaded == true;
-          return "EMPTY";
-        }
-        else if (data.message == "SUCCESS") {
-          this.listLoaded == true;
+          rtrn = (data.message == "EMPTY") ? "EMPTY" : "SUCCESS";
           this.highRiskList = data.list.slice();
-          return "SUCCESS";
         }
+        return rtrn;
       }
     )
     .catch(
       (err) => {
-        console.log("Error caught in FetchList: " + JSON.stringify(err) + " :=> " + err.json());
         return "ERROR";
       }
     )

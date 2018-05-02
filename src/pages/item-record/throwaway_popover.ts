@@ -82,19 +82,16 @@ export class ThrowawayQuantityPricePopoverPage implements OnInit {
     let value = this.discard.value;
     let loader = this.loadingCtrl.create();
     loader.present();
-    console.log("value.quantity = " + value.quantity + " value.unitPrice = " + value.unitPrice);
     let newThrowaway = new Throwaway(new ItemCollection(this.item,value.quantity,value.unitPrice),value.dateOfDiscard);
     this.AWSComm.AWSCreateThrowaway(newThrowaway)
     .then(
       (message: string) => {
         if (message == "ERROR") {
           loader.dismiss();
-          console.log("response from AWS Service on ERROR: " + JSON.stringify(message));
           this.viewCtrl.dismiss({response: message});
         }
         else if (message == "SUCCESS"){
           loader.dismiss();
-          console.log("response from AWS Service on SUCCESS: " + JSON.stringify(message));
           this.viewCtrl.dismiss({response: message});
         }
       }
@@ -102,7 +99,6 @@ export class ThrowawayQuantityPricePopoverPage implements OnInit {
     .catch(
       (err) => {
         loader.dismiss();
-        console.log("response from AWS Service caught in AWSCreateThrowaway(): " + JSON.stringify(err) + " :=> " + err.json());
         this.viewCtrl.dismiss({response: "SUCCESS"});
       }
     );
