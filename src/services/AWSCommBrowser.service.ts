@@ -38,28 +38,30 @@ export class AWSCommBrowserService {
   }
 
   private delete(functionURL: string, body: any) : Observable<Response> {
+    console.log("URL: " + this.access.base + functionURL);
+    console.log("body: " + JSON.stringify(body));
     return this.http.delete(this.access.base + functionURL,{});
   }
 
   // Specific requests return a Promise<(desired data type here)>.
 
-  public AWSgetupc(upc: string) : Promise<ItemRecord> {
+  public AWSgetupc(upc: string) : Promise<{item: ItemRecord, message: string}> {
     return this.get(this.access.upcFunction + upc)
     .map((response) => {
+
       let resJSON = response.json();
       if (resJSON.Items == undefined) {
-        let newItemB = new ItemRecord(upc, "ERROR");
-        return newItemB;
+        return {item: null, message: "ERROR"};
       }
       else if(resJSON.Items.length > 0) {
         let newItemA = new ItemRecord(upc, resJSON.Items[0].name, resJSON.Items[0].highRisk);
-        return newItemA;
+        return {item: newItemA, message: "SUCCESS"};;
       }
       else {
         let newItemC = new ItemRecord(upc, "EMPTY");
-        return newItemC;
+        return {item: null, message: "EMPTY"};;
       }
-    }).toPromise<ItemRecord>();
+    }).toPromise<{item: ItemRecord, message: string}>();
   }
 
   public AWSupdateItemRecord(item: ItemRecord) : Promise<{item: ItemRecord, message: string}> {

@@ -70,18 +70,18 @@ export class MainPage implements OnInit {
           loader.present();
           this.AWSComm.AWSgetupc(upc)
           .then(
-            (item: ItemRecord) => {
+            (data: {item: ItemRecord, message: string}) => {
               loader.dismiss();
-              if(item.name == "EMPTY") {
-                let newEmptyItem = new ItemRecord(item.upc,"(Add New Item Name Here)");
+              if(data.message == "EMPTY") {
+                let newEmptyItem = new ItemRecord(data.item.upc,"(Add New Item Name Here)");
                 this.navCtrl.push(ItemRecordPage,{item: newEmptyItem, saved: false, fromMain: true});
               }
-              else if(item.name == "ERROR") {
+              else if(data.message == "ERROR") {
                 let errAlert = this.alertCtrl.create({title: 'Error',message: "An error occurred. Please try again.",buttons: ['Dismiss']});
                 errAlert.present();
               }
               else {
-                this.navCtrl.push(ItemRecordPage,{item: item, saved: true, fromMain: true});
+                this.navCtrl.push(ItemRecordPage,{item: data.item, saved: true, fromMain: true});
               }
           })
           .catch((err) => {
@@ -102,16 +102,17 @@ export class MainPage implements OnInit {
       loader.present();
       return this.AWSComm.AWSgetupc(upc);
     })
-    .then((item) => {
+    .then(
+      (data: {item: ItemRecord, message: string}) => {
       loader.dismiss();
-      if(item.name == "ERROR"){
+      if(data.message == "ERROR"){
         let errAlert = this.alertCtrl.create({title: 'Error',message: "An error occurred. Please try again.",buttons: ['Dismiss']});
         errAlert.present();
-      } else if(item.name == "EMPTY") {
-        let newEmptyItem = new ItemRecord(item.upc,"(Add New Item Name Here)");
+      }else if (data.message == "EMPTY") {
+        let newEmptyItem = new ItemRecord(data.item.upc,"(Add New Item Name Here)");
         this.navCtrl.push(ItemRecordPage,{item: newEmptyItem, saved: false, fromMain: true});
-      } else {
-        this.navCtrl.push(ItemRecordPage,{item: item, saved: true, fromMain: true});
+      }else {
+        this.navCtrl.push(ItemRecordPage,{item: data.item, saved: true, fromMain: true});
       }
       return;
     })

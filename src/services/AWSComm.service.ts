@@ -24,6 +24,8 @@ export class AWSCommService {
   // Generic http request functions return Promise<HTTPResponse>.
 
   private put(functionURL: string, body: any) : Promise<HTTPResponse> {
+    console.log("URL: " + this.access.base + functionURL);
+    console.log("body: " + JSON.stringify(body));
 
     this.http.setDataSerializer("json");
 
@@ -31,10 +33,15 @@ export class AWSCommService {
   }
 
   private get(functionURL: string) : Promise<HTTPResponse> {
+    let fullURL = this.access.base + functionURL;
+    console.log("URL: " + fullURL);
+
     return this.http.get(this.access.base + functionURL, {}, {});
   }
 
   private delete(functionURL: string, body: any) : Promise<HTTPResponse> {
+    console.log("URL: " + this.access.base + functionURL);
+    console.log("body: " + JSON.stringify(body));
 
     this.http.setDataSerializer("json");
 
@@ -44,21 +51,21 @@ export class AWSCommService {
 
   // Specific requests return a Promise<(desired data type here)>.
 
-  public AWSgetupc(upc: string) : Promise<ItemRecord> {
+  public AWSgetupc(upc: string) : Promise<{item: ItemRecord, message: string}> {
     return this.get(this.access.upcFunction + upc)
     .then((response) => {
       let resJSON = JSON.parse(response.data);
       if (resJSON.Items == undefined) {
-        return new ItemRecord(upc, "ERROR");
+        return {item: null, message: "ERROR"};
       }
       else if(resJSON.Items[0].name != undefined){
-        return new ItemRecord(upc, resJSON.Items[0].name, resJSON.Items[0].highRisk);
+        return {item: new ItemRecord(upc, resJSON.Items[0].name, resJSON.Items[0].highRisk), message: "SUCCESS"};
       }else{
-        return new ItemRecord(upc, "EMPTY");
+        return {item: null, message: "EMPTY"};
       }
     })
     .catch((err) => {
-      return new ItemRecord(upc, "ERROR");
+      return {item: null, message: "ERROR"};
     });
   }
 
