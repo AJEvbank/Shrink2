@@ -75,7 +75,7 @@ export class ItemRecordPage implements OnInit {
             let toast = this.toastCtrl.create({message: 'Your notification was saved.',duration: 2000,position: 'bottom'});
             toast.present();
           }
-          else if (data == "ERROR"){
+          else if (data == "ERROR" || data == "UNDEFINED"){
             let error = this.alertCtrl.create({title: 'Error',message: 'There was a problem. Please try again.',buttons: ['Dismiss']});
             error.present();
           }

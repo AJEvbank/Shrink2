@@ -12,29 +12,25 @@ export class ShelfHelperService {
   constructor(private storage: Storage) {}
 
   public addItem(item: ToGetItem) {
-    let found = false, oldQuantity: number, oldIndex: number;
-    for(let eachItem of this.shelfHelperList) {
-      if (item.item.upc == eachItem.item.upc) {
-        oldQuantity = eachItem.quantity;
-        oldIndex = this.shelfHelperList.indexOf(eachItem);
-        let sum : number = Number(eachItem.quantity) + Number(item.quantity);
-        eachItem.quantity = sum;
-        found = true;
-        break;
-      }
+    let found = false, newIndex: number = 0, oldItemQuantity: number;
+    let indexByUPC = this.shelfHelperList.map(function(it) { return it.item.upc }).indexOf(item.item.upc);
+    if (indexByUPC == -1) {
+      newIndex = this.shelfHelperList.push(item);
+      newIndex--;
     }
-    if (!found) {
-      this.shelfHelperList.push(item);
+    else {
+      oldItemQuantity = this.shelfHelperList[indexByUPC].quantity;
+      this.shelfHelperList[indexByUPC].quantity = Number(this.shelfHelperList[indexByUPC].quantity) + Number(item.quantity);
     }
     this.storage.set('shelfHelperList',this.shelfHelperList)
     .then()
     .catch(
       (err) => {
-        if (!found) {
-          this.shelfHelperList.splice(this.shelfHelperList.indexOf(item),1);
+        if (indexByUPC == -1) {
+          this.shelfHelperList.splice(newIndex,1);
         }
         else {
-          this.shelfHelperList[oldIndex].quantity = oldQuantity;
+          this.shelfHelperList[indexByUPC].quantity = oldItemQuantity;
         }
       }
     );
@@ -71,30 +67,17 @@ export class ShelfHelperService {
     return this.shelfHelperList.slice();
   }
 
-  public updateItem(toGet: ToGetItem) {
-    let found = false, oldQuantity: number, oldIndex: number;
-    for(let eachItem of this.shelfHelperList) {
-      if (toGet.item.upc == eachItem.item.upc) {
-        oldQuantity = eachItem.quantity;
-        oldIndex = this.shelfHelperList.indexOf(eachItem);
-        eachItem.quantity = toGet.quantity;
-        found = true;
-        break;
-      }
-    }
-    if (!found) {
-      this.shelfHelperList.push(toGet);
-    }
-    this.storage.set('shelfHelperList',this.shelfHelperList)
-    .then()
+  public updateItem(toGet: ToGetItem, index: number, oldQuantity: number) : Promise<string> {
+    this.shelfHelperList[index].quantity = toGet.quantity;
+    console.log("shelfHelperList: " + JSON.stringify(this.shelfHelperList) + " index: " + index + " oldQuantity: " + oldQuantity);
+    return this.storage.set('shelfHelperList',this.shelfHelperList)
+    .then(
+      () => { return "SUCCESS"; }
+    )
     .catch(
       (err) => {
-        if (!found) {
-          this.shelfHelperList.splice(this.shelfHelperList.indexOf(toGet),1);
-        }
-        else {
-          this.shelfHelperList[oldIndex].quantity = oldQuantity;
-        }
+        this.shelfHelperList[index].quantity = oldQuantity;
+        return "ERROR";
       }
     );
   }

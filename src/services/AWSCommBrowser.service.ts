@@ -12,7 +12,7 @@ import { ShrinkAggregate } from '../assets/models/shrink-agreggate.model';
 import { Throwaway } from '../assets/models/throwaway.model';
 
 
-//import { uuid } from 'uuid/v1';
+import moment from 'moment';
 
 @Injectable()
 export class AWSCommBrowserService {
@@ -26,11 +26,14 @@ export class AWSCommBrowserService {
   // Generic http request functions return Promise<HTTPResponse>.
 
   private put(functionURL: string, body: any) : Observable<Response> {
+    console.log("URL: " + this.access.base + functionURL);
+    console.log("body: " + JSON.stringify(body));
     return this.http.put(this.access.base + functionURL, body);
   }
 
   private get(functionURL: string) : Observable<Response> {
     let fullURL = this.access.base + functionURL;
+    console.log("URL: " + fullURL);
     return this.http.get(fullURL);
   }
 
@@ -41,7 +44,8 @@ export class AWSCommBrowserService {
   // Specific requests return a Promise<(desired data type here)>.
 
   public AWSgetupc(upc: string) : Promise<ItemRecord> {
-    return this.get(this.access.upcFunction + upc).map((response) => {
+    return this.get(this.access.upcFunction + upc)
+    .map((response) => {
       let resJSON = response.json();
       if (resJSON.Items == undefined) {
         let newItemB = new ItemRecord(upc, "ERROR");
@@ -102,13 +106,12 @@ export class AWSCommBrowserService {
   }
 
   public AWSFetchTodaysNotifications() : Promise<Notification[]> {
-    let today = (new Date()).toLocaleString();
-    let urlString = this.access.notificationFunction + this.access.notificationRetrieval + today;
-    return this.get(urlString)
+    let today = moment((new Date()).valueOf()).format("YYYY-MM-DD");
+    return this.get(this.access.notificationFunction + this.access.notificationRetrieval + today)
     .map((response) => {
       let resJSON = response.json();
       if(resJSON.Items == undefined){
-        return[]
+        return [];
       }
       else if(resJSON.Items.length <= 0){
         return [];
@@ -125,8 +128,7 @@ export class AWSCommBrowserService {
   }
 
   public AWSPermanentDeleteNotification(Id: string) : Promise<string>{
-    let body = {};
-    return this.delete(this.access.notificationFunction + this.access.notificationId + Id, body)
+    return this.delete(this.access.notificationFunction + this.access.notificationId + Id, {Id: Id})
     .map(
       (response) => {
         let resJSON = response.json();
@@ -180,13 +182,8 @@ export class AWSCommBrowserService {
   }
 
   public AWSFetchDateRangeNotifications(from: string, to: string) : Promise<Notification []> {
-    let urlString: string;
-    if ((new Date(from)).toDateString() == (new Date(to)).toDateString()) {
-      urlString = this.access.notificationFunction + this.access.notificationRetrieval + from;
-    }
-    else {
-      urlString = this.access.notificationFunction + this.access.fromDate + from + this.access.toDate + to;
-    }
+    let urlString: string = (from == to) ? this.access.notificationFunction + this.access.notificationRetrieval + from
+                                         : this.access.notificationFunction + this.access.fromDate + from + this.access.toDate + to;
     return this.get(urlString)
     .map(
       (response) => {
@@ -210,7 +207,7 @@ export class AWSCommBrowserService {
   }
 
   public shoutBack() {
-    console.log("This is the browser service.");
+    console.log("Using the browser service.");
   }
 
   public AWSFetchHighRiskList() : Promise<{list: ItemRecord[], message: string}> {

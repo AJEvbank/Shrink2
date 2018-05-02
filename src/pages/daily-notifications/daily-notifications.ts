@@ -63,7 +63,7 @@ export class DailyNotificationsPage implements OnInit {
           this.dailyNotificationsService.permanentDeleteNotification(data.Id)
           .then(
             (message) => {
-              if(message == undefined || message == "ERRORS" || message == "ERRORING" || message == "ERRORED") {
+              if(message == undefined || message == "ERROR") {
                 let errorAlert = this.alertCtrl.create({title: 'Error',message: "An error occurred. Please try again.",buttons: ['Dismiss']});
                 errorAlert.present();
               }

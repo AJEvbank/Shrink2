@@ -9,7 +9,7 @@ import { Notification } from '../assets/models/notification.model';
 import { ShrinkAggregate } from '../assets/models/shrink-agreggate.model';
 import { Throwaway } from '../assets/models/throwaway.model';
 
-
+import moment from 'moment';
 
 
 @Injectable()
@@ -35,6 +35,7 @@ export class AWSCommService {
   }
 
   private delete(functionURL: string, body: any) : Promise<HTTPResponse> {
+
     this.http.setDataSerializer("json");
 
     return this.http.delete(this.access.base + functionURL, body, {});
@@ -65,11 +66,10 @@ export class AWSCommService {
     return this.put(this.access.updateItemRecordFunction + item.upc, {"name": item.name, "highRisk": item.isHighRisk})
     .then(
       (response) => {
-        let resJSON = JSON.parse(response.data);
-        if (resJSON.upc.upcId == undefined) {
+        let updateItem = JSON.parse(response.data);
+        if (updateItem.upc.upcId == undefined) {
           return {item: null, message: "ERROR"};
         }
-        let updateItem = resJSON;
         if (item.upc != updateItem.upc.upcId) {
           return {item: null, message: "ERROR"};
         } else {
@@ -127,19 +127,19 @@ export class AWSCommService {
           return "SUCCESS";
         }
         else {
-          return "ERRORS";
+          return "ERROR";
         }
       }
     )
     .catch(
       (err) => {
-        return "ERRORED";
+        return "ERROR";
       }
     );
   }
 
   public AWSFetchTodaysNotifications() : Promise<Notification[]> {
-    let today = (new Date()).toLocaleString();
+    let today = moment((new Date()).valueOf()).format("YYYY/MM/DDTHH:mm:ss");
     return this.get(this.access.notificationFunction + this.access.notificationRetrieval + today)
     .then((response) => {
       let resJSON = JSON.parse(response.data);
@@ -209,13 +209,8 @@ export class AWSCommService {
   }
 
   public AWSFetchDateRangeNotifications(from: string, to: string) : Promise<Notification []> {
-    let urlString: string;
-    if ((new Date(from)).toDateString() == (new Date(to)).toDateString()) {
-      urlString = this.access.notificationFunction + this.access.notificationRetrieval + from;
-    }
-    else {
-      urlString = this.access.notificationFunction + this.access.fromDate + from + this.access.toDate + to;
-    }
+    let urlString: string = (from == to) ? this.access.notificationFunction + this.access.notificationRetrieval + from
+                                         : this.access.notificationFunction + this.access.fromDate + from + this.access.toDate + to;
     return this.get(urlString)
     .then(
       (response) => {
@@ -244,6 +239,7 @@ export class AWSCommService {
   }
 
   public shoutBack() {
+    console.log("Using the device service.");
   }
 
   public AWSFetchHighRiskList() : Promise<{list: ItemRecord[], message: string}> {

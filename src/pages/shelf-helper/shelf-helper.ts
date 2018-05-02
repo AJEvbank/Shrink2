@@ -21,7 +21,8 @@ export class ShelfHelperPage implements OnInit {
   constructor(private navCtrl: NavController,
               private shelfHelperService: ShelfHelperService,
               private popoverCtrl: PopoverController,
-              private alertCtrl: AlertController) {}
+              private alertCtrl: AlertController
+              ) {}
 
   ngOnInit() {
     this.shelfHelperService.fetchList()
@@ -46,14 +47,23 @@ export class ShelfHelperPage implements OnInit {
     });
   }
 
-  editQuantity(clickEvent, toGet: ToGetItem) {
+  editQuantity(clickEvent, toGet: ToGetItem, index: number, oldQuantity: number) {
     let popover = this.popoverCtrl.create(ToGetEditPopover, {toGet: toGet});
     popover.present();
     popover.onDidDismiss(
       ({toGet: ToGetItem}) => {
-
-        this.shelfHelperService.updateItem(toGet);
-        this.shelfHelperList = this.shelfHelperService.loadList();
+        this.shelfHelperService.updateItem(toGet, index, oldQuantity)
+        .then(
+          (data: string) => {
+            if (data == "SUCCESS") {
+              this.shelfHelperList = this.shelfHelperService.loadList();
+            }
+            else if (data == "ERROR") {
+              let error = this.alertCtrl.create({title: 'Error',message:'An error occurred. Please try again.',buttons:['Dismiss']});
+              error.present();
+            }
+          }
+        );
       }
     );
   }

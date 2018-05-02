@@ -29,16 +29,10 @@ export class DailyNotificationsService {
   }
 
   public addItem(item: Notification) : Promise<string> {
-
     return this.AWSComm.AWScreateNotification(item)
     .then(
       (data) => {
-        if (data == "SUCCESS") {
-          return data;
-        }
-        else if (data == "UNDEFINED" || data == "ERROR"){
-          return "ERROR";
-        }
+        return data;
       }
     )
     .catch(
@@ -54,7 +48,6 @@ export class DailyNotificationsService {
   }
 
   //Fetch the list from the server, make update service list.
-  //Promise is void to act more as an ack
 
   public FetchList() : Promise<string> {
     //let AWSComm = (window.location.hostname == "localhost") ? this.AWSB : this.AWS;
@@ -65,7 +58,6 @@ export class DailyNotificationsService {
       return "SUCCESS";
     })
     .catch((err) => {
-      this.listLoaded = true;
       return "ERROR";
     })
   }
@@ -83,7 +75,7 @@ export class DailyNotificationsService {
     )
     .catch(
       (err) => {
-        return "ERRORING";
+        return "ERROR";
       }
     )
   }
