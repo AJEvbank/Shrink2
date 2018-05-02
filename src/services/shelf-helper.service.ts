@@ -11,7 +11,7 @@ export class ShelfHelperService {
 
   constructor(private storage: Storage) {}
 
-  public addItem(item: ToGetItem) {
+  public addItem(item: ToGetItem) : Promise<string> {
     let found = false, newIndex: number = 0, oldItemQuantity: number;
     let indexByUPC = this.shelfHelperList.map(function(it) { return it.item.upc }).indexOf(item.item.upc);
     if (indexByUPC == -1) {
@@ -22,8 +22,10 @@ export class ShelfHelperService {
       oldItemQuantity = this.shelfHelperList[indexByUPC].quantity;
       this.shelfHelperList[indexByUPC].quantity = Number(this.shelfHelperList[indexByUPC].quantity) + Number(item.quantity);
     }
-    this.storage.set('shelfHelperList',this.shelfHelperList)
-    .then()
+    return this.storage.set('shelfHelperList',this.shelfHelperList)
+    .then(
+      () => { return "SUCCESS"; }
+    )
     .catch(
       (err) => {
         if (indexByUPC == -1) {
@@ -32,6 +34,7 @@ export class ShelfHelperService {
         else {
           this.shelfHelperList[indexByUPC].quantity = oldItemQuantity;
         }
+        return "ERROR";
       }
     );
   }
@@ -63,13 +66,12 @@ export class ShelfHelperService {
     )
   }
 
-  public loadList() {
+  public loadList() : ToGetItem[] {
     return this.shelfHelperList.slice();
   }
 
   public updateItem(toGet: ToGetItem, index: number, oldQuantity: number) : Promise<string> {
     this.shelfHelperList[index].quantity = toGet.quantity;
-    console.log("shelfHelperList: " + JSON.stringify(this.shelfHelperList) + " index: " + index + " oldQuantity: " + oldQuantity);
     return this.storage.set('shelfHelperList',this.shelfHelperList)
     .then(
       () => { return "SUCCESS"; }

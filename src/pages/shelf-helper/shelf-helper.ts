@@ -38,16 +38,18 @@ export class ShelfHelperPage implements OnInit {
     )
   }
 
-  deleteToGetItem(index: number) {
+  public deleteToGetItem(index: number) : void {
     this.shelfHelperService.removeItem(index)
     .then(() => {
       this.shelfHelperList = this.shelfHelperService.loadList();
+      return;
     })
     .catch((err) => {
+      return;
     });
   }
 
-  editQuantity(clickEvent, toGet: ToGetItem, index: number, oldQuantity: number) {
+  public editQuantity(clickEvent, toGet: ToGetItem, index: number, oldQuantity: number) : void {
     let popover = this.popoverCtrl.create(ToGetEditPopover, {toGet: toGet});
     popover.present();
     popover.onDidDismiss(
@@ -62,13 +64,19 @@ export class ShelfHelperPage implements OnInit {
               let error = this.alertCtrl.create({title: 'Error',message:'An error occurred. Please try again.',buttons:['Dismiss']});
               error.present();
             }
+            return;
+          }
+        )
+        .catch(
+          (err) => {
+            return;
           }
         );
       }
     );
   }
 
-  clearList() {
+  public clearList() : void {
     this.shelfHelperService.wipeStorage()
     .then(
       (message) => {
@@ -77,17 +85,20 @@ export class ShelfHelperPage implements OnInit {
           .then(
             (list: ToGetItem []) => {
               this.shelfHelperList = list;
+              return;
             }
           )
           .catch(
             (err) => {
               this.shelfHelperList = [];
+              return;
             }
           );
         }
         else if (message == "ERROR") {
           let error = this.alertCtrl.create({title: 'Error',message:'An error occurred. Please try again.',buttons:['Dismiss']});
           error.present();
+          return;
         }
       }
     )
@@ -95,16 +106,19 @@ export class ShelfHelperPage implements OnInit {
       (err) => {
         let error = this.alertCtrl.create({title: 'Error',message:'An error occurred. Please try again.',buttons:['Dismiss']});
         error.present();
+        return;
       }
     );
   }
 
-  viewItem(item: ItemRecord, i) {
+  public viewItem(item: ItemRecord, i) : void {
     this.navCtrl.push(ItemRecordPage,{item: item, saved: true, fromMain: false});
+    return;
   }
 
-  refreshList() {
+  public refreshList() : void {
     this.shelfHelperList = this.shelfHelperService.loadList();
+    return;
   }
 
 }

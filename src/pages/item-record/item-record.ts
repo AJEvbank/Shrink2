@@ -130,17 +130,25 @@ export class ItemRecordPage implements OnInit {
       getQuantity.onDidDismiss(
         (data) => {
           if(data.quantity != "NO_Quantity") {
-            this.shelfHelperService.addItem(new ToGetItem(this.item, data.quantity));
+            this.shelfHelperService.addItem(new ToGetItem(this.item, data.quantity))
+            .then(
+              (data: string) => {
+                let toast = this.toastCtrl.create({message: 'Updated Shelf Helper List.',duration: 3000,position: 'bottom'});
+                toast.present();
+              }
+            )
+            .catch(
+              (err) => {
+                let error = this.alertCtrl.create({title: 'Error',message:'An error occurred. Please try again.',buttons:['Dismiss']});
+                error.present();
+              }
+            );
           }
         }
       );
     }
     else {
-      let toast = this.toastCtrl.create({
-        message: 'This record is not complete. Please complete all fields.',
-        duration: 2000,
-        position: 'middle'
-      });
+      let toast = this.toastCtrl.create({message: 'This record is not complete. Please complete all fields.',duration: 2000,position: 'middle'});
       toast.present();
     }
   }
