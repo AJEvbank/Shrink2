@@ -131,7 +131,7 @@ export class DailyNotificationsPage implements OnInit {
     return;
   }
 
-  private searchByDate(clear: boolean) {
+  private searchByDate(clear: boolean) : void {
     if (clear == false) { return; }
     let search = this.popoverCtrl.create(SearchByDateRangePopover, {}, { enableBackdropDismiss: false});
     search.present();
@@ -176,7 +176,7 @@ export class DailyNotificationsPage implements OnInit {
     return;
   }
 
-  private editItem(notification: Notification, index: number) {
+  private editItem(notification: Notification, index: number) : void {
     if (index < 0) return;
     let editPage = this.modalCtrl.create(EditNotificationPage, { notification: notification });
     editPage.present()
@@ -203,11 +203,13 @@ export class DailyNotificationsPage implements OnInit {
         }
       }
     )
+    return;
   }
 
-  private clearList(clear: boolean) {
+  private clearList(clear: boolean) : void {
     if (clear == false) return;
     this.notificationList = [];
+    return;
   }
 
 }

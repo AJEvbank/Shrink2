@@ -15,10 +15,10 @@ import { LogHandler } from '../../assets/helpers/LogHandler';
 
 export class HighRiskListPage implements OnInit {
 
-  highRiskList: ItemRecord [] = [];
-  emptyList: boolean = false;
+  private highRiskList: ItemRecord [] = [];
+  private emptyList: boolean = false;
 
-  logger: LogHandler = new LogHandler("HighRiskListPage");
+  private logger: LogHandler = new LogHandler("HighRiskListPage");
 
   constructor(private navCtrl: NavController,
               private hrService: HighRiskListService,
@@ -57,13 +57,14 @@ export class HighRiskListPage implements OnInit {
     this.dummyFunction();
   }
 
-  private dummyFunction() {
+  private dummyFunction() : void {
     this.deleteFromList(-1);
     this.refreshList(false);
     this.viewItem(null, -1);
+    return;
   }
 
-  private deleteFromList(index: number) {
+  private deleteFromList(index: number) : void {
     if (index < 0) return;
     let alert = this.alertCtrl.create({title: "Warning",message:"This action will not remove the item from the High-Risk List. To remove item from the High-Risk List, use the right sliding option",buttons:['Dismiss']});
     alert.present();
@@ -71,10 +72,11 @@ export class HighRiskListPage implements OnInit {
       (data) => {
         this.logger.logCont(data,"deleteFromList");
         this.highRiskList.splice(index,1);
-      });
+    });
+    return;
   }
 
-  private refreshList(clear: boolean) {
+  private refreshList(clear: boolean) : void {
     if(clear == false) return;
     this.hrService.FetchList()
     .then(
@@ -101,10 +103,12 @@ export class HighRiskListPage implements OnInit {
         error.present();
       }
     );
+    return;
   }
 
-  private viewItem(item: ItemRecord, i: number) {
+  private viewItem(item: ItemRecord, i: number) : void {
     if(i < 0) return;
     this.navCtrl.push(ItemRecordPage,{item: item, saved: true, fromMain: false});
+    return;
   }
 }

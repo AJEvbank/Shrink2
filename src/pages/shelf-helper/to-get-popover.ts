@@ -28,8 +28,8 @@ import { ToGetItem } from '../../assets/models/to-get-item.model';
 })
 export class ToGetEditPopover implements OnInit {
 
-  toGet: ToGetItem;
-  toGetForm: FormGroup;
+  private toGet: ToGetItem;
+  private toGetForm: FormGroup;
 
   constructor(private navParams: NavParams,
               private viewCtrl: ViewController) {
@@ -40,12 +40,13 @@ export class ToGetEditPopover implements OnInit {
     this.initializeForm();
   }
 
-  private initializeForm() {
+  private initializeForm() : void {
     this.toGetForm = new FormGroup({
       'quantity': new FormControl(this.toGet.quantity, [ Validators.required,
                                                          Validators.min(1),
                                                          Validators.pattern(/^([1-9][0-9]*)$/) ])
     });
+    return;
   }
 
   onSubmit() {
@@ -55,8 +56,9 @@ export class ToGetEditPopover implements OnInit {
     this.viewCtrl.dismiss({toGet: this.toGet});
   }
 
-  dismiss() {
+  private dismiss() : void {
     this.viewCtrl.dismiss({toGet: this.toGet});
+    return;
   }
 
 

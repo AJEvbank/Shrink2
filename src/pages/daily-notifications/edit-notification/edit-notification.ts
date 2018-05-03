@@ -25,9 +25,9 @@ export class EditNotificationPage {
   private displayDate: Date;
   private currentDay: Date;
 
-  notificationForm: FormGroup;
+  private notificationForm: FormGroup;
 
-  logger: LogHandler = new LogHandler("EditNotificationPage");
+  private logger: LogHandler = new LogHandler("EditNotificationPage");
 
   constructor(private navParams: NavParams,
               private viewCtrl: ViewController,
@@ -45,7 +45,7 @@ export class EditNotificationPage {
     this.initializeForm();
   }
 
-  private initializeForm() {
+  private initializeForm() : void {
     this.notificationForm = new FormGroup({
       'itemCollection': new FormControl(this.notification.item, Validators.required),
       'quantity': new FormControl(this.notification.item.quantity, Validators.required),
@@ -58,6 +58,7 @@ export class EditNotificationPage {
       'upc': new FormControl({value: this.notification.item.item.upc, disabled: true}, Validators.required),
       'name': new FormControl({value: this.notification.item.item.name, disabled: true}, Validators.required),
     }, this.isDeliveredPriorToToday('daysPrior', 'sellByDate'));
+    return;
   }
 
   onSubmit(message: string) {
@@ -89,8 +90,9 @@ export class EditNotificationPage {
     );
   }
 
-  leavePage() {
+  leavePage() : void {
     this.viewCtrl.dismiss("CANCELLED");
+    return;
   }
 
   private isNotPriorToToday() : ValidatorFn {

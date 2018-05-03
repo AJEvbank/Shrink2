@@ -18,9 +18,9 @@ import moment from 'moment';
 @Injectable()
 export class AWSCommBrowserService {
 
-  access = new Accessor();
+  private access = new Accessor();
 
-  logger: LogHandler = new LogHandler("AWSCommBrowserService");
+  private logger: LogHandler = new LogHandler("AWSCommBrowserService");
 
   constructor(private http: Http) {
 
@@ -219,8 +219,9 @@ export class AWSCommBrowserService {
     ).toPromise<{notifications: Notification [], message: string}>();
   }
 
-  public shoutBack() {
+  public shoutBack() : void {
     console.log("Using the browser service.");
+    return;
   }
 
   public AWSFetchHighRiskList() : Promise<{list: ItemRecord[], message: string}> {

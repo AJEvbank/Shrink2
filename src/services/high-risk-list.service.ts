@@ -16,7 +16,7 @@ export class HighRiskListService {
 
   private AWSComm: AWSCommBrowserService | AWSCommService;
 
-  logger: LogHandler = new LogHandler("HighRiskListService");
+  private logger: LogHandler = new LogHandler("HighRiskListService");
 
   constructor(private AWSCommBrowser: AWSCommBrowserService,
               private AWSCommMobile: AWSCommService) {
@@ -53,7 +53,7 @@ export class HighRiskListService {
     });
   }
 
-  public FetchList() : Promise<string>{
+  public FetchList() : Promise<string> {
     return this.AWSComm.AWSFetchHighRiskList()
     .then(
       (data) => {

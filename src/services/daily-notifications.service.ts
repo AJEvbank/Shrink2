@@ -48,7 +48,6 @@ export class DailyNotificationsService {
   }
 
   public removeItem(index: number) : void {
-    //const itemSave: Notification = this.dailyNotificationsList.slice(index, index+1)[0];
     this.dailyNotificationsList.splice(index, 1);
     return;
   }

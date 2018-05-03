@@ -24,20 +24,19 @@ import { LogHandler } from '../../assets/helpers/LogHandler';
 })
 export class MainPage implements OnInit {
 
-  itemRecordPage = ItemRecordPage;
-  dailyNotificationsPage = DailyNotificationsPage;
-  highRiskListPage = HighRiskListPage;
-  shelfHelperPage = ShelfHelperPage;
-  reportsPage = ReportsPage;
+  private dailyNotificationsPage = DailyNotificationsPage;
+  private highRiskListPage = HighRiskListPage;
+  private shelfHelperPage = ShelfHelperPage;
+  private reportsPage = ReportsPage;
 
-  highRiskListButtonDisabled = false;
+  private highRiskListButtonDisabled = false;
 
-  testDebug: string;
+  private testDebug: string;
 
-  AWSComm: AWSCommService | AWSCommBrowserService;
-  isLocalHost: boolean;
+  private AWSComm: AWSCommService | AWSCommBrowserService;
+  private isLocalHost: boolean;
 
-  logger: LogHandler = new LogHandler("MainPage");
+  private logger: LogHandler = new LogHandler("MainPage");
 
 
   constructor(private navCtrl: NavController,
@@ -56,14 +55,15 @@ export class MainPage implements OnInit {
     this.AWSComm = (this.isLocalHost == true) ? this.AWSB : this.AWS;
   }
 
-  private dummyFunctionCalls() { // This function is stupid, but it gets rid of a stupid warning on transpile.
+  private dummyFunctionCalls() : void { // This function is stupid, but it gets rid of a stupid warning on transpile.
     this.scanItem(false);
     this.getItemByUPC(false);
     this.prepareHighRiskList(false);
+    return;
   }
 
 
-  private getItemByUPC(clear: boolean) {
+  private getItemByUPC(clear: boolean) : void {
     if (clear == false) { return; }
     let pop = this.popoverController.create(GetUPCPopover, {}, { enableBackdropDismiss: false });
     pop.present();
@@ -99,6 +99,7 @@ export class MainPage implements OnInit {
         }
       }
     );
+    return;
   }
 
   private scanItem(clear: boolean) : void {
@@ -129,15 +130,14 @@ export class MainPage implements OnInit {
           }else {
             this.navCtrl.push(ItemRecordPage,{item: data.item, saved: true, fromMain: true});
           }
-          return;
       })
       .catch((err) => {
         loader.dismiss();
         this.logger.logErr(err,"scanItem");
         let errAlert = this.alertCtrl.create({title: 'Error',message: "An error occurred. Please try again.",buttons: ['Dismiss']});
         errAlert.present();
-        return;
-      })
+      });
+      return;
   }
 
   private prepareHighRiskList(clear: boolean) {

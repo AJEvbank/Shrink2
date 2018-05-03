@@ -8,9 +8,9 @@ import { LogHandler } from '../assets/helpers/LogHandler';
 @Injectable()
 export class ShelfHelperService {
 
-  shelfHelperList: ToGetItem [];
+  private shelfHelperList: ToGetItem [];
 
-  logger: LogHandler = new LogHandler("ShelfHelperService");
+  private logger: LogHandler = new LogHandler("ShelfHelperService");
 
   constructor(private storage: Storage) {}
 

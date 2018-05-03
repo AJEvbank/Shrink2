@@ -10,13 +10,17 @@ import { ToGetEditPopover } from './to-get-popover';
 
 import { ItemRecordPage } from '../item-record/item-record';
 
+import { LogHandler } from '../../assets/helpers/LogHandler';
+
 @Component({
   selector: 'page-shelf-helper',
   templateUrl: 'shelf-helper.html',
 })
 export class ShelfHelperPage implements OnInit {
 
-  shelfHelperList: ToGetItem [] = [];
+  private shelfHelperList: ToGetItem [] = [];
+
+  private logger: LogHandler = new LogHandler("ShelfHelperPage");
 
   constructor(private navCtrl: NavController,
               private shelfHelperService: ShelfHelperService,
@@ -28,11 +32,13 @@ export class ShelfHelperPage implements OnInit {
     this.shelfHelperService.fetchList()
     .then(
       (list: ToGetItem []) => {
+        this.logger.logCont(list,"ngOnInit");
         this.shelfHelperList = list;
       }
     )
     .catch(
       (err) => {
+        this.logger.logErr(err,"ngOnInit");
         this.shelfHelperList = [];
       }
     )
@@ -42,6 +48,7 @@ export class ShelfHelperPage implements OnInit {
     this.shelfHelperService.removeItem(index)
     .then(
       (message: string) => {
+        this.logger.logCont(message,"deleteToGetItem");
         if (message == "SUCCESS") {
           this.shelfHelperList = this.shelfHelperService.loadList();
         }
@@ -50,11 +57,11 @@ export class ShelfHelperPage implements OnInit {
           let error = this.alertCtrl.create({title: 'Error',message:'An error occurred. Please try again.',buttons:['Dismiss']});
           error.present();
         }
-        return;
     })
     .catch((err) => {
-      return;
+      this.logger.logErr(err,"deleteToGetItem");
     });
+    return;
   }
 
   public editQuantity(clickEvent, toGet: ToGetItem, index: number, oldQuantity: number) : void {
@@ -62,9 +69,11 @@ export class ShelfHelperPage implements OnInit {
     popover.present();
     popover.onDidDismiss(
       ({toGet: ToGetItem}) => {
+        this.logger.logCont(toGet,"deleteToGetItem");
         this.shelfHelperService.updateItem(toGet, index, oldQuantity)
         .then(
           (data: string) => {
+            this.logger.logCont(data,"deleteToGetItem");
             if (data == "SUCCESS") {
               this.shelfHelperList = this.shelfHelperService.loadList();
             }
@@ -72,51 +81,51 @@ export class ShelfHelperPage implements OnInit {
               let error = this.alertCtrl.create({title: 'Error',message:'An error occurred. Please try again.',buttons:['Dismiss']});
               error.present();
             }
-            return;
           }
         )
         .catch(
           (err) => {
-            return;
+            this.logger.logErr(err,"deleteToGetItem");
           }
         );
       }
     );
+    return;
   }
 
   public clearList() : void {
     this.shelfHelperService.wipeStorage()
     .then(
       (message) => {
+        this.logger.logCont(message,"clearList");
         if (message == "SUCCESS") {
           this.shelfHelperService.fetchList()
           .then(
             (list: ToGetItem []) => {
+              this.logger.logCont(list,"clearList");
               this.shelfHelperList = list;
-              return;
             }
           )
           .catch(
             (err) => {
               this.shelfHelperList = [];
-              return;
             }
           );
         }
         else if (message == "ERROR") {
           let error = this.alertCtrl.create({title: 'Error',message:'An error occurred. Please try again.',buttons:['Dismiss']});
           error.present();
-          return;
         }
       }
     )
     .catch(
       (err) => {
+        this.logger.logErr(err,"clearList");
         let error = this.alertCtrl.create({title: 'Error',message:'An error occurred. Please try again.',buttons:['Dismiss']});
         error.present();
-        return;
       }
     );
+    return;
   }
 
   public viewItem(item: ItemRecord, i) : void {

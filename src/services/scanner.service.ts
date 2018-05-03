@@ -8,7 +8,7 @@ import { LogHandler } from '../assets/helpers/LogHandler';
 @Injectable()
 export class ScannerService {
 
-  logger: LogHandler = new LogHandler("ScannerService");
+  private logger: LogHandler = new LogHandler("ScannerService");
 
   constructor(private scanner: BarcodeScanner) {
 
@@ -23,7 +23,7 @@ export class ScannerService {
     .catch((err) => {
       this.logger.logErr(err,"androidScan");
       return "ERROR";
-    })
+    });
   }
 
 }
