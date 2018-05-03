@@ -62,6 +62,10 @@ export class MainPage implements OnInit {
     return;
   }
 
+  // async scanItemAsync() : Promise<string> {
+  //   return this.scanner.androidScan();
+  // }
+
 
   private getItemByUPC(clear: boolean) : void {
     if (clear == false) { return; }
@@ -93,7 +97,7 @@ export class MainPage implements OnInit {
           .catch((err) => {
             loader.dismiss();
             this.logger.logErr(err,"getItemByUPC");
-            if(err.error.Error == "upcId was not found in DynamoDB or upcdatabase") {
+            if(err.error != undefined && err.error.Error == "upcId was not found in DynamoDB or upcdatabase") {
               console.log("Case occurred.");
               let newEmptyItem = new ItemRecord(upc,"(Add New Item Name Here)");
               this.navCtrl.push(ItemRecordPage,{item: newEmptyItem, saved: false, fromMain: true});
@@ -115,37 +119,115 @@ export class MainPage implements OnInit {
     this.scanner.androidScan()
     .then(
       (upc) => {
+        this.logger.logCont(upc,"scanItem");
         if (upc == "ERROR") {
           let errAlert = this.alertCtrl.create({title: 'Error',message: "An error occurred. Please try again.",buttons: ['Dismiss']});
           errAlert.present();
         }
         this.logger.logCont(upc,"scanItem");
         loader.present();
-        this.AWSComm.AWSgetupc(upc)
-        .then(
-          (data: {item: ItemRecord, message: string}) => {
-            this.logger.logCont(data,"scanItem");
-            loader.dismiss();
-            if(data.message == "ERROR"){
-              let errAlert = this.alertCtrl.create({title: 'Error',message: "An error occurred. Please try again.",buttons: ['Dismiss']});
-              errAlert.present();
-            }else if (data.message == "EMPTY") {
-              let newEmptyItem = new ItemRecord(data.item.upc,"(Add New Item Name Here)");
-              this.navCtrl.push(ItemRecordPage,{item: newEmptyItem, saved: false, fromMain: true});
-            }else {
-              this.navCtrl.push(ItemRecordPage,{item: data.item, saved: true, fromMain: true});
-            }
-        })
-        .catch(
-          (err) => {
-            loader.dismiss();
-            this.logger.logErr(err,"scanItem");
+        return this.AWSComm.AWSgetupc(upc);
+      })
+      .then(
+        (data: {item: ItemRecord, message: string}) => {
+          this.logger.logCont(data,"scanItem");
+          loader.dismiss();
+          if(data.message == "ERROR"){
             let errAlert = this.alertCtrl.create({title: 'Error',message: "An error occurred. Please try again.",buttons: ['Dismiss']});
             errAlert.present();
-          });
-      });
+          }else if (data.message == "EMPTY") {
+            let newEmptyItem = new ItemRecord(data.item.upc,"(Add New Item Name Here)");
+            this.navCtrl.push(ItemRecordPage,{item: newEmptyItem, saved: false, fromMain: true});
+          }else {
+            this.navCtrl.push(ItemRecordPage,{item: data.item, saved: true, fromMain: true});
+          }
+      })
+      .catch(
+        (err) => {
+          loader.dismiss();
+          this.logger.logErr(err,"scanItem");
+          let errAlert = this.alertCtrl.create({title: 'Error',message: "An error occurred. Please try again.",buttons: ['Dismiss']});
+          errAlert.present();
+        });
       return;
   }
+
+  // private async scanItem(clear: boolean) {
+  //   if (clear == false) { return; }
+  //   let loader = this.loadingCtrl.create();
+  //   let varUPC = await this.scanItemAsync();
+  //   if (varUPC == "ERROR" || varUPC == "NO_UPC") {
+  //     let errAlert = this.alertCtrl.create({title: 'Error',message: "An error occurred with the scanner. Please try again.",buttons: ['Dismiss']});
+  //     errAlert.present();
+  //   }
+  //   else {
+  //     this.AWSComm.AWSgetupc(varUPC)
+  //     .then(
+  //       (data: {item: ItemRecord, message: string}) => {
+  //         this.logger.logCont(data,"scanItem");
+  //         loader.dismiss();
+  //         if(data.message == "ERROR"){
+  //           let errAlert = this.alertCtrl.create({title: 'Error',message: "An error occurred. Please try again.",buttons: ['Dismiss']});
+  //           errAlert.present();
+  //         }else if (data.message == "EMPTY") {
+  //           let newEmptyItem = new ItemRecord(data.item.upc,"(Add New Item Name Here)");
+  //           this.navCtrl.push(ItemRecordPage,{item: newEmptyItem, saved: false, fromMain: true});
+  //         }else {
+  //           this.navCtrl.push(ItemRecordPage,{item: data.item, saved: true, fromMain: true});
+  //         }
+  //     })
+  //     .catch(
+  //       (err) => {
+  //         loader.dismiss();
+  //         this.logger.logErr(err,"scanItem");
+  //         let errAlert = this.alertCtrl.create({title: 'Error',message: "An error occurred. Please try again.",buttons: ['Dismiss']});
+  //         errAlert.present();
+  //       });
+  //   }
+
+    // this.scanner.androidScan()
+    // .then(
+    //   (upc) => {
+    //     this.logger.logCont(upc,"scanItem");
+    //     if (upc == "ERROR") {
+    //       let errAlert = this.alertCtrl.create({title: 'Error',message: "An error occurred. Please try again.",buttons: ['Dismiss']});
+    //       errAlert.present();
+    //     }
+    //     this.logger.logCont(upc,"scanItem");
+    //     loader.present();
+    //     return this.AWSComm.AWSgetupc(upc)
+    //     .then(
+    //       (data: {item: ItemRecord, message: string}) => {
+    //         this.logger.logCont(data,"scanItem");
+    //         loader.dismiss();
+    //         if(data.message == "ERROR"){
+    //           let errAlert = this.alertCtrl.create({title: 'Error',message: "An error occurred. Please try again.",buttons: ['Dismiss']});
+    //           errAlert.present();
+    //         }else if (data.message == "EMPTY") {
+    //           let newEmptyItem = new ItemRecord(data.item.upc,"(Add New Item Name Here)");
+    //           this.navCtrl.push(ItemRecordPage,{item: newEmptyItem, saved: false, fromMain: true});
+    //         }else {
+    //           this.navCtrl.push(ItemRecordPage,{item: data.item, saved: true, fromMain: true});
+    //         }
+    //     })
+    //     .catch(
+    //       (err) => {
+    //         loader.dismiss();
+    //         this.logger.logErr(err,"scanItem");
+    //         let errAlert = this.alertCtrl.create({title: 'Error',message: "An error occurred. Please try again.",buttons: ['Dismiss']});
+    //         errAlert.present();
+    //       });
+    //   })
+    //   .catch(
+    //     (err) => {
+    //       loader.dismiss();
+    //       this.logger.logErr(err,"scanItem");
+    //       let errAlert = this.alertCtrl.create({title: 'Error',message: "An error occurred with the scanner. Please try again.",buttons: ['Dismiss']});
+    //       errAlert.present();
+    //     }
+    //   );
+  //     return;
+  // }
 
   private prepareHighRiskList(clear: boolean) : void {
     if (clear == true)

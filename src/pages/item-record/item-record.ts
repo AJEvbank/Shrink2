@@ -48,7 +48,7 @@ export class ItemRecordPage implements OnInit {
     this.item = this.navParams.get('item');
     this.fromMain = this.navParams.get('fromMain');
     this.isCompleteItemRecord = this.navParams.get('saved');
-    this.shelfHelperService.fetchList();
+    //this.shelfHelperService.fetchList();
     this.viewCtrl.showBackButton(!this.fromMain);
   }
 
