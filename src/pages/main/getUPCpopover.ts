@@ -58,7 +58,7 @@ export class GetUPCPopover implements OnInit {
     this.viewCtrl.dismiss(value.upc);
   }
 
-  dismiss() : void {
+  private dismiss() : void {
     let dismissString = "NO_UPC";
     this.viewCtrl.dismiss(dismissString);
     return;
@@ -90,7 +90,7 @@ export class GetUPCPopover implements OnInit {
     }
   }
 
-  getCheckDigit() : Number {
+  private getCheckDigit() : Number {
     return this.upc.controls['upc'].getError('CheckDigit');
   }
 

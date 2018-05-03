@@ -82,7 +82,7 @@ export class MainPage implements OnInit {
                 let newEmptyItem = new ItemRecord(data.item.upc,"(Add New Item Name Here)");
                 this.navCtrl.push(ItemRecordPage,{item: newEmptyItem, saved: false, fromMain: true});
               }
-              else if(data.message == "ERROR") {
+              else if(data.message == "ERROR" || data.message == "UNDEFINED") {
                 let errAlert = this.alertCtrl.create({title: 'Error',message: "An error occurred. Please try again.",buttons: ['Dismiss']});
                 errAlert.present();
               }
@@ -140,8 +140,9 @@ export class MainPage implements OnInit {
       return;
   }
 
-  private prepareHighRiskList(clear: boolean) {
+  private prepareHighRiskList(clear: boolean) : void {
     if (clear == true)
     this.navCtrl.push(this.highRiskListPage);
+    return;
   }
 }

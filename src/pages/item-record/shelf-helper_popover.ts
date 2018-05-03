@@ -44,7 +44,7 @@ export class ShelfHelperAddQuantityPopover implements OnInit {
     this.initializeForm();
   }
 
-  private initializeForm() {
+  private initializeForm() : void {
     this.quantity = new FormGroup({
       'quantity': new FormControl("1",
                               [
@@ -54,6 +54,7 @@ export class ShelfHelperAddQuantityPopover implements OnInit {
                               ]
                              )
     });
+    return;
   }
 
   submit() {
@@ -62,9 +63,10 @@ export class ShelfHelperAddQuantityPopover implements OnInit {
   }
 
 
-  dismiss() {
+  private dismiss() : void {
     let dismissString = "NO_Quantity";
     this.viewCtrl.dismiss({quantity: dismissString});
+    return;
   }
 
 

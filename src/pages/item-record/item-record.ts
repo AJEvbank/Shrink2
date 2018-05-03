@@ -48,7 +48,7 @@ export class ItemRecordPage implements OnInit {
     this.shelfHelperService.fetchList();
   }
 
-  editItem() {
+  private editItem() : void {
     let editModal = this.modalCtrl.create(EditItemRecordPage, {item: this.item});
     editModal.present();
     editModal.onDidDismiss(
@@ -68,9 +68,10 @@ export class ItemRecordPage implements OnInit {
         }
       }
     );
+    return;
   }
 
-  createNotification() {
+  private createNotification() : void {
     if (this.isCompleteItemRecord == true) {
       let createNotificationModal = this.modalCtrl.create(CreateNotificationPage, {item: this.item});
       createNotificationModal.present();
@@ -92,11 +93,12 @@ export class ItemRecordPage implements OnInit {
       let toast = this.toastCtrl.create({message: 'This record is not complete. Please complete all fields.',duration: 2000,position: 'middle'});
       toast.present();
     }
+    return;
   }
 
   //Nick: This should work no problems, let me know if it breaks.
 
-  ToggleHighRisk(toggle: boolean){
+  private ToggleHighRisk(toggle: boolean) : void {
     if(this.isCompleteItemRecord == true){
       let loader = this.loadingCtrl.create({
         content: "Updating..."
@@ -130,9 +132,10 @@ export class ItemRecordPage implements OnInit {
       let toast = this.toastCtrl.create({message: 'This record is not complete. Please complete all fields.',duration: 2000,position: 'middle'});
       toast.present();
     }
+    return;
   }
 
-  addToShelfHelperList() {
+  private addToShelfHelperList() : void {
     if (this.isCompleteItemRecord == true) {
       let getQuantity = this.popoverCtrl.create(ShelfHelperAddQuantityPopover, {item: this.item}, { enableBackdropDismiss: false});
       getQuantity.present();
@@ -162,9 +165,10 @@ export class ItemRecordPage implements OnInit {
       let toast = this.toastCtrl.create({message: 'This record is not complete. Please complete all fields.',duration: 2000,position: 'middle'});
       toast.present();
     }
+    return;
   }
 
-  throwaway() {
+  private throwaway() : void {
     if (this.isCompleteItemRecord == true) {
       let throwaway = this.popoverCtrl.create(ThrowawayQuantityPricePopoverPage, { item: this.item }, { enableBackdropDismiss: false });
       throwaway.present();
@@ -189,14 +193,16 @@ export class ItemRecordPage implements OnInit {
       let toast = this.toastCtrl.create({message: 'This record is not complete. Please complete all fields.',duration: 2000,position: 'middle'});
       toast.present();
     }
+    return;
   }
 
-  home() {
+  private home() : void {
     //this.navCtrl.push(MainPage);
     let lastIndex = this.navCtrl.indexOf(this.navCtrl.last());
     let difference = lastIndex - 2;
     this.navCtrl.remove(2,difference);
     this.navCtrl.pop();
+    return;
   }
 
 }

@@ -19,7 +19,7 @@ export class AWSCommService {
 
   private access = new Accessor();
 
-  private logger: LogHandler = new LogHandler("AWSCommBrowserService");
+  private logger: LogHandler = new LogHandler("AWSCommService");
 
   constructor(private http: HTTP) {
 
@@ -59,7 +59,7 @@ export class AWSCommService {
         this.logger.logCont(response,"AWSgetupc");
         let resJSON = JSON.parse(response.data);
         if (resJSON.Items == undefined) {
-          return {item: null, message: "ERROR"};
+          return {item: null, message: "UNDEFINED"};
         }
         else if(resJSON.Items[0].name != undefined){
           return {item: new ItemRecord(upc, resJSON.Items[0].name, resJSON.Items[0].highRisk), message: "SUCCESS"};
@@ -80,7 +80,7 @@ export class AWSCommService {
         this.logger.logCont(response,"AWSupdateItemRecord");
         let updateItem = JSON.parse(response.data);
         if (updateItem.upc.upcId == undefined) {
-          return {item: null, message: "ERROR"};
+          return {item: null, message: "UNDEFINED"};
         }
         if (item.upc != updateItem.upc.upcId) {
           return {item: null, message: "ERROR"};
@@ -133,7 +133,7 @@ export class AWSCommService {
     );
   }
 
-  public AWSPermanentDeleteNotification(Id: string) : Promise<string>{
+  public AWSPermanentDeleteNotification(Id: string) : Promise<string> {
     return this.delete(this.access.notificationFunction + this.access.notificationId + Id, {Id: Id})
     .then(
       (response) => {
@@ -183,7 +183,7 @@ export class AWSCommService {
     })
   }
 
-  public AWSCreateThrowaway(throwaway: Throwaway) : Promise<string>{
+  public AWSCreateThrowaway(throwaway: Throwaway) : Promise<string> { 
     let info = {
       "quantity": throwaway.item.quantity,
       "disposalDate": throwaway.dateOfDiscard,

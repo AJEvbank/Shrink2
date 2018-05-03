@@ -60,7 +60,7 @@ export class ThrowawayQuantityPricePopoverPage implements OnInit {
     this.initializeForm();
   }
 
-  private initializeForm() {
+  private initializeForm() : void {
     this.discard = new FormGroup({
       'quantity': new FormControl("1",
                               [
@@ -80,6 +80,7 @@ export class ThrowawayQuantityPricePopoverPage implements OnInit {
                               ]
                             ),
     });
+    return;
   }
 
   submit() {
@@ -111,8 +112,9 @@ export class ThrowawayQuantityPricePopoverPage implements OnInit {
   }
 
 
-dismiss() {
+private dismiss() : void {
   this.viewCtrl.dismiss({response: "CANCELLED"});
+  return;
 }
 
 

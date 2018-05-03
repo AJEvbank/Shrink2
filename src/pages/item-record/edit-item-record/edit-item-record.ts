@@ -54,7 +54,7 @@ export class EditItemRecordPage implements OnInit {
     .then(
       (resItem) => {
         this.logger.logCont(resItem,"onSubmit");
-        if (resItem.message == "ERROR") {
+        if (resItem.message == "ERROR" || resItem.message == "UNDEFINED") {
           this.viewCtrl.dismiss({item: oldValue, ErrorCode: "http error"});
         } else {
           this.viewCtrl.dismiss({item: resItem.item, ErrorCode: "none"});
@@ -69,8 +69,9 @@ export class EditItemRecordPage implements OnInit {
     );
   }
 
-  cancel() {
+  private cancel() : void {
     this.viewCtrl.dismiss({item: this.item});
+    return;
   }
 
 }

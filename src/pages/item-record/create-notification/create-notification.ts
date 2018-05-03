@@ -53,7 +53,7 @@ export class CreateNotificationPage implements OnInit {
   }
   //this.notification.sellByDate.toISOString()
 
-  private initializeForm() {
+  private initializeForm() : void {
     this.notificationForm = new FormGroup({
       'itemCollection': new FormControl(this.notification.item, Validators.required),
       'quantity': new FormControl("1", [ Validators.required,
@@ -61,7 +61,7 @@ export class CreateNotificationPage implements OnInit {
                                          Validators.pattern(/^([1-9][0-9]*)$/) ]),
       'unitPrice': new FormControl("1.00", [ Validators.required,
                                              Validators.min(0.01),
-                                             Validators.pattern(/^([0-9]+\.[0-9]{0,2})$/) ]),
+                                             Validators.pattern(/^([0-9]+[.]{0,1}[0-9]{0,2})$/) ]),
       'daysPrior': new FormControl(this.notification.daysPrior, [ Validators.required, Validators.min(0) ]),
       'sellByDate': new FormControl("", [ Validators.required, this.isNotPriorToToday() ]),
       'deliveryOption': new FormControl(this.notification.deliveryOption, Validators.required),
@@ -70,6 +70,7 @@ export class CreateNotificationPage implements OnInit {
       'upc': new FormControl({value: this.notification.item.item.upc, disabled: true}, Validators.required),
       'name': new FormControl({value: this.notification.item.item.name, disabled: true}, Validators.required),
     }, this.isDeliveredPriorToToday('daysPrior', 'sellByDate'));
+    return;
   }
 
   onSubmit() {
@@ -97,8 +98,9 @@ export class CreateNotificationPage implements OnInit {
     );
   }
 
-  leavePage() {
+  leavePage() : void {
     this.viewCtrl.dismiss();
+    return;
   }
 
   private isNotPriorToToday() : ValidatorFn {
