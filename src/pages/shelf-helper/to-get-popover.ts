@@ -14,11 +14,11 @@ import { ToGetItem } from '../../assets/models/to-get-item.model';
               <ion-label>Quantity:</ion-label>
               <ion-input type="number" formControlName="quantity"></ion-input>
             </ion-item>
-            <ion-item *ngIf="toGetForm.controls.quantity.hasError('min')">
+            <ion-item *ngIf="this.toGetForm.controls.quantity.hasError('min')" text-wrap>
               <ion-label>Quantity must be one or greater.</ion-label>
             </ion-item>
-            <ion-item *ngIf="toGetForm.controls.quantity.hasError('pattern')">
-              <ion-label>Quantity must be a valid number with no leading zeros.</ion-label>
+            <ion-item *ngIf="this.toGetForm.controls.quantity.hasError('pattern') && !this.toGetForm.controls.quantity.hasError('min')" text-wrap>
+              <ion-label>Cannot have decimals or leading zeros.</ion-label>
             </ion-item>
             <button type="submit" ion-button block [disabled]="!toGetForm.valid">Save Changes</button>
           </form>
@@ -28,8 +28,8 @@ import { ToGetItem } from '../../assets/models/to-get-item.model';
 })
 export class ToGetEditPopover implements OnInit {
 
-  toGet: ToGetItem;
-  toGetForm: FormGroup;
+  private toGet: ToGetItem;
+  private toGetForm: FormGroup;
 
   constructor(private navParams: NavParams,
               private viewCtrl: ViewController) {
@@ -40,22 +40,25 @@ export class ToGetEditPopover implements OnInit {
     this.initializeForm();
   }
 
-  private initializeForm() {
+  private initializeForm() : void {
     this.toGetForm = new FormGroup({
-      'quantity': new FormControl(this.toGet.quantity, [ Validators.required, Validators.min(1) ])
+      'quantity': new FormControl(this.toGet.quantity, [ Validators.required,
+                                                         Validators.min(1),
+                                                         Validators.pattern(/^([1-9][0-9]*)$/) ])
     });
+    return;
   }
 
   onSubmit() {
     //let oldValue = new ToGetItem(new ItemRecord(this.toGet.item.upc,this.toGet.item.name,this.toGet.item.isHighRisk),this.toGet.quantity);
     let value = this.toGetForm.value;
     this.toGet.quantity = Math.trunc(value.quantity);
-    console.log("toGet: " + Math.trunc(value.quantity));
     this.viewCtrl.dismiss({toGet: this.toGet});
   }
 
-  dismiss() {
+  private dismiss() : void {
     this.viewCtrl.dismiss({toGet: this.toGet});
+    return;
   }
 
 

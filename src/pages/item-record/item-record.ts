@@ -13,6 +13,8 @@ import { ThrowawayQuantityPricePopoverPage } from './throwaway_popover';
 import { ShelfHelperService } from '../../services/shelf-helper.service';
 import { HighRiskListService } from '../../services/high-risk-list.service';
 
+import { LogHandler } from '../../assets/helpers/LogHandler';
+
 
 @Component({
   selector: 'page-item-record',
@@ -25,6 +27,8 @@ export class ItemRecordPage implements OnInit {
   isCompleteItemRecord: boolean = true;
   mainPage: MainPage;
   createNotificationPage: CreateNotificationPage;
+
+  logger: LogHandler = new LogHandler("ItemRecordPage");
 
   constructor(private navCtrl: NavController,
               private navParams: NavParams,
@@ -49,6 +53,7 @@ export class ItemRecordPage implements OnInit {
     editModal.present();
     editModal.onDidDismiss(
       (data) => {
+        this.logger.logCont(data,"editItem");
         if (data.ErrorCode == "empty/wrong" || data.ErrorCode == "http error") {
           let errorAlert = this.alertCtrl.create({
             title: 'Error',
@@ -71,6 +76,7 @@ export class ItemRecordPage implements OnInit {
       createNotificationModal.present();
       createNotificationModal.onDidDismiss(
         (data) => {
+          this.logger.logCont(data,"createNotification");
           if (data == "SUCCESS") {
             let toast = this.toastCtrl.create({message: 'Your notification was saved.',duration: 2000,position: 'bottom'});
             toast.present();
@@ -98,18 +104,21 @@ export class ItemRecordPage implements OnInit {
       loader.present();
       //Update the status
       this.hrService.ToggleHighRisk(this.item, toggle)
-      .then((itemResponse) => {
-        if (itemResponse.message == "SUCCESS") {
-          this.item = itemResponse.item;
-          loader.dismiss();
-        }
-        else if (itemResponse.message == "ERROR") {
-          loader.dismiss();
-          let error = this.alertCtrl.create({title: "Error",message: "An error occurred. Please try again.",buttons:['Dismiss']});
-          error.present();
-        }
+      .then(
+        (itemResponse) => {
+          this.logger.logCont(itemResponse,"ToggleHighRisk");
+          if (itemResponse.message == "SUCCESS") {
+            this.item = itemResponse.item;
+            loader.dismiss();
+          }
+          else if (itemResponse.message == "ERROR") {
+            loader.dismiss();
+            let error = this.alertCtrl.create({title: "Error",message: "An error occurred. Please try again.",buttons:['Dismiss']});
+            error.present();
+          }
       })
       .catch((err) => {
+        this.logger.logErr(err,"ToggleHighRisk");
         loader.dismiss();
         let error = this.alertCtrl.create({title: "Error",message: "An error occurred. Please try again.",buttons:['Dismiss']});
         error.present();
@@ -129,6 +138,7 @@ export class ItemRecordPage implements OnInit {
       getQuantity.present();
       getQuantity.onDidDismiss(
         (data) => {
+          this.logger.logCont(data,"addToShelfHelperList");
           if(data.quantity != "NO_Quantity") {
             this.shelfHelperService.addItem(new ToGetItem(this.item, data.quantity))
             .then(
@@ -139,6 +149,7 @@ export class ItemRecordPage implements OnInit {
             )
             .catch(
               (err) => {
+                this.logger.logErr(err,"addToShelfHelperList");
                 let error = this.alertCtrl.create({title: 'Error',message:'An error occurred. Please try again.',buttons:['Dismiss']});
                 error.present();
               }
@@ -159,6 +170,7 @@ export class ItemRecordPage implements OnInit {
       throwaway.present();
       throwaway.onDidDismiss(
         (data) => {
+          this.logger.logCont(data,"throwaway");
           // This is repetitive, but will be necessary later.
           if(data.response == "ERROR") {
             let errorAlert = this.alertCtrl.create({title: 'Error',message: "Could not create throwaway record. Please try again.",buttons: ['Dismiss']});

@@ -10,15 +10,19 @@ import { Notification } from '../../assets/models/notification.model';
 
 import { EditNotificationPage } from './edit-notification/edit-notification';
 
+import { LogHandler } from '../../assets/helpers/LogHandler';
+
 @Component({
   selector: 'page-daily-notifications',
   templateUrl: 'daily-notifications.html',
 })
 export class DailyNotificationsPage implements OnInit {
 
-  notificationList: Notification [] = [];
-  noNotifications: boolean = false;
-  searchedByRange: boolean = false;
+  private notificationList: Notification [] = [];
+  private noNotifications: boolean = false;
+  private searchedByRange: boolean = false;
+
+  private logger: LogHandler = new LogHandler("DailyNotificationsPage");
 
   constructor(private dailyNotificationsService: DailyNotificationsService,
               private popoverCtrl: PopoverController,
@@ -46,23 +50,25 @@ export class DailyNotificationsPage implements OnInit {
     }
   }
 
-  private deleteItem(index: number) {
+  private deleteItem(index: number) : void {
     if (index < 0) { return; }
     this.dailyNotificationsService.removeItem(index);
     this.notificationList = this.dailyNotificationsService.GetList();
     return;
   }
 
-  private viewNotes(clickEvent=null, notification: Notification = null) {
+  private viewNotes(clickEvent=null, notification: Notification = null) : void {
     if (clickEvent == null) { return; }
     let popover = this.popoverCtrl.create(NotificationPopoverPage, {notification: notification}, { enableBackdropDismiss: false});
     popover.present();
     popover.onDidDismiss(
       (data) => {
+        this.logger.logCont(data,"viewNotes");
         if (data.Id != null) {
           this.dailyNotificationsService.permanentDeleteNotification(data.Id)
           .then(
             (message) => {
+              this.logger.logCont(message,"viewNotes");
               if(message == undefined || message == "ERROR") {
                 let errorAlert = this.alertCtrl.create({title: 'Error',message: "An error occurred. Please try again.",buttons: ['Dismiss']});
                 errorAlert.present();
@@ -75,6 +81,7 @@ export class DailyNotificationsPage implements OnInit {
           )
           .catch(
             (err) => {
+              this.logger.logErr(err,"viewNotes");
               let errorAlert = this.alertCtrl.create({title: 'Error',message: "An error occurred. Please try again.",buttons: ['Dismiss']});
               errorAlert.present();
             }
@@ -85,11 +92,12 @@ export class DailyNotificationsPage implements OnInit {
     return;
   }
 
-  public refreshList() {
+  public refreshList() : void {
     this.FetchList();
+    return;
   }
 
-  public FetchList(){
+  public FetchList() : void {
     //Setup loader...
 
     let loader = this.loadingCtrl.create({content: "Updating..."});
@@ -98,6 +106,7 @@ export class DailyNotificationsPage implements OnInit {
     this.dailyNotificationsService.FetchList()
     .then(
       (message: string) => {
+        this.logger.logCont(message,"FetchList");
         //It works! Update local list with service list!
         if (message == "SUCCESS") {
           this.notificationList = this.dailyNotificationsService.GetList();
@@ -105,7 +114,7 @@ export class DailyNotificationsPage implements OnInit {
           this.searchedByRange = false;
           loader.dismiss();
         }
-        else if (message == "ERROR") {
+        else if (message == "ERROR"){
           loader.dismiss();
           let errorAlert = this.alertCtrl.create({title: 'Error',message: "Could not fetch the list. Use Refresh button to retry.",buttons: ['Dismiss']});
           errorAlert.present();
@@ -113,27 +122,31 @@ export class DailyNotificationsPage implements OnInit {
 
     })
     .catch((err) => {
+      this.logger.logErr(err,"FetchList");
       //Uh-oh! Print the error!
       let errorAlert = this.alertCtrl.create({title: 'Error',message: "Could not fetch the list. Use Refresh.",buttons: ['Dismiss']});
       errorAlert.present();
       loader.dismiss();
     });
+    return;
   }
 
-  private searchByDate(clear: boolean) {
+  private searchByDate(clear: boolean) : void {
     if (clear == false) { return; }
     let search = this.popoverCtrl.create(SearchByDateRangePopover, {}, { enableBackdropDismiss: false});
     search.present();
     let loader = this.loadingCtrl.create();
     search.onDidDismiss(
       (data) => {
+        this.logger.logCont(data,"searchByDate");
         loader.dismiss();
         if (data.cancelled == false) {
           this.searchedByRange = true;
           this.dailyNotificationsService.fetchDateRangeNotifications(data.from,data.to)
           .then(
-            (data) => {
-              if(data == "ERROR") {
+            (message) => {
+              this.logger.logCont(message,"searchByDate");
+              if(message == "ERROR") {
                 let error = this.alertCtrl.create({title: 'Error',message: "Could not fetch the list. Please try again.",buttons: ['Dismiss']});
                 error.present();
               }
@@ -149,6 +162,7 @@ export class DailyNotificationsPage implements OnInit {
           )
           .catch(
             (err) => {
+              this.logger.logErr(err,"searchByDate");
               let error = this.alertCtrl.create({title: 'Error',message: "Could not fetch the list. Please try again.",buttons: ['Dismiss']});
               error.present();
             }
@@ -162,20 +176,23 @@ export class DailyNotificationsPage implements OnInit {
     return;
   }
 
-  private editItem(notification: Notification, index: number) {
+  private editItem(notification: Notification, index: number) : void {
     if (index < 0) return;
     let editPage = this.modalCtrl.create(EditNotificationPage, { notification: notification });
     editPage.present()
     .then(
-      () => {
+      (data) => {
+        this.logger.logCont(data,"editItem");
       }
     )
     .catch(
       (err) => {
+        this.logger.logErr(err,"editItem");
       }
     );
     editPage.onDidDismiss(
       (data) => {
+        this.logger.logCont(data,"editItem");
         if(data == "ERROR") {
           let error = this.alertCtrl.create({title:"Error",message:"There was an error. Please try again.",buttons:['Dismiss']});
           error.present();
@@ -186,11 +203,13 @@ export class DailyNotificationsPage implements OnInit {
         }
       }
     )
+    return;
   }
 
-  private clearList(clear: boolean) {
+  private clearList(clear: boolean) : void {
     if (clear == false) return;
     this.notificationList = [];
+    return;
   }
 
 }

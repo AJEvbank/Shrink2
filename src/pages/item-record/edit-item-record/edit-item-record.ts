@@ -7,6 +7,8 @@ import { ItemRecord } from '../../../assets/models/item-record.model';
 import { AWSCommService } from '../../../services/AWSComm.service';
 import { AWSCommBrowserService } from '../../../services/AWSCommBrowser.service';
 
+import { LogHandler } from '../../../assets/helpers/LogHandler';
+
 @Component({
   selector: 'page-edit-item-record',
   templateUrl: 'edit-item-record.html',
@@ -16,7 +18,9 @@ export class EditItemRecordPage implements OnInit {
   item: ItemRecord;
   itemForm: FormGroup;
 
-  AWSComm: AWSCommBrowserService | AWSCommService;
+  AWSComm: AWSCommBrowserService | AWSCommService;;
+
+  logger: LogHandler = new LogHandler("EditItemRecordPage");
 
   constructor(private navParams: NavParams,
               private viewCtrl: ViewController,
@@ -49,6 +53,7 @@ export class EditItemRecordPage implements OnInit {
     this.AWSComm.AWSupdateItemRecord(this.item)
     .then(
       (resItem) => {
+        this.logger.logCont(resItem,"onSubmit");
         if (resItem.message == "ERROR") {
           this.viewCtrl.dismiss({item: oldValue, ErrorCode: "http error"});
         } else {
@@ -58,6 +63,7 @@ export class EditItemRecordPage implements OnInit {
     )
     .catch(
       (err) => {
+        this.logger.logErr(err,"onSubmit");
         this.viewCtrl.dismiss({item: oldValue, ErrorCode: "http error"});
       }
     );
