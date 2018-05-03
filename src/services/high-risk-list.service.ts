@@ -31,7 +31,8 @@ export class HighRiskListService {
       (itemResponse) => {
       if (itemResponse.message == "SUCCESS") {
           this.logger.logCont(itemResponse,"ToggleHighRisk");
-          let index = this.highRiskList.indexOf(itemResponse.item);
+          let index = this.highRiskList.map(function (it) { return it.upc; }).indexOf(itemResponse.item.upc);
+          console.log("index = " + index);
           if(itemResponse.item.isHighRisk){
             //Only add the item if it isn't already there.\
             if(index == -1){

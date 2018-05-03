@@ -71,7 +71,7 @@ export class AWSCommBrowserService {
       (response) => {
         this.logger.logCont(response,"AWSupdateItemRecord");
         let resJSON = response.json();
-        if(resJSON.upc == undefined){
+        if(resJSON.upc == undefined) {
           return {item: new ItemRecord(item.upc, "ERROR"), message: "ERROR"};
         }
         else{
