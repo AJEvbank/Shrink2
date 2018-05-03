@@ -58,13 +58,15 @@ export class AWSCommService {
       (response) => {
         this.logger.logCont(response,"AWSgetupc");
         let resJSON = JSON.parse(response.data);
-        if (resJSON.Items == undefined) {
+        if(resJSON.Error != undefined) {
+          if (resJSON.Error == "upcId was not found in DynamoDB or upcdatabase") return {item: null, message: "EMPTY"};
+          return {item: null, message: "ERROR"};
+        }
+        else if (resJSON.Items == undefined || resJSON.Items.length == 0) {
           return {item: null, message: "UNDEFINED"};
         }
-        else if(resJSON.Items[0].name != undefined){
+        else {
           return {item: new ItemRecord(upc, resJSON.Items[0].name, resJSON.Items[0].highRisk), message: "SUCCESS"};
-        }else{
-          return {item: null, message: "EMPTY"};
         }
     })
     .catch((err) => {
@@ -183,7 +185,7 @@ export class AWSCommService {
     })
   }
 
-  public AWSCreateThrowaway(throwaway: Throwaway) : Promise<string> { 
+  public AWSCreateThrowaway(throwaway: Throwaway) : Promise<string> {
     let info = {
       "quantity": throwaway.item.quantity,
       "disposalDate": throwaway.dateOfDiscard,

@@ -93,8 +93,15 @@ export class MainPage implements OnInit {
           .catch((err) => {
             loader.dismiss();
             this.logger.logErr(err,"getItemByUPC");
-            let errAlert = this.alertCtrl.create({title: 'Error',message: "An error occurred. Please try again.",buttons: ['Dismiss']});
-            errAlert.present();
+            if(err.error.Error == "upcId was not found in DynamoDB or upcdatabase") {
+              console.log("Case occurred.");
+              let newEmptyItem = new ItemRecord(upc,"(Add New Item Name Here)");
+              this.navCtrl.push(ItemRecordPage,{item: newEmptyItem, saved: false, fromMain: true});
+            }
+            else {
+              let errAlert = this.alertCtrl.create({title: 'Error',message: "An error occurred. Please try again.",buttons: ['Dismiss']});
+              errAlert.present();
+            }
           });
         }
       }
@@ -111,31 +118,31 @@ export class MainPage implements OnInit {
         if (upc == "ERROR") {
           let errAlert = this.alertCtrl.create({title: 'Error',message: "An error occurred. Please try again.",buttons: ['Dismiss']});
           errAlert.present();
-          return;
         }
         this.logger.logCont(upc,"scanItem");
         loader.present();
-        return this.AWSComm.AWSgetupc(upc);
-      })
-      .then(
-        (data: {item: ItemRecord, message: string}) => {
-          this.logger.logCont(data,"scanItem");
-          loader.dismiss();
-          if(data.message == "ERROR"){
+        this.AWSComm.AWSgetupc(upc)
+        .then(
+          (data: {item: ItemRecord, message: string}) => {
+            this.logger.logCont(data,"scanItem");
+            loader.dismiss();
+            if(data.message == "ERROR"){
+              let errAlert = this.alertCtrl.create({title: 'Error',message: "An error occurred. Please try again.",buttons: ['Dismiss']});
+              errAlert.present();
+            }else if (data.message == "EMPTY") {
+              let newEmptyItem = new ItemRecord(data.item.upc,"(Add New Item Name Here)");
+              this.navCtrl.push(ItemRecordPage,{item: newEmptyItem, saved: false, fromMain: true});
+            }else {
+              this.navCtrl.push(ItemRecordPage,{item: data.item, saved: true, fromMain: true});
+            }
+        })
+        .catch(
+          (err) => {
+            loader.dismiss();
+            this.logger.logErr(err,"scanItem");
             let errAlert = this.alertCtrl.create({title: 'Error',message: "An error occurred. Please try again.",buttons: ['Dismiss']});
             errAlert.present();
-          }else if (data.message == "EMPTY") {
-            let newEmptyItem = new ItemRecord(data.item.upc,"(Add New Item Name Here)");
-            this.navCtrl.push(ItemRecordPage,{item: newEmptyItem, saved: false, fromMain: true});
-          }else {
-            this.navCtrl.push(ItemRecordPage,{item: data.item, saved: true, fromMain: true});
-          }
-      })
-      .catch((err) => {
-        loader.dismiss();
-        this.logger.logErr(err,"scanItem");
-        let errAlert = this.alertCtrl.create({title: 'Error',message: "An error occurred. Please try again.",buttons: ['Dismiss']});
-        errAlert.present();
+          });
       });
       return;
   }

@@ -22,13 +22,14 @@ import { LogHandler } from '../../assets/helpers/LogHandler';
 })
 export class ItemRecordPage implements OnInit {
 
-  item: ItemRecord;
+  private item: ItemRecord;
   //editItemRecordPage: EditItemRecordPage;
-  isCompleteItemRecord: boolean = true;
-  mainPage: MainPage;
-  createNotificationPage: CreateNotificationPage;
+  private isCompleteItemRecord: boolean = true;
+  private mainPage: MainPage;
+  private createNotificationPage: CreateNotificationPage;
+  private fromMain: boolean = false;
 
-  logger: LogHandler = new LogHandler("ItemRecordPage");
+  private logger: LogHandler = new LogHandler("ItemRecordPage");
 
   constructor(private navCtrl: NavController,
               private navParams: NavParams,
@@ -38,14 +39,17 @@ export class ItemRecordPage implements OnInit {
               private shelfHelperService: ShelfHelperService,
               private hrService: HighRiskListService,
               private popoverCtrl: PopoverController,
-              private loadingCtrl: LoadingController
+              private loadingCtrl: LoadingController,
+              private viewCtrl: ViewController
               ) {
   }
 
   ngOnInit() {
     this.item = this.navParams.get('item');
+    this.fromMain = this.navParams.get('fromMain');
     this.isCompleteItemRecord = this.navParams.get('saved');
     this.shelfHelperService.fetchList();
+    this.viewCtrl.showBackButton(!this.fromMain);
   }
 
   private editItem() : void {

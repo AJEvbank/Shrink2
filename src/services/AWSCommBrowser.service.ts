@@ -54,13 +54,12 @@ export class AWSCommBrowserService {
         if (resJSON.Items == undefined) {
           return {item: null, message: "ERROR"};
         }
-        else if(resJSON.Items.length > 0) {
-          let newItemA = new ItemRecord(upc, resJSON.Items[0].name, resJSON.Items[0].highRisk);
-          return {item: newItemA, message: "SUCCESS"};;
+        else if(resJSON.Error == "upcId was not found in DynamoDB or upcdatabase") {
+          return {item: null, message: "EMPTY"};
         }
         else {
-          let newItemC = new ItemRecord(upc, "EMPTY");
-          return {item: null, message: "EMPTY"};;
+          let newItemA = new ItemRecord(upc, resJSON.Items[0].name, resJSON.Items[0].highRisk);
+          return {item: newItemA, message: "SUCCESS"};
         }
       }).toPromise<{item: ItemRecord, message: string}>();
   }
