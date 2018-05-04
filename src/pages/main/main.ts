@@ -38,8 +38,6 @@ export class MainPage implements OnInit {
 
   private logger: LogHandler = new LogHandler("MainPage");
 
-  private loaderOn: boolean = false;
-
 
   constructor(private navCtrl: NavController,
               private scanner: ScannerService,
@@ -51,7 +49,6 @@ export class MainPage implements OnInit {
   }
 
   ngOnInit() {
-    //this.navCtrl.setRoot(MainPage);
     this.dummyFunctionCalls();
     this.isLocalHost = (window.location.hostname == "localhost") ? true : false;
     this.AWSComm = (this.isLocalHost == true) ? this.AWSB : this.AWS;
@@ -63,11 +60,6 @@ export class MainPage implements OnInit {
     this.prepareHighRiskList(false);
     return;
   }
-
-  // async scanItemAsync() : Promise<string> {
-  //   return this.scanner.androidScan();
-  // }
-
 
   private getItemByUPC(clear: boolean) : void {
     if (clear == false) { return; }
@@ -84,23 +76,23 @@ export class MainPage implements OnInit {
             (data: {item: ItemRecord, message: string}) => {
               this.logger.logCont(data,"getItemByUPC");
               if(data.message == "EMPTY") {
-                let newEmptyItem = new ItemRecord(upc,"(Add New Item Name Here)");
-                this.navCtrl.push(ItemRecordPage,{item: newEmptyItem, saved: false, fromMain: true});
+                this.navCtrl.push(ItemRecordPage,{item: data.item, saved: false, fromMain: true});
               }
               else if(data.message == "ERROR" || data.message == "UNDEFINED") {
-                let errAlert = this.alertCtrl.create({title: 'Error',message: "An error occurred in then. Please try again.",buttons: ['Dismiss']});
+                let errAlert = this.alertCtrl.create({title: 'Error',message: "An error occurred. Please try again.",buttons: ['Dismiss']});
                 errAlert.present();
               }
               else {
                 this.navCtrl.push(ItemRecordPage,{item: data.item, saved: true, fromMain: true});
               }
+              loader.dismiss();
           })
           .catch((err) => {
             this.logger.logErr(err,"getItemByUPC");
-            let errAlert = this.alertCtrl.create({title: 'Error',message: "An error occurred in catch. Please try again.",buttons: ['Dismiss']});
+            let errAlert = this.alertCtrl.create({title: 'Error',message: "An error occurred. Please try again.",buttons: ['Dismiss']});
             errAlert.present();
+            loader.dismiss();
           });
-          loader.dismiss();
         }
       }
     );
@@ -118,114 +110,30 @@ export class MainPage implements OnInit {
           let errAlert = this.alertCtrl.create({title: 'Error',message: "An error occurred. Please try again.",buttons: ['Dismiss']});
           errAlert.present();
         }
-        loader.present()
-        .then(
-          () => { this.loaderOn = true; }
-        );
+        loader.present();
         return this.AWSComm.AWSgetupc(upc);
       })
       .then(
         (data: {item: ItemRecord, message: string}) => {
           this.logger.logCont(data,"scanItem");
-          if(data.message == "ERROR"){
-            console.log("ERROR fired.");
-            let errAlert = this.alertCtrl.create({title: 'Error',message: "An error occurred in then. Please try again.",buttons: ['Dismiss']});
+          if(data.message == "ERROR") {
+            let errAlert = this.alertCtrl.create({title: 'Error',message: "An error occurred. Please try again.",buttons: ['Dismiss']});
             errAlert.present();
           }else if (data.message == "EMPTY") {
-            console.log("EMPTY fired.");
-            let newEmptyItem = new ItemRecord(data.item.upc,"(Add New Item Name Here)");
-            this.navCtrl.push(ItemRecordPage,{item: newEmptyItem, saved: false, fromMain: true});
+            this.navCtrl.push(ItemRecordPage,{item: data.item, saved: false, fromMain: true});
           }else {
-            console.log("else fired.");
             this.navCtrl.push(ItemRecordPage,{item: data.item, saved: true, fromMain: true});
           }
       })
       .catch(
         (err) => {
           this.logger.logErr(err,"scanItem");
-          let errAlert = this.alertCtrl.create({title: 'Error',message: "An error occurred with the loading. Please try again.",buttons: ['Dismiss']});
+          let errAlert = this.alertCtrl.create({title: 'Error',message: "An error occurred. Please try again.",buttons: ['Dismiss']});
           errAlert.present();
-        });
-        loader.dismiss();
+      });
+      loader.dismiss();
       return;
   }
-
-  // private async scanItem(clear: boolean) {
-  //   if (clear == false) { return; }
-  //   let loader = this.loadingCtrl.create();
-  //   let varUPC = await this.scanItemAsync();
-  //   if (varUPC == "ERROR" || varUPC == "NO_UPC") {
-  //     let errAlert = this.alertCtrl.create({title: 'Error',message: "An error occurred with the scanner. Please try again.",buttons: ['Dismiss']});
-  //     errAlert.present();
-  //   }
-  //   else {
-  //     this.AWSComm.AWSgetupc(varUPC)
-  //     .then(
-  //       (data: {item: ItemRecord, message: string}) => {
-  //         this.logger.logCont(data,"scanItem");
-  //         loader.dismiss();
-  //         if(data.message == "ERROR"){
-  //           let errAlert = this.alertCtrl.create({title: 'Error',message: "An error occurred. Please try again.",buttons: ['Dismiss']});
-  //           errAlert.present();
-  //         }else if (data.message == "EMPTY") {
-  //           let newEmptyItem = new ItemRecord(data.item.upc,"(Add New Item Name Here)");
-  //           this.navCtrl.push(ItemRecordPage,{item: newEmptyItem, saved: false, fromMain: true});
-  //         }else {
-  //           this.navCtrl.push(ItemRecordPage,{item: data.item, saved: true, fromMain: true});
-  //         }
-  //     })
-  //     .catch(
-  //       (err) => {
-  //         loader.dismiss();
-  //         this.logger.logErr(err,"scanItem");
-  //         let errAlert = this.alertCtrl.create({title: 'Error',message: "An error occurred. Please try again.",buttons: ['Dismiss']});
-  //         errAlert.present();
-  //       });
-  //   }
-
-    // this.scanner.androidScan()
-    // .then(
-    //   (upc) => {
-    //     this.logger.logCont(upc,"scanItem");
-    //     if (upc == "ERROR") {
-    //       let errAlert = this.alertCtrl.create({title: 'Error',message: "An error occurred. Please try again.",buttons: ['Dismiss']});
-    //       errAlert.present();
-    //     }
-    //     this.logger.logCont(upc,"scanItem");
-    //     loader.present();
-    //     return this.AWSComm.AWSgetupc(upc)
-    //     .then(
-    //       (data: {item: ItemRecord, message: string}) => {
-    //         this.logger.logCont(data,"scanItem");
-    //         loader.dismiss();
-    //         if(data.message == "ERROR"){
-    //           let errAlert = this.alertCtrl.create({title: 'Error',message: "An error occurred. Please try again.",buttons: ['Dismiss']});
-    //           errAlert.present();
-    //         }else if (data.message == "EMPTY") {
-    //           let newEmptyItem = new ItemRecord(data.item.upc,"(Add New Item Name Here)");
-    //           this.navCtrl.push(ItemRecordPage,{item: newEmptyItem, saved: false, fromMain: true});
-    //         }else {
-    //           this.navCtrl.push(ItemRecordPage,{item: data.item, saved: true, fromMain: true});
-    //         }
-    //     })
-    //     .catch(
-    //       (err) => {
-    //         loader.dismiss();
-    //         this.logger.logErr(err,"scanItem");
-    //         let errAlert = this.alertCtrl.create({title: 'Error',message: "An error occurred. Please try again.",buttons: ['Dismiss']});
-    //         errAlert.present();
-    //       });
-    //   })
-    //   .catch(
-    //     (err) => {
-    //       loader.dismiss();
-    //       this.logger.logErr(err,"scanItem");
-    //       let errAlert = this.alertCtrl.create({title: 'Error',message: "An error occurred with the scanner. Please try again.",buttons: ['Dismiss']});
-    //       errAlert.present();
-    //     }
-    //   );
-  //     return;
-  // }
 
   private prepareHighRiskList(clear: boolean) : void {
     if (clear == true)

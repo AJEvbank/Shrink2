@@ -52,23 +52,18 @@ export class AWSCommBrowserService {
         this.logger.logCont(response,"AWSgetupc");
         let resJSON = response.json();
         console.log("resJSON: " + JSON.stringify(resJSON));
-        if(resJSON.Error != undefined && resJSON.Error == "upcId was not found in DynamoDB or upcdatabase") {
-          return {item: null, message: "EMPTY"};
+        if(resJSON.Error == "upcId was not found in DynamoDB or upcdatabase") {
+          let newItemA = new ItemRecord(upc, "(Add New Item Name Here)");
+          return {item: newItemA, message: "EMPTY"};
         }
-        else if (resJSON.Items == undefined) {
+        else if (resJSON.Items == undefined || resJSON.Items.length == 0) {
           return {item: null, message: "ERROR"};
         }
         else {
           let newItemA = new ItemRecord(upc, resJSON.Items[0].name, resJSON.Items[0].highRisk);
           return {item: newItemA, message: "SUCCESS"};
         }
-      }).toPromise<{item: ItemRecord, message: string}>()
-      .catch(
-        (err) => {
-          this.logger.logErr(err,"AWSgetupc");
-          return {item: null, message: "ERROR"};
-        }
-      );
+      }).toPromise<{item: ItemRecord, message: string}>();
   }
 
   public AWSupdateItemRecord(item: ItemRecord) : Promise<{item: ItemRecord, message: string}> {

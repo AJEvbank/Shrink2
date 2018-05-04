@@ -58,15 +58,15 @@ export class AWSCommService {
       (response) => {
         this.logger.logCont(response,"AWSgetupc");
         let resJSON = JSON.parse(response.data);
-        if(resJSON.Error != undefined) {
-          if (resJSON.Error == "upcId was not found in DynamoDB or upcdatabase") return {item: null, message: "EMPTY"};
-          return {item: null, message: "ERROR"};
+        if(resJSON.Error == "upcId was not found in DynamoDB or upcdatabase") {
+          return {item: null, message: "EMPTY"};
         }
         else if (resJSON.Items == undefined || resJSON.Items.length == 0) {
           return {item: null, message: "UNDEFINED"};
         }
         else {
-          return {item: new ItemRecord(upc, resJSON.Items[0].name, resJSON.Items[0].highRisk), message: "SUCCESS"};
+          let newItemA = new ItemRecord(upc, resJSON.Items[0].name, resJSON.Items[0].highRisk);
+          return {item: newItemA, message: "SUCCESS"};
         }
     })
     .catch((err) => {
