@@ -59,7 +59,8 @@ export class AWSCommService {
         this.logger.logCont(response,"AWSgetupc");
         let resJSON = JSON.parse(response.data);
         if(resJSON.Error == "upcId was not found in DynamoDB or upcdatabase") {
-          return {item: null, message: "EMPTY"};
+          let newItemA = new ItemRecord(upc, "(Add New Item Name Here)");
+          return {item: newItemA, message: "EMPTY"};
         }
         else if (resJSON.Items == undefined || resJSON.Items.length == 0) {
           return {item: null, message: "UNDEFINED"};

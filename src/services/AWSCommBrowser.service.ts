@@ -57,7 +57,7 @@ export class AWSCommBrowserService {
           return {item: newItemA, message: "EMPTY"};
         }
         else if (resJSON.Items == undefined || resJSON.Items.length == 0) {
-          return {item: null, message: "ERROR"};
+          return {item: null, message: "UNDEFINED"};
         }
         else {
           let newItemA = new ItemRecord(upc, resJSON.Items[0].name, resJSON.Items[0].highRisk);

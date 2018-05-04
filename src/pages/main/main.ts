@@ -101,7 +101,7 @@ export class MainPage implements OnInit {
 
   private scanItem(clear: boolean) : void {
     if (clear == false) { return; }
-    let loader = this.loadingCtrl.create();
+    let loader = this.loadingCtrl.create();    
     this.scanner.androidScan()
     .then(
       (upc) => {
@@ -124,14 +124,15 @@ export class MainPage implements OnInit {
           }else {
             this.navCtrl.push(ItemRecordPage,{item: data.item, saved: true, fromMain: true});
           }
+          loader.dismiss();
       })
       .catch(
         (err) => {
           this.logger.logErr(err,"scanItem");
           let errAlert = this.alertCtrl.create({title: 'Error',message: "An error occurred. Please try again.",buttons: ['Dismiss']});
           errAlert.present();
+          loader.dismiss();
       });
-      loader.dismiss();
       return;
   }
 
