@@ -75,7 +75,7 @@ export class MainPage implements OnInit {
           .then(
             (data: {item: ItemRecord, message: string}) => {
               this.logger.logCont(data,"getItemByUPC");
-              if(data.message == "EMPTY") {
+              if(data.message == "EMPTY" || data.message == "FOUND") {
                 this.navCtrl.push(ItemRecordPage,{item: data.item, saved: false, fromMain: true});
               }
               else if(data.message == "ERROR" || data.message == "UNDEFINED") {
@@ -101,7 +101,7 @@ export class MainPage implements OnInit {
 
   private scanItem(clear: boolean) : void {
     if (clear == false) { return; }
-    let loader = this.loadingCtrl.create();    
+    let loader = this.loadingCtrl.create();
     this.scanner.androidScan()
     .then(
       (upc) => {
