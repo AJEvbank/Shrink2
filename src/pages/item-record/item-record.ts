@@ -50,6 +50,7 @@ export class ItemRecordPage implements OnInit {
     this.isCompleteItemRecord = this.navParams.get('saved');
     //this.shelfHelperService.fetchList();
     this.viewCtrl.showBackButton(!this.fromMain);
+    console.log("isCompleteItemRecord: " + this.isCompleteItemRecord);
   }
 
   private editItem() : void {

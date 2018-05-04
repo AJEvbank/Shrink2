@@ -38,6 +38,8 @@ export class MainPage implements OnInit {
 
   private logger: LogHandler = new LogHandler("MainPage");
 
+  private loaderOn: boolean = false;
+
 
   constructor(private navCtrl: NavController,
               private scanner: ScannerService,
@@ -81,13 +83,12 @@ export class MainPage implements OnInit {
           .then(
             (data: {item: ItemRecord, message: string}) => {
               this.logger.logCont(data,"getItemByUPC");
-              loader.dismiss();
               if(data.message == "EMPTY") {
-                let newEmptyItem = new ItemRecord(data.item.upc,"(Add New Item Name Here)");
+                let newEmptyItem = new ItemRecord(upc,"(Add New Item Name Here)");
                 this.navCtrl.push(ItemRecordPage,{item: newEmptyItem, saved: false, fromMain: true});
               }
               else if(data.message == "ERROR" || data.message == "UNDEFINED") {
-                let errAlert = this.alertCtrl.create({title: 'Error',message: "An error occurred. Please try again.",buttons: ['Dismiss']});
+                let errAlert = this.alertCtrl.create({title: 'Error',message: "An error occurred in then. Please try again.",buttons: ['Dismiss']});
                 errAlert.present();
               }
               else {
@@ -95,18 +96,11 @@ export class MainPage implements OnInit {
               }
           })
           .catch((err) => {
-            loader.dismiss();
             this.logger.logErr(err,"getItemByUPC");
-            if(err.error != undefined && err.error.Error == "upcId was not found in DynamoDB or upcdatabase") {
-              console.log("Case occurred.");
-              let newEmptyItem = new ItemRecord(upc,"(Add New Item Name Here)");
-              this.navCtrl.push(ItemRecordPage,{item: newEmptyItem, saved: false, fromMain: true});
-            }
-            else {
-              let errAlert = this.alertCtrl.create({title: 'Error',message: "An error occurred. Please try again.",buttons: ['Dismiss']});
-              errAlert.present();
-            }
+            let errAlert = this.alertCtrl.create({title: 'Error',message: "An error occurred in catch. Please try again.",buttons: ['Dismiss']});
+            errAlert.present();
           });
+          loader.dismiss();
         }
       }
     );
@@ -124,31 +118,35 @@ export class MainPage implements OnInit {
           let errAlert = this.alertCtrl.create({title: 'Error',message: "An error occurred. Please try again.",buttons: ['Dismiss']});
           errAlert.present();
         }
-        this.logger.logCont(upc,"scanItem");
-        loader.present();
+        loader.present()
+        .then(
+          () => { this.loaderOn = true; }
+        );
         return this.AWSComm.AWSgetupc(upc);
       })
       .then(
         (data: {item: ItemRecord, message: string}) => {
           this.logger.logCont(data,"scanItem");
-          loader.dismiss();
           if(data.message == "ERROR"){
-            let errAlert = this.alertCtrl.create({title: 'Error',message: "An error occurred. Please try again.",buttons: ['Dismiss']});
+            console.log("ERROR fired.");
+            let errAlert = this.alertCtrl.create({title: 'Error',message: "An error occurred in then. Please try again.",buttons: ['Dismiss']});
             errAlert.present();
           }else if (data.message == "EMPTY") {
+            console.log("EMPTY fired.");
             let newEmptyItem = new ItemRecord(data.item.upc,"(Add New Item Name Here)");
             this.navCtrl.push(ItemRecordPage,{item: newEmptyItem, saved: false, fromMain: true});
           }else {
+            console.log("else fired.");
             this.navCtrl.push(ItemRecordPage,{item: data.item, saved: true, fromMain: true});
           }
       })
       .catch(
         (err) => {
-          loader.dismiss();
           this.logger.logErr(err,"scanItem");
-          let errAlert = this.alertCtrl.create({title: 'Error',message: "An error occurred. Please try again.",buttons: ['Dismiss']});
+          let errAlert = this.alertCtrl.create({title: 'Error',message: "An error occurred with the loading. Please try again.",buttons: ['Dismiss']});
           errAlert.present();
         });
+        loader.dismiss();
       return;
   }
 
