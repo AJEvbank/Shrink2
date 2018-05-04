@@ -70,7 +70,7 @@ export class EditItemRecordPage implements OnInit {
   }
 
   private cancel() : void {
-    this.viewCtrl.dismiss({item: this.item});
+    this.viewCtrl.dismiss({item: this.item, ErrorCode: "cancelled"});
     return;
   }
 

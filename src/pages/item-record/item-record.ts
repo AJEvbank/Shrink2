@@ -61,16 +61,15 @@ export class ItemRecordPage implements OnInit {
     editModal.onDidDismiss(
       (data) => {
         this.logger.logCont(data,"editItem");
-        if (data.ErrorCode == "empty/wrong" || data.ErrorCode == "http error") {
-          let errorAlert = this.alertCtrl.create({
-            title: 'Error',
-            message: "The record could not be updated. Please try again.",
-            buttons: ['Dismiss']
-          });
+        this.item = data.item;
+        if (data.ErrorCode == "http error") {
+          let errorAlert = this.alertCtrl.create({title: 'Error',message: "The record could not be updated. Please try again.",buttons: ['Dismiss']});
           errorAlert.present();
-          this.item = data.item;
-        } else {
-          this.item = data.item;
+        }
+        else if (data.ErrorCode == "cancelled") {
+          // Do nothing.
+        }
+        else {
           this.isCompleteItemRecord = true;
         }
       }
