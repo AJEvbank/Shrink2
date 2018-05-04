@@ -81,23 +81,24 @@ export class AWSCommService {
     });
   }
 
-    private getNameFromJSON(genericObject: any) : string {
-      if(genericObject.title !== undefined && genericObject.title.length > 2) {
-        return genericObject.title.replace('"','');
-      }
-      else if(genericObject.alias !== undefined && genericObject.alias.length > 2) {
-        return genericObject.alias.replace('"','');
-      }
-      else if(genericObject.description !== undefined && genericObject.description.length > 2) {
-        return genericObject.description.replace('"','');
-      }
-      else if(genericObject.brand !== undefined && genericObject.brand.length > 2) {
-        return genericObject.brand.replace('"','');
-      }
-      else {
-        return "(Add New Item Name Here)";
-      }
+  private getNameFromJSON(genericObject: any) : string {
+    if(genericObject.title !== undefined && genericObject.title.length > 2) {
+      return genericObject.title.replace('"','');
     }
+    else if(genericObject.alias !== undefined && genericObject.alias.length > 2) {
+      return genericObject.alias.replace('"','');
+    }
+    else if(genericObject.description !== undefined && genericObject.description.length > 2) {
+      return genericObject.description.replace('"','');
+    }
+    else if(genericObject.brand !== undefined && genericObject.brand.length > 2) {
+      return genericObject.brand.replace('"','');
+    }
+    else {
+      return "(Add New Item Name Here)";
+    }
+  }
+
   public AWSupdateItemRecord(item: ItemRecord) : Promise<{item: ItemRecord, message: string}> {
     return this.put(this.access.updateItemRecordFunction + item.upc, {"name": item.name, "highRisk": item.isHighRisk})
     .then(
@@ -181,7 +182,7 @@ export class AWSCommService {
   }
 
   public AWSFetchTodaysNotifications() : Promise<{notifications: Notification[], message: string}> {
-    let today = moment((new Date()).valueOf()).format("YYYY/MM/DDTHH:mm:ss");
+    let today = moment((new Date()).valueOf()).format("YYYY-MM-DD");
     return this.get(this.access.notificationFunction + this.access.notificationRetrieval + today)
     .then(
       (response) => {

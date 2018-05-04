@@ -20,7 +20,7 @@ export class LogHandler {
     if (this.active == true) {
       console.log("[START OUTPUT]");
       console.log("Error in " + this.className + ", method: " + callerName + "() => error = "
-                      + JSON.stringify(error)
+                      + JSON.stringify(error) + " "
                       + JSON.stringify(Object.getOwnPropertyNames(error)));
       console.log("[END OUTPUT]");
     }
