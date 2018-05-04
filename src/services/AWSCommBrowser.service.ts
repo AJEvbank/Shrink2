@@ -52,7 +52,7 @@ export class AWSCommBrowserService {
         this.logger.logCont(response,"AWSgetupc");
         let resJSON = response.json();
         console.log("resJSON: " + JSON.stringify(resJSON));
-        if (resJSON.upcnumber == upc) {
+        if (resJSON.upcnumber === upc) {
           let newName = this.getNameFromJSON(resJSON);
           let newItemA = new ItemRecord(resJSON.upcnumber, newName);
           return {item: newItemA, message: "FOUND"};
