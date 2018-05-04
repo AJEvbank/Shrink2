@@ -72,7 +72,8 @@ export class ReportSpecificationsPage implements OnInit {
         "subjectSelection": new FormControl(this.subjectSelection, Validators.required),
         "dateRangeStart": new FormControl(this.dateRangeStart.toISOString(), Validators.required),
         "dateRangeEnd": new FormControl(this.dateRangeEnd.toISOString(), Validators.required),
-        "shrinkThreshold": new FormControl(this.shrinkThreshold, Validators.pattern(/^\d{0,9}(?:\.(?:\d{0,2}))?$/))
+        // "shrinkThreshold": new FormControl(this.shrinkThreshold, Validators.pattern(/^\d{0,9}(?:\.(?:\d{1,2}))?$/))
+        "shrinkThreshold": new FormControl(this.shrinkThreshold, Validators.pattern(/^\.\d{1,2}$/))
       });
     }
   }
