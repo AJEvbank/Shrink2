@@ -9,6 +9,8 @@ import { DailyNotificationsService } from '../../../services/daily-notifications
 
 import moment from 'moment';
 
+import { LogHandler } from '../../../assets/helpers/LogHandler';
+
 @Component({
   selector: 'page-edit-notification',
   templateUrl: 'edit-notification.html',
@@ -23,7 +25,9 @@ export class EditNotificationPage {
   private displayDate: Date;
   private currentDay: Date;
 
-  notificationForm: FormGroup;
+  private notificationForm: FormGroup;
+
+  private logger: LogHandler = new LogHandler("EditNotificationPage");
 
   constructor(private navParams: NavParams,
               private viewCtrl: ViewController,
@@ -41,7 +45,7 @@ export class EditNotificationPage {
     this.initializeForm();
   }
 
-  private initializeForm() {
+  private initializeForm() : void {
     this.notificationForm = new FormGroup({
       'itemCollection': new FormControl(this.notification.item, Validators.required),
       'quantity': new FormControl(this.notification.item.quantity, Validators.required),
@@ -54,6 +58,7 @@ export class EditNotificationPage {
       'upc': new FormControl({value: this.notification.item.item.upc, disabled: true}, Validators.required),
       'name': new FormControl({value: this.notification.item.item.name, disabled: true}, Validators.required),
     }, this.isDeliveredPriorToToday('daysPrior', 'sellByDate'));
+    return;
   }
 
   onSubmit(message: string) {
@@ -73,18 +78,21 @@ export class EditNotificationPage {
     this.dailyNotificationsService.addItem(this.notification)
     .then(
       (data) => {
+        this.logger.logCont(data,"onSubmit");
         this.viewCtrl.dismiss(data);
       }
     )
     .catch(
       (err) => {
+        this.logger.logErr(err,"onSubmit");
         this.viewCtrl.dismiss("ERROR");
       }
     );
   }
 
-  leavePage() {
+  leavePage() : void {
     this.viewCtrl.dismiss("CANCELLED");
+    return;
   }
 
   private isNotPriorToToday() : ValidatorFn {

@@ -25,8 +25,8 @@ import { FormGroup, FormControl, Validators, ValidatorFn, AbstractControl } from
 
 export class GetUPCPopover implements OnInit {
 
-  upc: FormGroup;
-  checkDigit: Number;
+  private upc: FormGroup;
+  private checkDigit: Number;
 
   constructor(private viewCtrl: ViewController) {
 
@@ -36,7 +36,7 @@ export class GetUPCPopover implements OnInit {
     this.initializeForm();
   }
 
-  private initializeForm() {
+  private initializeForm() : void {
     this.upc = new FormGroup({
       'upc': new FormControl("718103101776",
                               [
@@ -46,6 +46,7 @@ export class GetUPCPopover implements OnInit {
                               ]
                              )
     });
+    return;
   }
 
 
@@ -57,9 +58,10 @@ export class GetUPCPopover implements OnInit {
     this.viewCtrl.dismiss(value.upc);
   }
 
-  dismiss() {
+  private dismiss() : void {
     let dismissString = "NO_UPC";
     this.viewCtrl.dismiss(dismissString);
+    return;
   }
 
   private CheckDigitValidator() : ValidatorFn {
@@ -88,32 +90,8 @@ export class GetUPCPopover implements OnInit {
     }
   }
 
-  getCheckDigit() : Number {
+  private getCheckDigit() : Number {
     return this.upc.controls['upc'].getError('CheckDigit');
   }
-
-  // private CheckDigitValidator(ctrl: FormControl) {
-  //   if (ctrl.value.length < 12) return null;
-  //   let isCorrectCheckDigit: boolean;
-  //   let oddSum: Number  = 0;
-  //   let evenSum: Number = 0;
-  //   let finalSum: Number = 0;
-  //   let higherMultipleOfTen: Number;
-  //   let correctCheckDigit: Number;
-  //   let checkDigit: number = Number(ctrl.value[ctrl.value.length - 1]);
-  //   for (let i = ctrl.value.length - 2; i >= 0; i--) {
-  //     if (Number(i % 2) == 0) { // These are really the odd numbered digits.
-  //       evenSum = Number(evenSum) + Number(ctrl.value[i]);
-  //     }
-  //     else if (Number(i % 2) == 1) { // These are really the even numbered digits.
-  //       oddSum = Number(oddSum) + Number(ctrl.value[i]);
-  //     }
-  //   }
-  //   finalSum = Number(3 * Number(evenSum)) + Number(oddSum);
-  //   higherMultipleOfTen = Math.ceil(Number(finalSum) / 10) * 10;
-  //   correctCheckDigit = Number(higherMultipleOfTen) - Number(finalSum);
-  //   isCorrectCheckDigit = (correctCheckDigit == checkDigit);
-  //   return isCorrectCheckDigit ? null : { 'CheckDigit': correctCheckDigit };
-  // }
 
 }

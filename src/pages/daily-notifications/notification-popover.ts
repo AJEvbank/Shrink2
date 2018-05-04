@@ -32,7 +32,7 @@ import { Notification } from '../../assets/models/notification.model';
 })
 export class NotificationPopoverPage implements OnInit {
 
-  notification: Notification;
+  private notification: Notification;
 
   constructor(private navParams: NavParams,
               private viewCtrl: ViewController) {
@@ -43,11 +43,12 @@ export class NotificationPopoverPage implements OnInit {
     this.deleteNotification(null);
   }
 
-  dismiss() {
+  private dismiss() : void {
     this.viewCtrl.dismiss({Id: null});
+    return;
   }
 
-  private deleteNotification(Id: string) {
+  private deleteNotification(Id: string) : void {
     if (Id == null) return;
     this.viewCtrl.dismiss({Id: Id});
     return;

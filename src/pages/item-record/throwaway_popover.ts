@@ -9,6 +9,8 @@ import { Throwaway } from '../../assets/models/throwaway.model';
 import { AWSCommService } from '../../services/AWSComm.service';
 import { AWSCommBrowserService } from '../../services/AWSCommBrowser.service';
 
+import { LogHandler } from '../../assets/helpers/LogHandler';
+
 @Component({
   selector: 'throwaway-popover',
   template: `
@@ -43,6 +45,8 @@ export class ThrowawayQuantityPricePopoverPage implements OnInit {
   item: ItemRecord;
   AWSComm: AWSCommService | AWSCommBrowserService;
 
+  logger: LogHandler = new LogHandler("ThrowawayQuantityPricePopoverPage");
+
   constructor(private viewCtrl: ViewController,
               private navParams: NavParams,
               private loadingCtrl: LoadingController,
@@ -56,7 +60,7 @@ export class ThrowawayQuantityPricePopoverPage implements OnInit {
     this.initializeForm();
   }
 
-  private initializeForm() {
+  private initializeForm() : void {
     this.discard = new FormGroup({
       'quantity': new FormControl("1",
                               [
@@ -76,6 +80,7 @@ export class ThrowawayQuantityPricePopoverPage implements OnInit {
                               ]
                             ),
     });
+    return;
   }
 
   submit() {
@@ -86,6 +91,7 @@ export class ThrowawayQuantityPricePopoverPage implements OnInit {
     this.AWSComm.AWSCreateThrowaway(newThrowaway)
     .then(
       (message: string) => {
+        this.logger.logCont(message,"submit");
         if (message == "ERROR") {
           loader.dismiss();
           this.viewCtrl.dismiss({response: message});
@@ -98,6 +104,7 @@ export class ThrowawayQuantityPricePopoverPage implements OnInit {
     )
     .catch(
       (err) => {
+        this.logger.logErr(err,"submit");
         loader.dismiss();
         this.viewCtrl.dismiss({response: "SUCCESS"});
       }
@@ -105,8 +112,9 @@ export class ThrowawayQuantityPricePopoverPage implements OnInit {
   }
 
 
-dismiss() {
+private dismiss() : void {
   this.viewCtrl.dismiss({response: "CANCELLED"});
+  return;
 }
 
 

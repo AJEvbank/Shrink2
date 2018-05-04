@@ -13,6 +13,8 @@ import { ThrowawayQuantityPricePopoverPage } from './throwaway_popover';
 import { ShelfHelperService } from '../../services/shelf-helper.service';
 import { HighRiskListService } from '../../services/high-risk-list.service';
 
+import { LogHandler } from '../../assets/helpers/LogHandler';
+
 
 @Component({
   selector: 'page-item-record',
@@ -20,11 +22,14 @@ import { HighRiskListService } from '../../services/high-risk-list.service';
 })
 export class ItemRecordPage implements OnInit {
 
-  item: ItemRecord;
+  private item: ItemRecord;
   //editItemRecordPage: EditItemRecordPage;
-  isCompleteItemRecord: boolean = true;
-  mainPage: MainPage;
-  createNotificationPage: CreateNotificationPage;
+  private isCompleteItemRecord: boolean = true;
+  private mainPage: MainPage;
+  private createNotificationPage: CreateNotificationPage;
+  private fromMain: boolean = false;
+
+  private logger: LogHandler = new LogHandler("ItemRecordPage");
 
   constructor(private navCtrl: NavController,
               private navParams: NavParams,
@@ -34,21 +39,26 @@ export class ItemRecordPage implements OnInit {
               private shelfHelperService: ShelfHelperService,
               private hrService: HighRiskListService,
               private popoverCtrl: PopoverController,
-              private loadingCtrl: LoadingController
+              private loadingCtrl: LoadingController,
+              private viewCtrl: ViewController
               ) {
   }
 
   ngOnInit() {
     this.item = this.navParams.get('item');
+    this.fromMain = this.navParams.get('fromMain');
     this.isCompleteItemRecord = this.navParams.get('saved');
-    this.shelfHelperService.fetchList();
+    //this.shelfHelperService.fetchList();
+    this.viewCtrl.showBackButton(!this.fromMain);
+    console.log("isCompleteItemRecord: " + this.isCompleteItemRecord);
   }
 
-  editItem() {
+  private editItem() : void {
     let editModal = this.modalCtrl.create(EditItemRecordPage, {item: this.item});
     editModal.present();
     editModal.onDidDismiss(
       (data) => {
+        this.logger.logCont(data,"editItem");
         if (data.ErrorCode == "empty/wrong" || data.ErrorCode == "http error") {
           let errorAlert = this.alertCtrl.create({
             title: 'Error',
@@ -63,14 +73,16 @@ export class ItemRecordPage implements OnInit {
         }
       }
     );
+    return;
   }
 
-  createNotification() {
+  private createNotification() : void {
     if (this.isCompleteItemRecord == true) {
       let createNotificationModal = this.modalCtrl.create(CreateNotificationPage, {item: this.item});
       createNotificationModal.present();
       createNotificationModal.onDidDismiss(
         (data) => {
+          this.logger.logCont(data,"createNotification");
           if (data == "SUCCESS") {
             let toast = this.toastCtrl.create({message: 'Your notification was saved.',duration: 2000,position: 'bottom'});
             toast.present();
@@ -86,11 +98,12 @@ export class ItemRecordPage implements OnInit {
       let toast = this.toastCtrl.create({message: 'This record is not complete. Please complete all fields.',duration: 2000,position: 'middle'});
       toast.present();
     }
+    return;
   }
 
   //Nick: This should work no problems, let me know if it breaks.
 
-  ToggleHighRisk(toggle: boolean){
+  private ToggleHighRisk(toggle: boolean) : void {
     if(this.isCompleteItemRecord == true){
       let loader = this.loadingCtrl.create({
         content: "Updating..."
@@ -98,18 +111,21 @@ export class ItemRecordPage implements OnInit {
       loader.present();
       //Update the status
       this.hrService.ToggleHighRisk(this.item, toggle)
-      .then((itemResponse) => {
-        if (itemResponse.message == "SUCCESS") {
-          this.item = itemResponse.item;
-          loader.dismiss();
-        }
-        else if (itemResponse.message == "ERROR") {
-          loader.dismiss();
-          let error = this.alertCtrl.create({title: "Error",message: "An error occurred. Please try again.",buttons:['Dismiss']});
-          error.present();
-        }
+      .then(
+        (itemResponse) => {
+          this.logger.logCont(itemResponse,"ToggleHighRisk");
+          if (itemResponse.message == "SUCCESS") {
+            this.item = itemResponse.item;
+            loader.dismiss();
+          }
+          else if (itemResponse.message == "ERROR") {
+            loader.dismiss();
+            let error = this.alertCtrl.create({title: "Error",message: "An error occurred. Please try again.",buttons:['Dismiss']});
+            error.present();
+          }
       })
       .catch((err) => {
+        this.logger.logErr(err,"ToggleHighRisk");
         loader.dismiss();
         let error = this.alertCtrl.create({title: "Error",message: "An error occurred. Please try again.",buttons:['Dismiss']});
         error.present();
@@ -121,14 +137,16 @@ export class ItemRecordPage implements OnInit {
       let toast = this.toastCtrl.create({message: 'This record is not complete. Please complete all fields.',duration: 2000,position: 'middle'});
       toast.present();
     }
+    return;
   }
 
-  addToShelfHelperList() {
+  private addToShelfHelperList() : void {
     if (this.isCompleteItemRecord == true) {
       let getQuantity = this.popoverCtrl.create(ShelfHelperAddQuantityPopover, {item: this.item}, { enableBackdropDismiss: false});
       getQuantity.present();
       getQuantity.onDidDismiss(
         (data) => {
+          this.logger.logCont(data,"addToShelfHelperList");
           if(data.quantity != "NO_Quantity") {
             this.shelfHelperService.addItem(new ToGetItem(this.item, data.quantity))
             .then(
@@ -139,6 +157,7 @@ export class ItemRecordPage implements OnInit {
             )
             .catch(
               (err) => {
+                this.logger.logErr(err,"addToShelfHelperList");
                 let error = this.alertCtrl.create({title: 'Error',message:'An error occurred. Please try again.',buttons:['Dismiss']});
                 error.present();
               }
@@ -151,14 +170,16 @@ export class ItemRecordPage implements OnInit {
       let toast = this.toastCtrl.create({message: 'This record is not complete. Please complete all fields.',duration: 2000,position: 'middle'});
       toast.present();
     }
+    return;
   }
 
-  throwaway() {
+  private throwaway() : void {
     if (this.isCompleteItemRecord == true) {
       let throwaway = this.popoverCtrl.create(ThrowawayQuantityPricePopoverPage, { item: this.item }, { enableBackdropDismiss: false });
       throwaway.present();
       throwaway.onDidDismiss(
         (data) => {
+          this.logger.logCont(data,"throwaway");
           // This is repetitive, but will be necessary later.
           if(data.response == "ERROR") {
             let errorAlert = this.alertCtrl.create({title: 'Error',message: "Could not create throwaway record. Please try again.",buttons: ['Dismiss']});
@@ -177,14 +198,16 @@ export class ItemRecordPage implements OnInit {
       let toast = this.toastCtrl.create({message: 'This record is not complete. Please complete all fields.',duration: 2000,position: 'middle'});
       toast.present();
     }
+    return;
   }
 
-  home() {
+  private home() : void {
     //this.navCtrl.push(MainPage);
     let lastIndex = this.navCtrl.indexOf(this.navCtrl.last());
     let difference = lastIndex - 2;
     this.navCtrl.remove(2,difference);
     this.navCtrl.pop();
+    return;
   }
 
 }

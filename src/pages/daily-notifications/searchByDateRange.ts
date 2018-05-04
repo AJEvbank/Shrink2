@@ -30,11 +30,11 @@ import moment from 'moment';
 
 export class SearchByDateRangePopover implements OnInit {
 
-  dateRange: FormGroup;
-  from: Date;
-  to: Date;
-  fromMoment: string;
-  toMoment: string;
+  private dateRange: FormGroup;
+  private from: Date;
+  private to: Date;
+  private fromMoment: string;
+  private toMoment: string;
 
   constructor(private viewCtrl: ViewController,
               private alertCtrl: AlertController) {
@@ -49,7 +49,7 @@ export class SearchByDateRangePopover implements OnInit {
     this.initializeForm();
   }
 
-  private initializeForm() {
+  private initializeForm() : void {
     this.dateRange = new FormGroup({
       'from': new FormControl(this.fromMoment,
                               [ Validators.required ]
@@ -58,6 +58,7 @@ export class SearchByDateRangePopover implements OnInit {
                               [ Validators.required ]
                             ),
     });
+    return;
   }
 
   submit() {
@@ -72,8 +73,9 @@ export class SearchByDateRangePopover implements OnInit {
   }
 
 
-dismiss() {
+private dismiss() : void {
   this.viewCtrl.dismiss({from: null, to: null, cancelled: true});
+  return;
 }
 
 
