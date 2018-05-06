@@ -110,6 +110,10 @@ export class MainPage implements OnInit {
           let errAlert = this.alertCtrl.create({title: 'Error',message: "An error occurred. Please try again.",buttons: ['Dismiss']});
           errAlert.present();
         }
+        else if (upc == "NOT_UPC_A") {
+          let errAlert = this.alertCtrl.create({title: 'Error',message: "The code is not UPC_A.",buttons: ['Dismiss']});
+          errAlert.present();
+        }
         loader.present();
         return this.AWSComm.AWSgetupc(upc);
       })
@@ -119,7 +123,7 @@ export class MainPage implements OnInit {
           if(data.message == "ERROR") {
             let errAlert = this.alertCtrl.create({title: 'Error',message: "An error occurred. Please try again.",buttons: ['Dismiss']});
             errAlert.present();
-          }else if (data.message == "EMPTY") {
+          }else if (data.message == "EMPTY" || data.message == "FOUND") {
             this.navCtrl.push(ItemRecordPage,{item: data.item, saved: false, fromMain: true});
           }else {
             this.navCtrl.push(ItemRecordPage,{item: data.item, saved: true, fromMain: true});
