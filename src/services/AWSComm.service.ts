@@ -242,7 +242,7 @@ export class AWSCommService {
     .then(
       (response) => {
         this.logger.logCont(response,"AWSFetchShrinkList");
-        let resJSON = response.data.json();
+        let resJSON = JSON.parse(response.data);
         if(resJSON == undefined){
           return [];
         }
