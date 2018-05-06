@@ -31,6 +31,8 @@ export class ItemRecordPage implements OnInit {
 
   private logger: LogHandler = new LogHandler("ItemRecordPage");
 
+  private fromUPCdatabasemessage: string = "Please verify and save item record.";
+
   constructor(private navCtrl: NavController,
               private navParams: NavParams,
               private modalCtrl: ModalController,
@@ -95,7 +97,7 @@ export class ItemRecordPage implements OnInit {
       );
     }
     else {
-      let toast = this.toastCtrl.create({message: 'This record is not complete. Please complete all fields.',duration: 2000,position: 'middle'});
+      let toast = this.toastCtrl.create({message: this.fromUPCdatabasemessage,duration: 2000,position: 'middle'});
       toast.present();
     }
     return;
@@ -134,7 +136,7 @@ export class ItemRecordPage implements OnInit {
     }
     else{
       //Item record not complete. Fix dat shit, user.
-      let toast = this.toastCtrl.create({message: 'This record is not complete. Please complete all fields.',duration: 2000,position: 'middle'});
+      let toast = this.toastCtrl.create({message: this.fromUPCdatabasemessage,duration: 2000,position: 'middle'});
       toast.present();
     }
     return;
@@ -167,7 +169,7 @@ export class ItemRecordPage implements OnInit {
       );
     }
     else {
-      let toast = this.toastCtrl.create({message: 'This record is not complete. Please complete all fields.',duration: 2000,position: 'middle'});
+      let toast = this.toastCtrl.create({message: this.fromUPCdatabasemessage,duration: 2000,position: 'middle'});
       toast.present();
     }
     return;
@@ -195,7 +197,7 @@ export class ItemRecordPage implements OnInit {
       );
     }
     else {
-      let toast = this.toastCtrl.create({message: 'This record is not complete. Please complete all fields.',duration: 2000,position: 'middle'});
+      let toast = this.toastCtrl.create({message: this.fromUPCdatabasemessage,duration: 2000,position: 'middle'});
       toast.present();
     }
     return;

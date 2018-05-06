@@ -52,18 +52,41 @@ export class AWSCommBrowserService {
         this.logger.logCont(response,"AWSgetupc");
         let resJSON = response.json();
         console.log("resJSON: " + JSON.stringify(resJSON));
-        if(resJSON.Error == "upcId was not found in DynamoDB or upcdatabase") {
-          let newItemA = new ItemRecord(upc, "(Add New Item Name Here)");
-          return {item: newItemA, message: "EMPTY"};
+        if (resJSON.upcnumber == upc) {
+          let newName = this.getNameFromJSON(resJSON);
+          let newItemA = new ItemRecord(resJSON.upcnumber, newName);
+          return {item: newItemA, message: "FOUND"};
+        }
+        else if (resJSON.Error == "upcId was not found in DynamoDB or upcdatabase") {
+          let newItemB = new ItemRecord(upc, "(Add New Item Name Here)");
+          return {item: newItemB, message: "EMPTY"};
         }
         else if (resJSON.Items == undefined || resJSON.Items.length == 0) {
           return {item: null, message: "UNDEFINED"};
         }
         else {
-          let newItemA = new ItemRecord(upc, resJSON.Items[0].name, resJSON.Items[0].highRisk);
-          return {item: newItemA, message: "SUCCESS"};
+          let newItemC = new ItemRecord(upc, resJSON.Items[0].name, resJSON.Items[0].highRisk);
+          return {item: newItemC, message: "SUCCESS"};
         }
       }).toPromise<{item: ItemRecord, message: string}>();
+  }
+
+  private getNameFromJSON(genericObject: any) : string {
+    if(genericObject.title !== undefined && genericObject.title.length > 2) {
+      return genericObject.title.replace('"','');
+    }
+    else if(genericObject.alias !== undefined && genericObject.alias.length > 2) {
+      return genericObject.alias.replace('"','');
+    }
+    else if(genericObject.description !== undefined && genericObject.description.length > 2) {
+      return genericObject.description.replace('"','');
+    }
+    else if(genericObject.brand !== undefined && genericObject.brand.length > 2) {
+      return genericObject.brand.replace('"','');
+    }
+    else {
+      return "(Add New Item Name Here)";
+    }
   }
 
   public AWSupdateItemRecord(item: ItemRecord) : Promise<{item: ItemRecord, message: string}> {
