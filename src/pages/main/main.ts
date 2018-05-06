@@ -29,10 +29,6 @@ export class MainPage implements OnInit {
   private shelfHelperPage = ShelfHelperPage;
   private reportsPage = ReportsPage;
 
-  private highRiskListButtonDisabled = false;
-
-  private testDebug: string;
-
   private AWSComm: AWSCommService | AWSCommBrowserService;
   private isLocalHost: boolean;
 
