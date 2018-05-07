@@ -40,7 +40,7 @@ export class MainPage implements OnInit {
               private loadingCtrl: LoadingController,
               private AWS: AWSCommService,
               private AWSB: AWSCommBrowserService,
-              private popoverController: PopoverController,
+              private popoverCtrl: PopoverController,
               private alertCtrl: AlertController) {
   }
 
@@ -59,7 +59,7 @@ export class MainPage implements OnInit {
 
   private getItemByUPC(clear: boolean) : void {
     if (clear == false) { return; }
-    let pop = this.popoverController.create(GetUPCPopover, {}, { enableBackdropDismiss: false });
+    let pop = this.popoverCtrl.create(GetUPCPopover, {}, { enableBackdropDismiss: false });
     pop.present();
     pop.onDidDismiss(
       (upc) => {

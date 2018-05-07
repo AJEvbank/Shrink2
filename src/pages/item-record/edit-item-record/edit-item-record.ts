@@ -15,12 +15,12 @@ import { LogHandler } from '../../../assets/helpers/LogHandler';
 })
 export class EditItemRecordPage implements OnInit {
 
-  item: ItemRecord;
-  itemForm: FormGroup;
+  private item: ItemRecord;
+  private itemForm: FormGroup;
 
-  AWSComm: AWSCommBrowserService | AWSCommService;;
+  private AWSComm: AWSCommBrowserService | AWSCommService;;
 
-  logger: LogHandler = new LogHandler("EditItemRecordPage");
+  private logger: LogHandler = new LogHandler("EditItemRecordPage");
 
   constructor(private navParams: NavParams,
               private viewCtrl: ViewController,
@@ -30,6 +30,7 @@ export class EditItemRecordPage implements OnInit {
   }
 
   ngOnInit() {
+    this.logger.logCont(this.navParams.data,"ngOnInit");
     this.item = this.navParams.get('item');
     this.initializeForm();
     this.AWSComm = (window.location.hostname == "localhost") ? this.AWSB : this.AWS;

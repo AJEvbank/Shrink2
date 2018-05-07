@@ -45,12 +45,12 @@ export class ItemRecordPage implements OnInit {
   }
 
   ngOnInit() {
+    this.logger.logCont(this.navParams.data,"ngOnInit");
     this.item = this.navParams.get('item');
     this.fromMain = this.navParams.get('fromMain');
     this.isCompleteItemRecord = this.navParams.get('saved');
     //this.shelfHelperService.fetchList();
     this.viewCtrl.showBackButton(!this.fromMain);
-    console.log("isCompleteItemRecord: " + this.isCompleteItemRecord + " :: " + this.navParams.get('saved'));
   }
 
   private editItem() : void {

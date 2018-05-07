@@ -4,6 +4,8 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 
 import { ToGetItem } from '../../assets/models/to-get-item.model';
 
+import { LogHandler } from '../../assets/helpers/LogHandler';
+
 @Component({
   selector: 'to-get-popover',
   template: `
@@ -31,11 +33,14 @@ export class ToGetEditPopover implements OnInit {
   private toGet: ToGetItem;
   private toGetForm: FormGroup;
 
+  private logger: LogHandler = new LogHandler("ToGetEditPopover");
+
   constructor(private navParams: NavParams,
               private viewCtrl: ViewController) {
   }
 
   ngOnInit() {
+    this.logger.logCont(this.navParams.data,"ngOnInit");
     this.toGet = this.navParams.get('toGet');
     this.initializeForm();
   }

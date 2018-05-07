@@ -40,6 +40,7 @@ export class CreateNotificationPage implements OnInit {
   }
 
   ngOnInit() {
+    this.logger.logCont(this.navParams.data,"ngOnInit");
     this.item = this.navParams.get('item');
     this.name = this.item.name;
     this.upc = this.item.upc;

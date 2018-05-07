@@ -8,9 +8,9 @@ export class Notification {
   public sellByDate: Date;
   public daysPrior: number;
   public deliveryOption: Notification.Option;
-  // MEMO: add property for date of creation.
+
   public dateOfCreation: string;
-  // MEMO: add memo property (string) for user's notes.
+  
   public memo: string;
   public Id: string;
 

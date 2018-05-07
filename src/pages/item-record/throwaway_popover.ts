@@ -41,11 +41,11 @@ import { LogHandler } from '../../assets/helpers/LogHandler';
 
 export class ThrowawayQuantityPricePopoverPage implements OnInit {
 
-  discard: FormGroup;
-  item: ItemRecord;
-  AWSComm: AWSCommService | AWSCommBrowserService;
+  private discard: FormGroup;
+  private item: ItemRecord;
+  private AWSComm: AWSCommService | AWSCommBrowserService;
 
-  logger: LogHandler = new LogHandler("ThrowawayQuantityPricePopoverPage");
+  private logger: LogHandler = new LogHandler("ThrowawayQuantityPricePopoverPage");
 
   constructor(private viewCtrl: ViewController,
               private navParams: NavParams,
@@ -56,6 +56,7 @@ export class ThrowawayQuantityPricePopoverPage implements OnInit {
   }
 
   ngOnInit() {
+    this.logger.logCont(this.navParams.data,"ngOnInit");
     this.item = this.navParams.get('item');
     this.initializeForm();
   }
@@ -112,10 +113,10 @@ export class ThrowawayQuantityPricePopoverPage implements OnInit {
   }
 
 
-private dismiss() : void {
-  this.viewCtrl.dismiss({response: "CANCELLED"});
-  return;
-}
+  private dismiss() : void {
+    this.viewCtrl.dismiss({response: "CANCELLED"});
+    return;
+  }
 
 
 }

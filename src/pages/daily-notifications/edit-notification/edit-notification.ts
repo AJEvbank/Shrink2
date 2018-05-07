@@ -35,6 +35,7 @@ export class EditNotificationPage {
   }
 
   ngOnInit() {
+    this.logger.logCont(this.navParams.data,"ngOnInit");
     this.notification = this.navParams.get('notification');
     this.name = this.notification.item.item.name;
     this.upc = this.notification.item.item.upc;
@@ -90,7 +91,7 @@ export class EditNotificationPage {
     );
   }
 
-  leavePage() : void {
+  private leavePage() : void {
     this.viewCtrl.dismiss("CANCELLED");
     return;
   }

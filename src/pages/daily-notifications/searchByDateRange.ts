@@ -73,10 +73,10 @@ export class SearchByDateRangePopover implements OnInit {
   }
 
 
-private dismiss() : void {
-  this.viewCtrl.dismiss({from: null, to: null, cancelled: true});
-  return;
-}
+  private dismiss() : void {
+    this.viewCtrl.dismiss({from: null, to: null, cancelled: true});
+    return;
+  }
 
 
 }

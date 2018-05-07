@@ -44,7 +44,7 @@ export class ShelfHelperPage implements OnInit {
     )
   }
 
-  public deleteToGetItem(index: number) : void {
+  private deleteToGetItem(index: number) : void {
     this.shelfHelperService.removeItem(index)
     .then(
       (message: string) => {
@@ -64,8 +64,8 @@ export class ShelfHelperPage implements OnInit {
     return;
   }
 
-  public editQuantity(clickEvent, toGet: ToGetItem, index: number, oldQuantity: number) : void {
-    let popover = this.popoverCtrl.create(ToGetEditPopover, {toGet: toGet});
+  private editQuantity(clickEvent, toGet: ToGetItem, index: number, oldQuantity: number) : void {
+    let popover = this.popoverCtrl.create(ToGetEditPopover, {toGet: toGet}, { enableBackdropDismiss: false });
     popover.present();
     popover.onDidDismiss(
       ({toGet: ToGetItem}) => {
@@ -93,7 +93,7 @@ export class ShelfHelperPage implements OnInit {
     return;
   }
 
-  public clearList() : void {
+  private clearList() : void {
     this.shelfHelperService.wipeStorage()
     .then(
       (message) => {
@@ -128,12 +128,12 @@ export class ShelfHelperPage implements OnInit {
     return;
   }
 
-  public viewItem(item: ItemRecord, i) : void {
+  private viewItem(item: ItemRecord, i) : void {
     this.navCtrl.push(ItemRecordPage,{item: item, saved: true, fromMain: false});
     return;
   }
 
-  public refreshList() : void {
+  private refreshList() : void {
     this.shelfHelperList = this.shelfHelperService.loadList();
     return;
   }

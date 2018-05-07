@@ -3,6 +3,8 @@ import { NavParams, ViewController } from 'ionic-angular';
 
 import { Notification } from '../../assets/models/notification.model';
 
+import { LogHandler } from '../../assets/helpers/LogHandler';
+
 @Component({
   selector: 'notification-popover',
   template: `
@@ -34,11 +36,14 @@ export class NotificationPopoverPage implements OnInit {
 
   private notification: Notification;
 
+  private logger: LogHandler = new LogHandler("NotificationPopoverPage");
+
   constructor(private navParams: NavParams,
               private viewCtrl: ViewController) {
   }
 
   ngOnInit() {
+    this.logger.logCont(this.navParams.data,"ngOnInit");
     this.notification = this.navParams.get('notification');
     this.deleteNotification(null);
   }
