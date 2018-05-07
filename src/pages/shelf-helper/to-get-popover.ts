@@ -24,7 +24,7 @@ import { LogHandler } from '../../assets/helpers/LogHandler';
             </ion-item>
             <button type="submit" ion-button block [disabled]="!toGetForm.valid">Save Changes</button>
           </form>
-        <button ion-button color="danger" (click)="dismiss()">Cancel</button>
+        <button ion-button color="danger" (click)="dismiss(true)">Cancel</button>
     </ion-content>
   `
 })
@@ -43,6 +43,7 @@ export class ToGetEditPopover implements OnInit {
     this.logger.logCont(this.navParams.data,"ngOnInit");
     this.toGet = this.navParams.get('toGet');
     this.initializeForm();
+    this.dismiss(false);
   }
 
   private initializeForm() : void {
@@ -61,7 +62,8 @@ export class ToGetEditPopover implements OnInit {
     this.viewCtrl.dismiss({toGet: this.toGet});
   }
 
-  private dismiss() : void {
+  private dismiss(clear: boolean) : void {
+    if (clear == false) return;
     this.viewCtrl.dismiss({toGet: this.toGet});
     return;
   }

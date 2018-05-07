@@ -44,6 +44,7 @@ export class EditNotificationPage {
     this.currentDay = new Date(temp.getFullYear(),temp.getMonth(),temp.getDate());
     this.itemCollection = new ItemCollection(this.notification.item.item, this.notification.item.quantity, this.notification.item.unitPrice);
     this.initializeForm();
+    this.leavePage(false);
   }
 
   private initializeForm() : void {
@@ -91,7 +92,8 @@ export class EditNotificationPage {
     );
   }
 
-  private leavePage() : void {
+  private leavePage(clear: boolean) : void {
+    if (clear == false) return;
     this.viewCtrl.dismiss("CANCELLED");
     return;
   }

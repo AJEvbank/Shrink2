@@ -6,7 +6,6 @@ import { ToGetItem } from '../../assets/models/to-get-item.model';
 
 import { EditItemRecordPage } from './edit-item-record/edit-item-record';
 import { CreateNotificationPage } from './create-notification/create-notification';
-import { MainPage } from '../main/main';
 import { ShelfHelperAddQuantityPopover } from './shelf-helper_popover';
 import { ThrowawayQuantityPricePopoverPage } from './throwaway_popover';
 
@@ -51,6 +50,10 @@ export class ItemRecordPage implements OnInit {
     this.isCompleteItemRecord = this.navParams.get('saved');
     //this.shelfHelperService.fetchList();
     this.viewCtrl.showBackButton(!this.fromMain);
+  }
+
+  private dummyFunctionCalls() : void {
+    
   }
 
   private editItem() : void {

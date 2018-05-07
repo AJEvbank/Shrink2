@@ -34,7 +34,7 @@ import { LogHandler } from '../../assets/helpers/LogHandler';
       </ion-item>
       <button ion-button block (click)="submit()" [disabled]="!discard.valid">Throwaway</button>
     </form>
-    <button ion-button block color="danger" (click)="dismiss()">Cancel</button>
+    <button ion-button block color="danger" (click)="dismiss(true)">Cancel</button>
   </ion-content>
   `
 })
@@ -59,6 +59,7 @@ export class ThrowawayQuantityPricePopoverPage implements OnInit {
     this.logger.logCont(this.navParams.data,"ngOnInit");
     this.item = this.navParams.get('item');
     this.initializeForm();
+    this.dismiss(false);
   }
 
   private initializeForm() : void {
@@ -113,7 +114,8 @@ export class ThrowawayQuantityPricePopoverPage implements OnInit {
   }
 
 
-  private dismiss() : void {
+  private dismiss(clear: boolean) : void {
+    if (clear == false) return;
     this.viewCtrl.dismiss({response: "CANCELLED"});
     return;
   }

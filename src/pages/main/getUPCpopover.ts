@@ -9,7 +9,7 @@ import { FormGroup, FormControl, Validators, ValidatorFn, AbstractControl } from
     <form [formGroup]="upc">
       <ion-input type="text" formControlName="upc" (ngSubmit)="submit()"></ion-input>
       <ion-item *ngIf="upc.controls['upc'].hasError('CheckDigit') == true && !upc.controls['upc'].hasError('pattern') && upc.controls['upc'].value.length == 12" text-wrap>
-        <ion-label>The last digit should be {{ this.getCheckDigit() }}.</ion-label>
+        <ion-label>The last digit should be {{ this.getCheckDigit(true) }}.</ion-label>
       </ion-item>
       <ion-item *ngIf="upc.controls['upc'].hasError('pattern') == true" text-wrap>
         <ion-label>The code must have exactly twelve digits.</ion-label>
@@ -17,7 +17,7 @@ import { FormGroup, FormControl, Validators, ValidatorFn, AbstractControl } from
       <button ion-button block (click)="submit()" [disabled]="!upc.valid">Use UPC</button>
     </form>
     <ion-content padding>
-      <button ion-button block color="danger" (click)="dismiss()">Cancel</button>
+      <button ion-button block color="danger" (click)="dismiss(true)">Cancel</button>
     </ion-content>
   </ion-content>
   `
@@ -34,6 +34,9 @@ export class GetUPCPopover implements OnInit {
 
   ngOnInit() {
     this.initializeForm();
+    let tempA = this.checkDigit;
+    this.dismiss(false);
+
   }
 
   private initializeForm() : void {
@@ -58,7 +61,8 @@ export class GetUPCPopover implements OnInit {
     this.viewCtrl.dismiss(value.upc);
   }
 
-  private dismiss() : void {
+  private dismiss(clear: boolean) : void {
+    if (clear == false) return;
     let dismissString = "NO_UPC";
     this.viewCtrl.dismiss(dismissString);
     return;
@@ -90,7 +94,8 @@ export class GetUPCPopover implements OnInit {
     }
   }
 
-  private getCheckDigit() : Number {
+  private getCheckDigit(clear: boolean) : Number {
+    if (clear == false) return 0;
     return this.upc.controls['upc'].getError('CheckDigit');
   }
 
