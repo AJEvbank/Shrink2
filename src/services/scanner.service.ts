@@ -18,7 +18,12 @@ export class ScannerService {
     return this.scanner.scan()
     .then((result) => {
       this.logger.logCont(result,"androidScan");
-      return result.text;
+      if (result.format != "UPC_A") {
+        return "NOT_UPC_A";
+      }
+      else {
+        return result.text;
+      }
     })
     .catch((err) => {
       this.logger.logErr(err,"androidScan");

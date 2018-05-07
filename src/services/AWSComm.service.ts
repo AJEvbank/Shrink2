@@ -19,7 +19,7 @@ export class AWSCommService {
 
   private access = new Accessor();
 
-  private logger: LogHandler = new LogHandler("AWSCommBrowserService");
+  private logger: LogHandler = new LogHandler("AWSCommService");
 
   constructor(private http: HTTP) {
 
@@ -58,19 +58,45 @@ export class AWSCommService {
       (response) => {
         this.logger.logCont(response,"AWSgetupc");
         let resJSON = JSON.parse(response.data);
-        if (resJSON.Items == undefined) {
-          return {item: null, message: "ERROR"};
+        if (resJSON.upcnumber === upc) {
+          let newName = this.getNameFromJSON(resJSON);
+          let newItemA = new ItemRecord(resJSON.upcnumber, newName);
+          return {item: newItemA, message: "FOUND"};
         }
-        else if(resJSON.Items[0].name != undefined){
-          return {item: new ItemRecord(upc, resJSON.Items[0].name, resJSON.Items[0].highRisk), message: "SUCCESS"};
-        }else{
-          return {item: null, message: "EMPTY"};
+        else if(resJSON.Error == "upcId was not found in DynamoDB or upcdatabase") {
+          let newItemA = new ItemRecord(upc, "(Add New Item Name Here)");
+          return {item: newItemA, message: "EMPTY"};
+        }
+        else if (resJSON.Items == undefined || resJSON.Items.length == 0) {
+          return {item: null, message: "UNDEFINED"};
+        }
+        else {
+          let newItemA = new ItemRecord(upc, resJSON.Items[0].name, resJSON.Items[0].highRisk);
+          return {item: newItemA, message: "SUCCESS"};
         }
     })
     .catch((err) => {
       this.logger.logErr(err,"AWSgetupc");
       return {item: null, message: "ERROR"};
     });
+  }
+
+  private getNameFromJSON(genericObject: any) : string {
+    if(genericObject.title !== undefined && genericObject.title.length > 2) {
+      return genericObject.title.replace('"','');
+    }
+    else if(genericObject.alias !== undefined && genericObject.alias.length > 2) {
+      return genericObject.alias.replace('"','');
+    }
+    else if(genericObject.description !== undefined && genericObject.description.length > 2) {
+      return genericObject.description.replace('"','');
+    }
+    else if(genericObject.brand !== undefined && genericObject.brand.length > 2) {
+      return genericObject.brand.replace('"','');
+    }
+    else {
+      return "(Add New Item Name Here)";
+    }
   }
 
   public AWSupdateItemRecord(item: ItemRecord) : Promise<{item: ItemRecord, message: string}> {
@@ -80,7 +106,7 @@ export class AWSCommService {
         this.logger.logCont(response,"AWSupdateItemRecord");
         let updateItem = JSON.parse(response.data);
         if (updateItem.upc.upcId == undefined) {
-          return {item: null, message: "ERROR"};
+          return {item: null, message: "UNDEFINED"};
         }
         if (item.upc != updateItem.upc.upcId) {
           return {item: null, message: "ERROR"};
@@ -133,7 +159,7 @@ export class AWSCommService {
     );
   }
 
-  public AWSPermanentDeleteNotification(Id: string) : Promise<string>{
+  public AWSPermanentDeleteNotification(Id: string) : Promise<string> {
     return this.delete(this.access.notificationFunction + this.access.notificationId + Id, {Id: Id})
     .then(
       (response) => {
@@ -156,7 +182,7 @@ export class AWSCommService {
   }
 
   public AWSFetchTodaysNotifications() : Promise<{notifications: Notification[], message: string}> {
-    let today = moment((new Date()).valueOf()).format("YYYY/MM/DDTHH:mm:ss");
+    let today = moment((new Date()).valueOf()).format("YYYY-MM-DD");
     return this.get(this.access.notificationFunction + this.access.notificationRetrieval + today)
     .then(
       (response) => {
@@ -183,7 +209,7 @@ export class AWSCommService {
     })
   }
 
-  public AWSCreateThrowaway(throwaway: Throwaway) : Promise<string>{
+  public AWSCreateThrowaway(throwaway: Throwaway) : Promise<string> {
     let info = {
       "quantity": throwaway.item.quantity,
       "disposalDate": throwaway.dateOfDiscard,
@@ -216,7 +242,7 @@ export class AWSCommService {
     .then(
       (response) => {
         this.logger.logCont(response,"AWSFetchShrinkList");
-        let resJSON = response.data.json();
+        let resJSON = JSON.parse(response.data);
         if(resJSON == undefined){
           return [];
         }

@@ -4,6 +4,8 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 
 import { ItemRecord } from '../../assets/models/item-record.model';
 
+import { LogHandler } from '../../assets/helpers/LogHandler';
+
 @Component({
   selector: 'shelf-helper-popover',
   template: `
@@ -31,8 +33,10 @@ import { ItemRecord } from '../../assets/models/item-record.model';
 
 export class ShelfHelperAddQuantityPopover implements OnInit {
 
-  quantity: FormGroup;
-  item: ItemRecord;
+  private quantity: FormGroup;
+  private item: ItemRecord;
+
+  private logger: LogHandler = new LogHandler("ShelfHelperAddQuantityPopover");
 
   constructor(private viewCtrl: ViewController,
               private navParams: NavParams) {
@@ -40,11 +44,13 @@ export class ShelfHelperAddQuantityPopover implements OnInit {
   }
 
   ngOnInit() {
+    this.logger.logCont(this.navParams.data,"ngOnInit");
     this.item = this.navParams.get('item');
     this.initializeForm();
+    this.dismiss(false);
   }
 
-  private initializeForm() {
+  private initializeForm() : void {
     this.quantity = new FormGroup({
       'quantity': new FormControl("1",
                               [
@@ -54,6 +60,7 @@ export class ShelfHelperAddQuantityPopover implements OnInit {
                               ]
                              )
     });
+    return;
   }
 
   submit() {
@@ -62,9 +69,11 @@ export class ShelfHelperAddQuantityPopover implements OnInit {
   }
 
 
-  dismiss() {
+  private dismiss(clear=true) : void {
+    if (clear == false) return;
     let dismissString = "NO_Quantity";
     this.viewCtrl.dismiss({quantity: dismissString});
+    return;
   }
 
 

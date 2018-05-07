@@ -15,12 +15,12 @@ import { LogHandler } from '../../../assets/helpers/LogHandler';
 })
 export class EditItemRecordPage implements OnInit {
 
-  item: ItemRecord;
-  itemForm: FormGroup;
+  private item: ItemRecord;
+  private itemForm: FormGroup;
 
-  AWSComm: AWSCommBrowserService | AWSCommService;;
+  private AWSComm: AWSCommBrowserService | AWSCommService;;
 
-  logger: LogHandler = new LogHandler("EditItemRecordPage");
+  private logger: LogHandler = new LogHandler("EditItemRecordPage");
 
   constructor(private navParams: NavParams,
               private viewCtrl: ViewController,
@@ -30,9 +30,11 @@ export class EditItemRecordPage implements OnInit {
   }
 
   ngOnInit() {
+    this.logger.logCont(this.navParams.data,"ngOnInit");
     this.item = this.navParams.get('item');
     this.initializeForm();
     this.AWSComm = (window.location.hostname == "localhost") ? this.AWSB : this.AWS;
+    this.cancel(false);
   }
 
   private initializeForm() {
@@ -54,7 +56,7 @@ export class EditItemRecordPage implements OnInit {
     .then(
       (resItem) => {
         this.logger.logCont(resItem,"onSubmit");
-        if (resItem.message == "ERROR") {
+        if (resItem.message == "ERROR" || resItem.message == "UNDEFINED") {
           this.viewCtrl.dismiss({item: oldValue, ErrorCode: "http error"});
         } else {
           this.viewCtrl.dismiss({item: resItem.item, ErrorCode: "none"});
@@ -69,8 +71,10 @@ export class EditItemRecordPage implements OnInit {
     );
   }
 
-  cancel() {
-    this.viewCtrl.dismiss({item: this.item});
+  private cancel(clear=true) : void {
+    if (clear == false) return;
+    this.viewCtrl.dismiss({item: this.item, ErrorCode: "cancelled"});
+    return;
   }
 
 }

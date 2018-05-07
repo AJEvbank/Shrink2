@@ -33,12 +33,13 @@ export class DailyNotificationsPage implements OnInit {
       this.dummyFunction();
   }
 
-  private dummyFunction() {
+  private dummyFunction() : void {
     this.deleteItem(-2);
     this.viewNotes(null,null);
     this.searchByDate(false);
     this.editItem(null, -1);
     this.clearList(false);
+    return;
   }
 
   ngOnInit() {
@@ -108,7 +109,7 @@ export class DailyNotificationsPage implements OnInit {
       (message: string) => {
         this.logger.logCont(message,"FetchList");
         //It works! Update local list with service list!
-        if (message == "SUCCESS") {
+        if (message == "SUCCESS" || message == "EMPTY") {
           this.notificationList = this.dailyNotificationsService.GetList();
           this.noNotifications = this.notificationList.length == 0;
           this.searchedByRange = false;
@@ -152,10 +153,10 @@ export class DailyNotificationsPage implements OnInit {
               }
               else {
                 this.noNotifications = (this.dailyNotificationsService.getListLength() == 0) ? true : false;
-                if (this.dailyNotificationsService.getListLength() == 0) {
-                  let alert = this.alertCtrl.create({message:"No notifications in the specified time period.",buttons:['Dismiss']});
-                  alert.present();
-                }
+                // if (this.noNotifications == true) {
+                //   let alert = this.alertCtrl.create({message:"No notifications in the specified time period.",buttons:['Dismiss']});
+                //   alert.present();
+                // }
                 this.notificationList = this.dailyNotificationsService.GetList();
               }
             }

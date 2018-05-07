@@ -35,6 +35,7 @@ export class EditNotificationPage {
   }
 
   ngOnInit() {
+    this.logger.logCont(this.navParams.data,"ngOnInit");
     this.notification = this.navParams.get('notification');
     this.name = this.notification.item.item.name;
     this.upc = this.notification.item.item.upc;
@@ -43,6 +44,7 @@ export class EditNotificationPage {
     this.currentDay = new Date(temp.getFullYear(),temp.getMonth(),temp.getDate());
     this.itemCollection = new ItemCollection(this.notification.item.item, this.notification.item.quantity, this.notification.item.unitPrice);
     this.initializeForm();
+    this.leavePage(false);
   }
 
   private initializeForm() : void {
@@ -90,7 +92,8 @@ export class EditNotificationPage {
     );
   }
 
-  leavePage() : void {
+  private leavePage(clear: boolean) : void {
+    if (clear == false) return;
     this.viewCtrl.dismiss("CANCELLED");
     return;
   }

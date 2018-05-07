@@ -1,7 +1,5 @@
 import { ItemCollection } from './item-collection.model';
 
-import moment from 'moment';
-
 export class Throwaway {
 
   public item: ItemCollection;

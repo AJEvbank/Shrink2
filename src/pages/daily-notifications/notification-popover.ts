@@ -3,6 +3,8 @@ import { NavParams, ViewController } from 'ionic-angular';
 
 import { Notification } from '../../assets/models/notification.model';
 
+import { LogHandler } from '../../assets/helpers/LogHandler';
+
 @Component({
   selector: 'notification-popover',
   template: `
@@ -25,7 +27,7 @@ import { Notification } from '../../assets/models/notification.model';
               <ion-item text-wrap>{{ notification.memo }}</ion-item>
             </ion-card>
         </ion-list>
-        <button ion-button block (click)="dismiss()">Ok</button>
+        <button ion-button block (click)="dismiss(true)">Ok</button>
         <button ion-button color="danger" block (click)="deleteNotification(notification.Id)">Delete Permanently</button>
     </ion-content>
   `
@@ -34,16 +36,21 @@ export class NotificationPopoverPage implements OnInit {
 
   private notification: Notification;
 
+  private logger: LogHandler = new LogHandler("NotificationPopoverPage");
+
   constructor(private navParams: NavParams,
               private viewCtrl: ViewController) {
   }
 
   ngOnInit() {
+    this.logger.logCont(this.navParams.data,"ngOnInit");
     this.notification = this.navParams.get('notification');
     this.deleteNotification(null);
+    this.dismiss(false);
   }
 
-  private dismiss() : void {
+  private dismiss(clear: boolean) : void {
+    if (clear == false) return;
     this.viewCtrl.dismiss({Id: null});
     return;
   }

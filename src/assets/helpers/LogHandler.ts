@@ -16,12 +16,20 @@ export class LogHandler {
     }
   }
 
-  public logErr(error: any, callerName: string) : void {
+  public logErr(error: any, callerName: string, specify=false) : void {
     if (this.active == true) {
+      let propertiesArray = Object.getOwnPropertyNames(error);
       console.log("[START OUTPUT]");
       console.log("Error in " + this.className + ", method: " + callerName + "() => error = "
-                      + JSON.stringify(error)
-                      + JSON.stringify(Object.getOwnPropertyNames(error)));
+                      + JSON.stringify(error) + " " + propertiesArray);
+      if(specify == true) {
+        let i: number;
+        let propertyName;
+        for(i = 0; i < propertiesArray.length; i++) {
+          propertyName = propertiesArray[i];
+          console.log(JSON.stringify(error[propertyName]));
+        }
+      }
       console.log("[END OUTPUT]");
     }
   }

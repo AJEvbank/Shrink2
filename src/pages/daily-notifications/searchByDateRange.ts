@@ -22,7 +22,7 @@ import moment from 'moment';
       <button ion-button block (click)="submit()" [disabled]="!dateRange.valid">Get Notifications</button>
     </form>
     <ion-content padding>
-      <button ion-button block color="danger" (click)="dismiss()">Cancel</button>
+      <button ion-button block color="danger" (click)="dismiss(true)">Cancel</button>
     </ion-content>
   </ion-content>
   `
@@ -47,6 +47,7 @@ export class SearchByDateRangePopover implements OnInit {
     this.fromMoment = moment().format();
     this.toMoment = moment().format();
     this.initializeForm();
+    this.dismiss(false);
   }
 
   private initializeForm() : void {
@@ -73,10 +74,11 @@ export class SearchByDateRangePopover implements OnInit {
   }
 
 
-private dismiss() : void {
-  this.viewCtrl.dismiss({from: null, to: null, cancelled: true});
-  return;
-}
+  private dismiss(clear: boolean) : void {
+    if (clear == false) return;
+    this.viewCtrl.dismiss({from: null, to: null, cancelled: true});
+    return;
+  }
 
 
 }

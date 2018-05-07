@@ -34,18 +34,18 @@ import { LogHandler } from '../../assets/helpers/LogHandler';
       </ion-item>
       <button ion-button block (click)="submit()" [disabled]="!discard.valid">Throwaway</button>
     </form>
-    <button ion-button block color="danger" (click)="dismiss()">Cancel</button>
+    <button ion-button block color="danger" (click)="dismiss(true)">Cancel</button>
   </ion-content>
   `
 })
 
 export class ThrowawayQuantityPricePopoverPage implements OnInit {
 
-  discard: FormGroup;
-  item: ItemRecord;
-  AWSComm: AWSCommService | AWSCommBrowserService;
+  private discard: FormGroup;
+  private item: ItemRecord;
+  private AWSComm: AWSCommService | AWSCommBrowserService;
 
-  logger: LogHandler = new LogHandler("ThrowawayQuantityPricePopoverPage");
+  private logger: LogHandler = new LogHandler("ThrowawayQuantityPricePopoverPage");
 
   constructor(private viewCtrl: ViewController,
               private navParams: NavParams,
@@ -56,11 +56,13 @@ export class ThrowawayQuantityPricePopoverPage implements OnInit {
   }
 
   ngOnInit() {
+    this.logger.logCont(this.navParams.data,"ngOnInit");
     this.item = this.navParams.get('item');
     this.initializeForm();
+    this.dismiss(false);
   }
 
-  private initializeForm() {
+  private initializeForm() : void {
     this.discard = new FormGroup({
       'quantity': new FormControl("1",
                               [
@@ -80,6 +82,7 @@ export class ThrowawayQuantityPricePopoverPage implements OnInit {
                               ]
                             ),
     });
+    return;
   }
 
   submit() {
@@ -111,9 +114,11 @@ export class ThrowawayQuantityPricePopoverPage implements OnInit {
   }
 
 
-dismiss() {
-  this.viewCtrl.dismiss({response: "CANCELLED"});
-}
+  private dismiss(clear: boolean) : void {
+    if (clear == false) return;
+    this.viewCtrl.dismiss({response: "CANCELLED"});
+    return;
+  }
 
 
 }

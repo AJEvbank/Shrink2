@@ -66,7 +66,7 @@ export class HighRiskListPage implements OnInit {
 
   private deleteFromList(index: number) : void {
     if (index < 0) return;
-    let alert = this.alertCtrl.create({title: "Warning",message:"This action will not remove the item from the High-Risk List. To remove item from the High-Risk List, use the right sliding option",buttons:['Dismiss']});
+    let alert = this.alertCtrl.create({title: "Warning",message:"This action will not permanently remove the item from the High-Risk List. To remove item from the High-Risk List, use the right sliding option",buttons:['Dismiss']});
     alert.present();
     alert.onDidDismiss(
       (data) => {

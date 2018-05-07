@@ -6,7 +6,7 @@ export class ItemRecord {
     public isHighRisk: boolean;
     public references: number;
 
-    constructor(upc: string, name: string, isHighRisk=false) {
+    constructor(upc: string, name=" ", isHighRisk=false) {
       this.references = 1;
       this.upc = upc;
       this.name = name;
