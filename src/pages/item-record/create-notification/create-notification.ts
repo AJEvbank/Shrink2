@@ -26,13 +26,12 @@ export class CreateNotificationPage implements OnInit {
   private itemCollection: ItemCollection;
   private notification: Notification;
 
-  private displayDate: string;
   private currentDay: Date;
 
 
-  notificationForm: FormGroup;
+  private notificationForm: FormGroup;
 
-  logger: LogHandler = new LogHandler("CreateNotificationPage");
+  private logger: LogHandler = new LogHandler("CreateNotificationPage");
 
 
   constructor(private navParams: NavParams,
@@ -44,7 +43,6 @@ export class CreateNotificationPage implements OnInit {
     this.item = this.navParams.get('item');
     this.name = this.item.name;
     this.upc = this.item.upc;
-    this.displayDate = moment().format("MM/DD/YYYY-HH:mm a");
     let temp = new Date();
     this.currentDay = new Date(temp.getFullYear(),temp.getMonth(),temp.getDate());
     this.itemCollection = new ItemCollection(this.item, 0, 0);
@@ -55,7 +53,6 @@ export class CreateNotificationPage implements OnInit {
 
   private initializeForm() : void {
     this.notificationForm = new FormGroup({
-      'itemCollection': new FormControl(this.notification.item, Validators.required),
       'quantity': new FormControl("1", [ Validators.required,
                                          Validators.min(0.01),
                                          Validators.pattern(/^([1-9][0-9]*)$/) ]),
@@ -98,7 +95,7 @@ export class CreateNotificationPage implements OnInit {
     );
   }
 
-  leavePage() : void {
+  private leavePage() : void {
     this.viewCtrl.dismiss();
     return;
   }

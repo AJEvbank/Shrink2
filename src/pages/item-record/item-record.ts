@@ -23,10 +23,8 @@ import { LogHandler } from '../../assets/helpers/LogHandler';
 export class ItemRecordPage implements OnInit {
 
   private item: ItemRecord;
-  //editItemRecordPage: EditItemRecordPage;
+
   private isCompleteItemRecord: boolean = true;
-  private mainPage: MainPage;
-  private createNotificationPage: CreateNotificationPage;
   private fromMain: boolean = false;
 
   private logger: LogHandler = new LogHandler("ItemRecordPage");
@@ -203,7 +201,6 @@ export class ItemRecordPage implements OnInit {
   }
 
   private home() : void {
-    //this.navCtrl.push(MainPage);
     let lastIndex = this.navCtrl.indexOf(this.navCtrl.last());
     let difference = lastIndex - 2;
     this.navCtrl.remove(2,difference);
