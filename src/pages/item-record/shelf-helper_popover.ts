@@ -47,6 +47,7 @@ export class ShelfHelperAddQuantityPopover implements OnInit {
     this.logger.logCont(this.navParams.data,"ngOnInit");
     this.item = this.navParams.get('item');
     this.initializeForm();
+    this.dismiss(false);
   }
 
   private initializeForm() : void {
@@ -68,7 +69,8 @@ export class ShelfHelperAddQuantityPopover implements OnInit {
   }
 
 
-  private dismiss() : void {
+  private dismiss(clear=true) : void {
+    if (clear == false) return;
     let dismissString = "NO_Quantity";
     this.viewCtrl.dismiss({quantity: dismissString});
     return;

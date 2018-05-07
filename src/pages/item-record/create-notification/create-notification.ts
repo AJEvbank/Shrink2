@@ -49,6 +49,7 @@ export class CreateNotificationPage implements OnInit {
     this.itemCollection = new ItemCollection(this.item, 0, 0);
     this.notification = new Notification(this.itemCollection, new Date(), 3, Notification.Option.NONE, "");
     this.initializeForm();
+    this.leavePage(false);
   }
   //this.notification.sellByDate.toISOString()
 
@@ -96,7 +97,8 @@ export class CreateNotificationPage implements OnInit {
     );
   }
 
-  private leavePage() : void {
+  private leavePage(clear=true) : void {
+    if (clear == false) return;
     this.viewCtrl.dismiss();
     return;
   }

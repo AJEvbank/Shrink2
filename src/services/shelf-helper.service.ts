@@ -15,8 +15,8 @@ export class ShelfHelperService {
   constructor(private storage: Storage) {}
 
   public addItem(item: ToGetItem) : Promise<string> {
-    let found = false, newIndex: number = 0, oldItemQuantity: number;
-    let indexByUPC = this.shelfHelperList.map(function(it) { return it.item.upc }).indexOf(item.item.upc);
+    let newIndex: number = 0, oldItemQuantity: number;
+    let indexByUPC = this.shelfHelperList.map( function(it) { return it.item.upc } ).indexOf(item.item.upc);
     if (indexByUPC == -1) {
       newIndex = this.shelfHelperList.push(item);
       newIndex--;

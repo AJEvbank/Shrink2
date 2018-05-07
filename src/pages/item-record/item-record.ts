@@ -48,15 +48,24 @@ export class ItemRecordPage implements OnInit {
     this.item = this.navParams.get('item');
     this.fromMain = this.navParams.get('fromMain');
     this.isCompleteItemRecord = this.navParams.get('saved');
+
     //this.shelfHelperService.fetchList();
+
     this.viewCtrl.showBackButton(!this.fromMain);
+    this.dummyFunctionCalls();
   }
 
   private dummyFunctionCalls() : void {
-    
+    this.editItem(false);
+    this.ToggleHighRisk(false,false);
+    this.addToShelfHelperList(false);
+    this.createNotification(false);
+    this.throwaway(false);
+    this.home(false);
   }
 
-  private editItem() : void {
+  private editItem(clear=true) : void {
+    if (clear == false) return;
     let editModal = this.modalCtrl.create(EditItemRecordPage, {item: this.item});
     editModal.present();
     editModal.onDidDismiss(
@@ -78,7 +87,8 @@ export class ItemRecordPage implements OnInit {
     return;
   }
 
-  private createNotification() : void {
+  private createNotification(clear=true) : void {
+    if (clear == false) return;
     if (this.isCompleteItemRecord == true) {
       let createNotificationModal = this.modalCtrl.create(CreateNotificationPage, {item: this.item});
       createNotificationModal.present();
@@ -105,7 +115,8 @@ export class ItemRecordPage implements OnInit {
 
   //Nick: This should work no problems, let me know if it breaks.
 
-  private ToggleHighRisk(toggle: boolean) : void {
+  private ToggleHighRisk(toggle: boolean, clear=true) : void {
+    if (clear == false) return;
     if(this.isCompleteItemRecord == true){
       let loader = this.loadingCtrl.create({
         content: "Updating..."
@@ -142,7 +153,8 @@ export class ItemRecordPage implements OnInit {
     return;
   }
 
-  private addToShelfHelperList() : void {
+  private addToShelfHelperList(clear=true) : void {
+    if (clear == false) return;
     if (this.isCompleteItemRecord == true) {
       let getQuantity = this.popoverCtrl.create(ShelfHelperAddQuantityPopover, {item: this.item}, { enableBackdropDismiss: false});
       getQuantity.present();
@@ -175,7 +187,8 @@ export class ItemRecordPage implements OnInit {
     return;
   }
 
-  private throwaway() : void {
+  private throwaway(clear=true) : void {
+    if (clear == false) return;
     if (this.isCompleteItemRecord == true) {
       let throwaway = this.popoverCtrl.create(ThrowawayQuantityPricePopoverPage, { item: this.item }, { enableBackdropDismiss: false });
       throwaway.present();
@@ -203,7 +216,8 @@ export class ItemRecordPage implements OnInit {
     return;
   }
 
-  private home() : void {
+  private home(clear=true) : void {
+    if (clear == false) return;
     let lastIndex = this.navCtrl.indexOf(this.navCtrl.last());
     let difference = lastIndex - 2;
     this.navCtrl.remove(2,difference);
