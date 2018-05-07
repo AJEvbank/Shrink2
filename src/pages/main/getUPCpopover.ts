@@ -35,8 +35,9 @@ export class GetUPCPopover implements OnInit {
   ngOnInit() {
     this.initializeForm();
     let tempA = this.checkDigit;
+    tempA = 0;
     this.dismiss(false);
-
+    this.getCheckDigit(false);
   }
 
   private initializeForm() : void {

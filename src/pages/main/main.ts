@@ -55,9 +55,13 @@ export class MainPage implements OnInit {
     this.getItemByUPC(false);
     this.prepareHighRiskList(false);
     let tempA = this.reportsPage;
+    tempA = null;
     let tempB = this.highRiskListPage;
+    tempB = null;
     let tempC = this.dailyNotificationsPage;
+    tempC = null;
     let tempD = this.shelfHelperPage;
+    tempD = null;
     return;
   }
 

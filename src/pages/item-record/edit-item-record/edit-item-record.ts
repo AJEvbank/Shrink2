@@ -34,6 +34,7 @@ export class EditItemRecordPage implements OnInit {
     this.item = this.navParams.get('item');
     this.initializeForm();
     this.AWSComm = (window.location.hostname == "localhost") ? this.AWSB : this.AWS;
+    this.cancel(false);
   }
 
   private initializeForm() {
@@ -70,7 +71,8 @@ export class EditItemRecordPage implements OnInit {
     );
   }
 
-  private cancel() : void {
+  private cancel(clear=true) : void {
+    if (clear == false) return;
     this.viewCtrl.dismiss({item: this.item, ErrorCode: "cancelled"});
     return;
   }

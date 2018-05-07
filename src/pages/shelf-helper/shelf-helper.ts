@@ -41,10 +41,20 @@ export class ShelfHelperPage implements OnInit {
         this.logger.logErr(err,"ngOnInit");
         this.shelfHelperList = [];
       }
-    )
+    );
+    this.dummyFunctionCalls();
+  }
+
+  private dummyFunctionCalls() : void {
+    this.refreshList(false);
+    this.viewItem(null,-2);
+    this.clearList(false);
+    this.editQuantity(null,null,-2,0);
+    this.deleteToGetItem(-2);
   }
 
   private deleteToGetItem(index: number) : void {
+    if (index == -2) return;
     this.shelfHelperService.removeItem(index)
     .then(
       (message: string) => {
@@ -65,6 +75,7 @@ export class ShelfHelperPage implements OnInit {
   }
 
   private editQuantity(clickEvent, toGet: ToGetItem, index: number, oldQuantity: number) : void {
+    if (index == -2) return;
     let popover = this.popoverCtrl.create(ToGetEditPopover, {toGet: toGet}, { enableBackdropDismiss: false });
     popover.present();
     popover.onDidDismiss(
@@ -93,7 +104,8 @@ export class ShelfHelperPage implements OnInit {
     return;
   }
 
-  private clearList() : void {
+  private clearList(clear=true) : void {
+    if (clear == false) return;
     this.shelfHelperService.wipeStorage()
     .then(
       (message) => {
@@ -129,11 +141,13 @@ export class ShelfHelperPage implements OnInit {
   }
 
   private viewItem(item: ItemRecord, i) : void {
+    if (i == -2) return;
     this.navCtrl.push(ItemRecordPage,{item: item, saved: true, fromMain: false});
     return;
   }
 
-  private refreshList() : void {
+  private refreshList(clear=true) : void {
+    if (clear == false) return;
     this.shelfHelperList = this.shelfHelperService.loadList();
     return;
   }
