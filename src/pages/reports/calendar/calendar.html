@@ -15,10 +15,10 @@
   </div>
 </ng-template>
 
-<!-- <ng-template #template2 let-showEventDetail="showEventDetail" let-selectedDate="selectedDate" let-noEventsLabel="noEventsLabel">
-  {{selectedDate}}
-  [monthviewEventDetailTemplate]="template2" Put this inside calendar attributes
-</ng-template> -->
+<ng-template #template2 let-showEventDetail="showEventDetail" let-selectedDate="selectedDate" let-noEventsLabel="noEventsLabel">
+  <!-- {{selectedDate}} -->
+   <!-- Put this inside calendar attributes -->
+</ng-template>
 
 
 <ion-content padding>
@@ -27,7 +27,8 @@
             [currentDate]='calendar.currentDate'
 
             [monthviewDisplayEventTemplate]="template"
-            
+            [monthviewEventDetailTemplate]="template2"
+
             (onTitleChanged)='onViewTitleChanged($event)'
             (onTimeSelected)='onTimeSelected($event)'
             step='30'

@@ -26,7 +26,8 @@ export class CalendarPage implements OnInit {
 
     for(let i = 0; i < dayShrinkValues.length; i++){
       this.eventSource.push({
-        title: "Test " + (i+1).toString(),
+        //title: "Test " + (i+1).toString(),
+        title: "",
         startTime: this.genDate(i),
         endTime: this.genDate(i),
         allDay: true,

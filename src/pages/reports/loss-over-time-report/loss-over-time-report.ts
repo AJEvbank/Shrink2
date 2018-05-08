@@ -24,8 +24,8 @@ export class LossOverTimeReportPage implements OnInit {
     this.testLabels = [];
 
     for(let i = 0; i < dayShrinkValues.length; i++){
-      let date = new Date(dateRangeStart.getFullYear(), dateRangeStart.getMonth(), dateRangeStart.getDay() + i);
-      this.testLabels.push(date.getFullYear() + "/" + date.getMonth() + "/" + date.getDay());
+      let date = new Date(dateRangeStart.getFullYear(), dateRangeStart.getMonth(), dateRangeStart.getDate()+i);
+      this.testLabels.push((date.getMonth()+1) + "/" + date.getDate() + "/" + date.getFullYear());
       this.testData.push(dayShrinkValues[i]);
     }
   }
