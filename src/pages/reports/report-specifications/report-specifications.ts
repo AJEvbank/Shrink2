@@ -154,32 +154,4 @@ export class ReportSpecificationsPage implements OnInit {
     }
   }
 
-  private generateDummyData(calendar){
-    //Calculate how many data points we need.
-    this.AWSComm.AWSGetLossOverTime(this.dateRangeStart, this.dateRangeEnd, this.subjectSelection, this.subjectUPC)
-    .then((result) => {
-      this.logger.logCont(result, "generateDummyData");
-
-      let dayInMilliseconds = 1000 * 60 * 60 * 24;
-      let count = Math.round(Math.abs(this.dateRangeStart.getTime() - this.dateRangeEnd.getTime())/dayInMilliseconds);
-      if(calendar){
-        let data = { dayShrinkValues: [], shrinkThreshold: this.shrinkThreshold, dateRangeStart: this.dateRangeStart.toISOString() };
-        // <= count so that it is inclusive both ways.
-        for(let i = 0; i <= count; i++){
-          data.dayShrinkValues.push(Math.random() * 1000);
-        }
-        return data;
-      }
-      else{
-        let data = { dayShrinkValues: [], dateRangeStart: this.dateRangeStart.toISOString() };
-        for(let i = 0; i <= count; i++){
-          data.dayShrinkValues.push(Math.random() * 1000);
-        }
-        return data;
-      }
-    });
-
-
-  }
-
 }
