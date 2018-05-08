@@ -274,7 +274,117 @@ export class AWSCommBrowserService {
     ).toPromise<{list: ItemRecord[], message: string}>();
   }
 
-  public AWSGetLossOverTime(dateRangeStart: Date, dateRangeEnd: Date, selectionType: string, upc?: string){
-    //Probably cast to shrinkAggregate and return a list. Don't need much else.
+  public AWSGetLossOverTime(dateRangeStart: Date, dateRangeEnd: Date, selectionType: string, upc?: string) : Promise<Number[]> {
+    //Gotta construct the entire request.
+    // let fullRequest = this.access.lossFunction;
+    // fullRequest += this.access.lossFrom + dateRangeStart.toISOString();
+    // fullRequest += this.access.lossTo + dateRangeEnd.toISOString();
+    let request = this.access.lossFunction;
+    let requestStart = this.access.lossFrom + dateRangeStart.toISOString();
+    let requestEnd = this.access.lossTo + dateRangeEnd.toISOString();
+
+    let op = ""; //Convert frontend op codes to the backend ones.
+    switch(selectionType){
+      case "SingleItem":{
+        op = selectionType;
+        break;
+      }
+      case "HighRiskList":{
+        op = selectionType;
+        break;
+      }
+      case "AllItems":{
+        op = "AllItem";
+        break;
+      }
+    }
+    let requestOp = this.access.lossOperation + op;
+    let requestUPC = "";
+    if(selectionType == "SingleItem"){ //Add UPC code if necessary...
+      requestUPC = this.access.lossUPC + upc;
+    }
+
+    //Need to calculate whether this will need to be future timeframe, past, or both... Joy...
+    //Break down dates to the simple forms. This makes comparisons easier.
+    //fullRequest += this.access.lossTimeframe + "past";
+    let today = new Date();
+    today = new Date((today.getMonth()+1) + "/" + today.getDate() + "/" + today.getFullYear());
+    let start = new Date((dateRangeStart.getMonth()+1) + "/" + dateRangeStart.getDate() + "/" + dateRangeStart.getFullYear());
+    let end = new Date((dateRangeEnd.getMonth()+1) + "/" + dateRangeEnd.getDate() + "/" + dateRangeEnd.getFullYear());
+    if(start <= today && end >= today){
+      console.log("Found need for a double query!");
+      //Gonna need some nested ASYNC. If I had more time I'd do this in parallel. But fuck this is the night before basically.
+      let pastRequest = request + requestStart + (this.access.lossTo + (new Date()).toISOString()) + requestOp + requestUPC + this.access.lossTimeframe + "past";
+      let futureRequest = request + (this.access.lossFrom + (new Date()).toISOString()) + requestEnd + requestOp + requestUPC + this.access.lossTimeframe + "future";
+      //Gotta construct some queries.
+      return this.get(pastRequest).map((response) => {
+          //Debug and var
+          let resJSON = response.json();
+          this.logger.logCont(resJSON,"AWSGetLossOverTime[First Query]");
+          if(resJSON.length === undefined || resJSON.length < 1){
+            console.log("SOMETHING WENT WRONG! PAAAAAAAAAAAAANIC!");
+            return [];
+          }
+
+          //Parse through every entry there.
+          let aggregates = [];
+          for(let i = 0; i < resJSON.length; i++){
+            aggregates.push(parseFloat(resJSON[i]));
+          }
+          return aggregates;
+
+      }).toPromise<Number[]>()
+      .then((pastResults) => {
+        //This is the future request. Append to the results we got from the previous request.
+        return this.get(futureRequest).map((response) => {
+          //Debug and var
+          let resJSON = response.json();
+          this.logger.logCont(resJSON,"AWSGetLossOverTime[Second Query]");
+          if(resJSON.length === undefined || resJSON.length < 1){
+            console.log("SOMETHING WENT WRONG! PAAAAAAAAAAAAANIC!");
+            return [];
+          }
+
+          //Parse through every entry there. Append to previous results.
+          let aggregates = pastResults;
+          for(let i = 0; i < resJSON.length; i++){
+            aggregates.push(parseFloat(resJSON[i]));
+          }
+          return aggregates;
+        }).toPromise<Number[]>();
+      });
+    }
+    else{ //The request will be made in here.
+      //Just need one request.
+      let requestTimeframe = "";
+      if(start > today){
+        console.log("Found need for a future query!");
+        requestTimeframe = this.access.lossTimeframe + "future";
+
+      }else{
+        console.log("Found need for a past query!");
+        requestTimeframe = this.access.lossTimeframe + "past";
+      }
+      //Construct final request
+      let fullRequest = request + requestStart + requestEnd + requestOp + requestUPC + requestTimeframe;
+
+      //We have that massive request. Let's do this shit.
+      return this.get(fullRequest).map((response) => {
+        let resJSON = response.json();
+        this.logger.logCont(resJSON,"AWSGetLossOverTime");
+        if(resJSON.length === undefined || resJSON.length < 1){
+          console.log("SOMETHING WENT WRONG! PAAAAAAAAAAAAANIC!");
+          return [];
+        }
+        //Parse through every entry there.
+        let aggregates = [];
+        for(let i = 0; i < resJSON.length; i++){
+          aggregates.push(parseFloat(resJSON[i]));
+        }
+        return aggregates;
+      }).toPromise<Number[]>();
+    }
+
   }
+
 }

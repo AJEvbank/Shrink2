@@ -15,6 +15,8 @@ import { ItemCollection } from '../../../assets/models/item-collection.model';
 import { ItemRecord } from '../../../assets/models/item-record.model';
 import { ShrinkAggregate } from '../../../assets/models/shrink-agreggate.model';
 
+import { LogHandler } from '../../../assets/helpers/LogHandler';
+
 @Component({
   selector: 'page-report-specifications',
   templateUrl: 'report-specifications.html',
@@ -40,6 +42,8 @@ export class ReportSpecificationsPage implements OnInit {
   isLocalHost = false;
   AWSComm : AWSCommService | AWSCommBrowserService;
 
+
+  private logger: LogHandler = new LogHandler("ReportSpecificationsPage");
 
 
   constructor(private navParams: NavParams,
@@ -99,12 +103,12 @@ export class ReportSpecificationsPage implements OnInit {
 
     //Server stuff.
     let data = this.generateDummyData(this.reportType == "Calendar View");
-    if(this.reportType == "Loss Over Time"){
-      this.navCtrl.push(this.LOTPage, data);
-    }
-    else if(this.reportType == "Calendar View"){
-      this.navCtrl.push(this.calendarPage, data);
-    }
+    // if(this.reportType == "Loss Over Time"){
+    //   this.navCtrl.push(this.LOTPage, data);
+    // }
+    // else if(this.reportType == "Calendar View"){
+    //   this.navCtrl.push(this.calendarPage, data);
+    // }
   }
 
   private onScanUPC(){
@@ -135,23 +139,30 @@ export class ReportSpecificationsPage implements OnInit {
 
   private generateDummyData(calendar){
     //Calculate how many data points we need.
-    let dayInMilliseconds = 1000 * 60 * 60 * 24;
-    let count = Math.round(Math.abs(this.dateRangeStart.getTime() - this.dateRangeEnd.getTime())/dayInMilliseconds);
-    if(calendar){
-      let data = { dayShrinkValues: [], shrinkThreshold: this.shrinkThreshold, dateRangeStart: this.dateRangeStart.toISOString() };
-      // <= count so that it is inclusive both ways.
-      for(let i = 0; i <= count; i++){
-        data.dayShrinkValues.push(Math.random() * 1000);
+    this.AWSComm.AWSGetLossOverTime(this.dateRangeStart, this.dateRangeEnd, this.subjectSelection, this.subjectUPC)
+    .then((result) => {
+      this.logger.logCont(result, "generateDummyData");
+
+      let dayInMilliseconds = 1000 * 60 * 60 * 24;
+      let count = Math.round(Math.abs(this.dateRangeStart.getTime() - this.dateRangeEnd.getTime())/dayInMilliseconds);
+      if(calendar){
+        let data = { dayShrinkValues: [], shrinkThreshold: this.shrinkThreshold, dateRangeStart: this.dateRangeStart.toISOString() };
+        // <= count so that it is inclusive both ways.
+        for(let i = 0; i <= count; i++){
+          data.dayShrinkValues.push(Math.random() * 1000);
+        }
+        return data;
       }
-      return data;
-    }
-    else{
-      let data = { dayShrinkValues: [], dateRangeStart: this.dateRangeStart.toISOString() };
-      for(let i = 0; i <= count; i++){
-        data.dayShrinkValues.push(Math.random() * 1000);
+      else{
+        let data = { dayShrinkValues: [], dateRangeStart: this.dateRangeStart.toISOString() };
+        for(let i = 0; i <= count; i++){
+          data.dayShrinkValues.push(Math.random() * 1000);
+        }
+        return data;
       }
-      return data;
-    }
+    });
+
+
   }
 
 }

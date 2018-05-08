@@ -322,8 +322,52 @@ export class AWSCommService {
     })
   }
 
-  public AWSGetLossOverTime(dateRangeStart: Date, dateRangeEnd: Date, selectionType: string, upc?: string){
+  public AWSGetLossOverTime(dateRangeStart: Date, dateRangeEnd: Date, selectionType: string, upc?: string) : Promise<Number[]> {
+    //Gotta construct the entire request.
+    let start = dateRangeStart.getMonth() + "/" + dateRangeStart.getDate() + "/" + dateRangeStart.getFullYear();
+    let end = dateRangeEnd.getMonth() + "/" + dateRangeEnd.getDate() + "/" + dateRangeEnd.getFullYear();
+    let fullRequest = this.access.lossFunction;
+    fullRequest += this.access.lossFrom + dateRangeStart.toISOString()//start;
+    fullRequest += this.access.lossTo + dateRangeEnd.toISOString();
 
+    //Need to calculate whether this will need to be future timeframe, past, or both... Joy...
+    fullRequest += this.access.lossTimeframe + "past";
+
+    let op = ""; //Convert frontend op codes to the backend ones.
+    switch(selectionType){
+      case "SingleItem":{
+        op = selectionType;
+        break;
+      }
+      case "HighRiskList":{
+        op = selectionType;
+        break;
+      }
+      case "AllItems":{
+        op = "AllItem";
+        break;
+      }
+    }
+    fullRequest += this.access.lossOperation + op;
+    if(selectionType == "SingleItem"){
+      fullRequest += this.access.lossUPC + upc;
+    }
+    //We have that massive request. Let's do this shit.
+    return this.get(fullRequest).then((response) => {
+      let resJSON = JSON.parse(response.data);
+      this.logger.logCont(resJSON,"AWSGetLossOverTime");
+      if(resJSON.length === undefined || resJSON.length < 1){
+        console.log("SOMETHING WENT WRONG! PAAAAAAAAAAAAANIC!");
+        return [];
+      }
+      //Parse through every entry there.
+      let aggregates = [];
+      for(let i = 0; i < resJSON.length; i++){
+        aggregates.push(parseFloat(resJSON[i]));
+        //aggregates.push(new ShrinkAgg)
+      }
+      return aggregates;
+    });
   }
 
 }

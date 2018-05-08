@@ -40,12 +40,12 @@ export class CalendarPage implements OnInit {
     }, 100);
   }
 
-  private genDate(dayOffset){
+  private genDate(dayOffset) : Date {
     let date = this.calendar.currentDate;
     return new Date(date.getFullYear(), date.getMonth(), date.getDate() + dayOffset);
   }
 
-  private getColor(events){
+  private getColor(events) : string{
     if(events.length > 0 && parseFloat(events[0].loss) >= this.shrinkThreshold){
       return 'overShrinkLimit';
     }
