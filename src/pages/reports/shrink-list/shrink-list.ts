@@ -55,7 +55,7 @@ export class ShrinkListPage implements OnInit {
     })
     .catch((err) => {
       console.log(err);
-      let errorAlert = this.alertCtrl.create({title: 'Error',message: "Could not set to high risk. Error has been printed.",buttons: ['Dismiss']});
+      let errorAlert = this.alertCtrl.create({title: 'Error', message: "Could not set to high risk. Error has been printed.", buttons: ['Dismiss']});
       errorAlert.present();
       loader.dismiss();
     })
