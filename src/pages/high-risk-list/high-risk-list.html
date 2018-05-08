@@ -15,7 +15,7 @@
 <ion-content padding>
   <h1 ion-text *ngIf="this.emptyList == true">The High-Risk List is empty!</h1>
   <ion-list>
-  <ion-item-sliding *ngFor="let item of highRiskList; let i = index" nowrap>
+  <ion-item-sliding *ngFor="let item of highRiskList; let i = index" text-wrap>
     <ion-item>
       <h2>{{ item.name }}</h2>
     </ion-item>

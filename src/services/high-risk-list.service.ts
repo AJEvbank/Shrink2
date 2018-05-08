@@ -67,6 +67,7 @@ export class HighRiskListService {
           this.listLoaded == true;
           rtrn = (data.message == "EMPTY") ? "EMPTY" : "SUCCESS";
           this.highRiskList = data.list.slice();
+          this.listLoaded = true;
         }
         return rtrn;
       }

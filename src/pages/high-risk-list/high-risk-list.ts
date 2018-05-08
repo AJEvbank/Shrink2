@@ -40,7 +40,7 @@ export class HighRiskListPage implements OnInit {
             this.highRiskList = [];
             this.emptyList = true;
           }
-          else if (message == "ERROR") {
+          else if (message == "ERROR" || message == "UNDEFINED") {
             let error = this.alertCtrl.create({title: "Error",message: "There was an error loading the list. Please use the refresh button.",buttons:['Dismiss']});
             error.present();
           }
@@ -53,6 +53,9 @@ export class HighRiskListPage implements OnInit {
           error.present();
         }
       );
+    }
+    else {
+      this.highRiskList = this.hrService.GetList();
     }
     this.dummyFunction();
   }
