@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { NavParams, NavController, AlertController } from 'ionic-angular';
+import { NavParams, NavController, AlertController, LoadingController } from 'ionic-angular';
 import { FormGroup, FormControl, Validators, AbstractControl, ValidatorFn } from '@angular/forms';
 
 import { ScannerService } from '../../../services/scanner.service';
@@ -14,6 +14,8 @@ import { Throwaway } from '../../../assets/models/throwaway.model';
 import { ItemCollection } from '../../../assets/models/item-collection.model';
 import { ItemRecord } from '../../../assets/models/item-record.model';
 import { ShrinkAggregate } from '../../../assets/models/shrink-agreggate.model';
+
+import { LogHandler } from '../../../assets/helpers/LogHandler';
 
 @Component({
   selector: 'page-report-specifications',
@@ -41,11 +43,14 @@ export class ReportSpecificationsPage implements OnInit {
   AWSComm : AWSCommService | AWSCommBrowserService;
 
 
+  private logger: LogHandler = new LogHandler("ReportSpecificationsPage");
+
 
   constructor(private navParams: NavParams,
               private navCtrl: NavController,
               private scanner: ScannerService,
               private alertCtrl: AlertController,
+              private loadingCtrl: LoadingController,
               private AWSBrowser: AWSCommBrowserService,
               private AWSMobile: AWSCommService) {}
 
@@ -72,8 +77,8 @@ export class ReportSpecificationsPage implements OnInit {
         "subjectSelection": new FormControl(this.subjectSelection, Validators.required),
         "dateRangeStart": new FormControl(this.dateRangeStart.toISOString(), Validators.required),
         "dateRangeEnd": new FormControl(this.dateRangeEnd.toISOString(), Validators.required),
-        // "shrinkThreshold": new FormControl(this.shrinkThreshold, Validators.pattern(/^\d{0,9}(?:\.(?:\d{1,2}))?$/))
-        "shrinkThreshold": new FormControl(this.shrinkThreshold, Validators.pattern(/^\.\d{1,2}$/))
+        "shrinkThreshold": new FormControl(this.shrinkThreshold, Validators.pattern(/^\d{0,9}(?:\.(?:\d{1,2}))?$/))
+        //"shrinkThreshold": new FormControl(this.shrinkThreshold, Validators.pattern(/^\.\d{1,2}$/))
       });
     }
   }
@@ -98,13 +103,29 @@ export class ReportSpecificationsPage implements OnInit {
     }
 
     //Server stuff.
-    let data = this.generateDummyData(this.reportType == "Calendar View");
-    if(this.reportType == "Loss Over Time"){
-      this.navCtrl.push(this.LOTPage, data);
-    }
-    else if(this.reportType == "Calendar View"){
-      this.navCtrl.push(this.calendarPage, data);
-    }
+    let loader = this.loadingCtrl.create({
+      content: "Building report..."
+    });
+    loader.present();
+
+    this.AWSComm.AWSGetLossOverTime(this.dateRangeStart, this.dateRangeEnd, this.subjectSelection, this.subjectUPC)
+    .then((result) => {
+      let data = {};
+      if (this.reportType == "Calendar View"){
+        data = {dayShrinkValues: result, shrinkThreshold: this.shrinkThreshold, dateRangeStart: this.dateRangeStart.toISOString() };
+        this.navCtrl.push(this.calendarPage, data);
+      } else{
+        data = { dayShrinkValues: result, dateRangeStart: this.dateRangeStart.toISOString() };
+        this.navCtrl.push(this.LOTPage, data);
+      }
+      loader.dismiss();
+    })
+    .catch((err) => {
+      console.log(err);
+      loader.dismiss();
+      let alert = this.alertCtrl.create({title: "Error",message: "An error occurred. Please try again.",buttons:['Dismiss']});
+      alert.present();
+    });
   }
 
   private onScanUPC(){
@@ -130,27 +151,6 @@ export class ReportSpecificationsPage implements OnInit {
     }
     else{
       this.reportForm.removeControl("subjectUPC");
-    }
-  }
-
-  private generateDummyData(calendar){
-    //Calculate how many data points we need.
-    let dayInMilliseconds = 1000 * 60 * 60 * 24;
-    let count = Math.round(Math.abs(this.dateRangeStart.getTime() - this.dateRangeEnd.getTime())/dayInMilliseconds);
-    if(calendar){
-      let data = { dayShrinkValues: [], shrinkThreshold: this.shrinkThreshold, dateRangeStart: this.dateRangeStart.toISOString() };
-      // <= count so that it is inclusive both ways.
-      for(let i = 0; i <= count; i++){
-        data.dayShrinkValues.push(Math.random() * 1000);
-      }
-      return data;
-    }
-    else{
-      let data = { dayShrinkValues: [], dateRangeStart: this.dateRangeStart.toISOString() };
-      for(let i = 0; i <= count; i++){
-        data.dayShrinkValues.push(Math.random() * 1000);
-      }
-      return data;
     }
   }
 
