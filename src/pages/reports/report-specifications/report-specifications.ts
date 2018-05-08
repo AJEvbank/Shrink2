@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { NavParams, NavController, AlertController } from 'ionic-angular';
+import { NavParams, NavController, AlertController, LoadingController } from 'ionic-angular';
 import { FormGroup, FormControl, Validators, AbstractControl, ValidatorFn } from '@angular/forms';
 
 import { ScannerService } from '../../../services/scanner.service';
@@ -50,6 +50,7 @@ export class ReportSpecificationsPage implements OnInit {
               private navCtrl: NavController,
               private scanner: ScannerService,
               private alertCtrl: AlertController,
+              private loadingCtrl: LoadingController,
               private AWSBrowser: AWSCommBrowserService,
               private AWSMobile: AWSCommService) {}
 
@@ -76,8 +77,8 @@ export class ReportSpecificationsPage implements OnInit {
         "subjectSelection": new FormControl(this.subjectSelection, Validators.required),
         "dateRangeStart": new FormControl(this.dateRangeStart.toISOString(), Validators.required),
         "dateRangeEnd": new FormControl(this.dateRangeEnd.toISOString(), Validators.required),
-        // "shrinkThreshold": new FormControl(this.shrinkThreshold, Validators.pattern(/^\d{0,9}(?:\.(?:\d{1,2}))?$/))
-        "shrinkThreshold": new FormControl(this.shrinkThreshold, Validators.pattern(/^\.\d{1,2}$/))
+        "shrinkThreshold": new FormControl(this.shrinkThreshold, Validators.pattern(/^\d{0,9}(?:\.(?:\d{1,2}))?$/))
+        //"shrinkThreshold": new FormControl(this.shrinkThreshold, Validators.pattern(/^\.\d{1,2}$/))
       });
     }
   }
@@ -102,13 +103,29 @@ export class ReportSpecificationsPage implements OnInit {
     }
 
     //Server stuff.
-    let data = this.generateDummyData(this.reportType == "Calendar View");
-    // if(this.reportType == "Loss Over Time"){
-    //   this.navCtrl.push(this.LOTPage, data);
-    // }
-    // else if(this.reportType == "Calendar View"){
-    //   this.navCtrl.push(this.calendarPage, data);
-    // }
+    let loader = this.loadingCtrl.create({
+      content: "Building report..."
+    });
+    loader.present();
+
+    this.AWSComm.AWSGetLossOverTime(this.dateRangeStart, this.dateRangeEnd, this.subjectSelection, this.subjectUPC)
+    .then((result) => {
+      let data = {};
+      if (this.reportType == "Calendar View"){
+        data = {dayShrinkValues: result, shrinkThreshold: this.shrinkThreshold, dateRangeStart: this.dateRangeStart.toISOString() };
+        this.navCtrl.push(this.calendarPage, data);
+      } else{
+        data = { dayShrinkValues: result, dateRangeStart: this.dateRangeStart.toISOString() };
+        this.navCtrl.push(this.LOTPage, data);
+      }
+      loader.dismiss();
+    })
+    .catch((err) => {
+      console.log(err);
+      loader.dismiss();
+      let alert = this.alertCtrl.create({title: "Error",message: "An error occurred. Please try again.",buttons:['Dismiss']});
+      alert.present();
+    });
   }
 
   private onScanUPC(){
