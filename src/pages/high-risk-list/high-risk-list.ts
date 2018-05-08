@@ -27,6 +27,7 @@ export class HighRiskListPage implements OnInit {
   }
 
   ngOnInit() {
+    console.log("loaded status: " + JSON.stringify(this.hrService.isListLoaded()));
     if (this.hrService.isListLoaded() == false) {
       this.hrService.FetchList()
       .then(
