@@ -26,7 +26,8 @@ export class CalendarPage implements OnInit {
 
     for(let i = 0; i < dayShrinkValues.length; i++){
       this.eventSource.push({
-        title: "Test " + (i+1).toString(),
+        //title: "Test " + (i+1).toString(),
+        title: "",
         startTime: this.genDate(i),
         endTime: this.genDate(i),
         allDay: true,
@@ -40,12 +41,12 @@ export class CalendarPage implements OnInit {
     }, 100);
   }
 
-  private genDate(dayOffset){
+  private genDate(dayOffset) : Date {
     let date = this.calendar.currentDate;
     return new Date(date.getFullYear(), date.getMonth(), date.getDate() + dayOffset);
   }
 
-  private getColor(events){
+  private getColor(events) : string{
     if(events.length > 0 && parseFloat(events[0].loss) >= this.shrinkThreshold){
       return 'overShrinkLimit';
     }
