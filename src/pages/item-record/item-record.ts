@@ -30,6 +30,9 @@ export class ItemRecordPage implements OnInit {
 
   private fromUPCdatabasemessage: string = "Please verify and save item record.";
 
+  private isHighRisk: boolean = false;
+  private isNotHighRisk: boolean = true;
+
   constructor(private navCtrl: NavController,
               private navParams: NavParams,
               private modalCtrl: ModalController,
@@ -48,11 +51,15 @@ export class ItemRecordPage implements OnInit {
     this.item = this.navParams.get('item');
     this.fromMain = this.navParams.get('fromMain');
     this.isCompleteItemRecord = this.navParams.get('saved');
+    this.isHighRisk = this.item.isHighRisk;
+    this.isNotHighRisk = !this.item.isHighRisk;
 
     //this.shelfHelperService.fetchList();
 
     this.viewCtrl.showBackButton(!this.fromMain);
     this.dummyFunctionCalls();
+    console.log("item: " + JSON.stringify(this.item) + " isHighRisk: " + this.isHighRisk
+                                                     + " isNotHighRisk: " + this.isNotHighRisk);
   }
 
   private dummyFunctionCalls() : void {
@@ -81,6 +88,8 @@ export class ItemRecordPage implements OnInit {
         }
         else {
           this.isCompleteItemRecord = true;
+          this.isHighRisk = this.item.isHighRisk;
+          this.isNotHighRisk = !this.item.isHighRisk;
         }
       }
     );
@@ -130,6 +139,8 @@ export class ItemRecordPage implements OnInit {
           if (itemResponse.message == "SUCCESS") {
             this.item = itemResponse.item;
             loader.dismiss();
+            this.isHighRisk = this.item.isHighRisk;
+            this.isNotHighRisk = !this.item.isHighRisk;
           }
           else if (itemResponse.message == "ERROR") {
             loader.dismiss();

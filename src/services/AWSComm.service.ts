@@ -302,17 +302,18 @@ export class AWSCommService {
         let resJSON = JSON.parse(response.data);
         let highRiskList: ItemRecord[] = [];
         let message: string = "";
-        if(resJSON == undefined || resJSON.Items == undefined){
+        if(resJSON === undefined){
           message = "ERROR";
         }
-        else if(resJSON.Items.length == 0){
+        else if(resJSON.length == 0){
           message = "EMPTY";
         }
         else{
-          for(let item of resJSON.Items) {
-            let newItem = new ItemRecord(item.upc,item.name,item.isHighRisk);
+          for(let item of resJSON) {
+            let newItem = new ItemRecord(item.upcId,item.name,item.highRisk);
             highRiskList.push(newItem);
           }
+          message = "SUCCESS";
         }
         return {list: highRiskList, message: message};
     })

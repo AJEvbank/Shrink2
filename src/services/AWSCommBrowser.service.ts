@@ -256,19 +256,24 @@ export class AWSCommBrowserService {
         let resJSON = response.json();
         let highRiskList: ItemRecord[] = [];
         let message: string = "";
-        if(resJSON.Items == undefined) {
+        if(resJSON == undefined) {
+          console.log("case: UNDEFINED");
           message = "UNDEFINED";
         }
-        else if (resJSON.Items.length == 0) {
+        else if (resJSON.length == 0) {
+          console.log("case: EMPTY");
           message = "EMPTY";
         }
         else {
-          for(let item of resJSON.Items) {
-            let newItem = new ItemRecord(item.upc,item.name,item.isHighRisk);
+          console.log("case: else");
+          let i: number;
+          for(i = 0; i < resJSON.length; i++) {
+            let newItem = new ItemRecord(resJSON[i].upcId,resJSON[i].name,resJSON[i].highRisk);
             highRiskList.push(newItem);
           }
           message = "SUCCESS";
         }
+        console.log("highRiskList: " + JSON.stringify(highRiskList));
         return {list: highRiskList, message: message};
       }
     ).toPromise<{list: ItemRecord[], message: string}>();

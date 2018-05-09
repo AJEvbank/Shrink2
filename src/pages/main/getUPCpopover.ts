@@ -7,7 +7,7 @@ import { FormGroup, FormControl, Validators, ValidatorFn, AbstractControl } from
   template: `
   <ion-content padding class="no-scroll">
     <form [formGroup]="upc">
-      <ion-input type="text" formControlName="upc" (ngSubmit)="submit()"></ion-input>
+      <ion-input type="text" formControlName="upc" placeholder="Enter UPC" (ngSubmit)="submit()"></ion-input>
       <ion-item *ngIf="upc.controls['upc'].hasError('CheckDigit') == true && !upc.controls['upc'].hasError('pattern') && upc.controls['upc'].value.length == 12" text-wrap>
         <ion-label>The last digit should be {{ this.getCheckDigit(true) }}.</ion-label>
       </ion-item>
@@ -42,7 +42,7 @@ export class GetUPCPopover implements OnInit {
 
   private initializeForm() : void {
     this.upc = new FormGroup({
-      'upc': new FormControl("718103101776",
+      'upc': new FormControl("",
                               [
                                 Validators.required,
                                 Validators.pattern(/^[0-9]{12}$/),
